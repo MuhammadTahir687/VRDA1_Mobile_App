@@ -1,13 +1,13 @@
 import React from "react";
 import Colors from "../Style_Sheet/Colors";
-import Shop from "../Screens/Stack_screen/Shop";
-import Wallet from "../Screens/Stack_screen/Wallet";
+import Shop from "../Screens/Stack_screen/Shop/Shop";
+import Wallet from "../Screens/Stack_screen/Wallet/Wallet";
 import Reports from "../Screens/Stack_screen/Reports";
 import Dashboard from "../Screens/Stack_screen/Dashboard";
-import Vreit_Points from "../Screens/Stack_screen/Vreit_Points";
-import Activity_Feeds from "../Screens/Stack_screen/Activity_Feeds";
-import Commission_Logs from "../Screens/Stack_screen/Commission_Logs";
-import Commission_Reports from "../Screens/Stack_screen/Commission_Reports";
+import Vreit_Points from "../Screens/Stack_screen/VreitPoints/Vreit_Points";
+import Activity_Feeds from "../Screens/Stack_screen/ActivityFeed/Activity_Feeds";
+import Commission_Logs from "../Screens/Stack_screen/CommissionLogs/Commission_Logs";
+import Commission_Reports from "../Screens/Stack_screen/Commission_Report/Commission_Reports";
 import {Image, SafeAreaView, Text, TouchableOpacity, View} from "react-native";
 import { createDrawerNavigator, DrawerContentScrollView,DrawerItemList } from '@react-navigation/drawer';
 
@@ -30,13 +30,13 @@ const CustomDrawer=(props)=>{
         </View>
     )
 }
-const Drawers = ({}) => {
+const Drawers = ({navigation}) => {
 
     return (
         <SafeAreaView style={{flex:1}}>
         <Drawer.Navigator initialRouteName="Dashboard" screenOptions={{headerStyle:{backgroundColor:"transparent"},headerRight: () => (
-            <TouchableOpacity>
-            <Image source={require("../Assets/vector.png")} style={{height:20,width:20}}/>
+            <TouchableOpacity style={{marginRight:20}} onPress={()=>navigation.navigate("Profile")}>
+            <Image source={require("../Assets/profile.png")} style={{height:20,width:20}}/>
             </TouchableOpacity>
             )}} drawerContent={(props)=> <CustomDrawer {...props}/> }>
             <Drawer.Screen name="Dashboard" component={Dashboard} options={{drawerLabel:"Dashboard",drawerActiveTintColor:Colors.primary, drawerType:"slide",drawerIcon: ({tintColor}) => (

@@ -32,6 +32,7 @@ const Login = ({navigation}) => {
         iconName_s="user"
         icon_color={Colors.white}
         value={email}
+        color={Colors.white}
         containerStyle={{ marginTop: 15 }}
         onChangeText={(text) => { setErrors(""), setEmail(text) }}
         error={errors === "Please Enter Your Email" ? "Please Enter Your Email" : null || errors === "Email format is invalid" ? "Email format is invalid" : null}
@@ -42,6 +43,7 @@ const Login = ({navigation}) => {
         iconName_s="lock"
         forget={true}
         containerStyle={{ marginTop: 10 }}
+        color={Colors.white}
         text_input_container={{ flexDirection: "row" }}
         iconName={secure ? "eye-with-line" : "eye"}
         icon_color={Colors.white}

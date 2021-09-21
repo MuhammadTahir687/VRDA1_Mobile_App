@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import { AppText } from "./AppText";
 import Color from "../Style_Sheet/Colors";
 import Theme from '../Style_Sheet/Theme';
+
 // import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 class FormInput extends Component {
@@ -21,10 +22,11 @@ class FormInput extends Component {
         ForgetPassword: PropTypes.func,
         forget: PropTypes.bool,
         iconName_s: PropTypes.string,
+        color:PropTypes.any,
     }
 
     render() {
-        const { title, error, iconName, style, containerStyle, icon_color, onPress_icon, ForgetPassword, forget } = this.props;
+        const { title, error, iconName, style, containerStyle, icon_color, onPress_icon, ForgetPassword, forget,color } = this.props;
         return (
             <View style={[this.props.containerStyle]} >
                 <View style={Theme.text_input_container}>
@@ -32,9 +34,7 @@ class FormInput extends Component {
                     <TextInput
                         {...this.props}
                         autoCapitalize="none"
-                        style={{ height: 40, flex: 1, color: Color.white }} />
-
-
+                        style={{ height: 40, flex: 1,color }} />
                     <Entypo color={this.props.icon_color} onPress={this.props.onPress_icon} size={18} name={this.props.iconName} />
                 </View>
                 {this.props.forget &&

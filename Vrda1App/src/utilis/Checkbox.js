@@ -1,27 +1,17 @@
-import React, { Component } from 'react'
-import { Text, View } from 'react-native'
-import PropTypes from 'prop-types';
-import Colors from "../src/StyleSheet/Colors";
-import CheckBox from "@react-native-community/checkbox";
+import React from 'react'
+import Icon from 'react-native-vector-icons/MaterialIcons'
+import { TouchableOpacity, Text } from 'react-native'
 
-export default class CheckBoxes extends Component {
-    static propTypes = {
-        text: PropTypes.string,
-        value: PropTypes.any,
-        onPress: PropTypes.func,
-        style : PropTypes.any
-    }
-    render() {
-        return (
-            <View style={[{ flexDirection: 'row', alignItems: 'center' }, this.props.style]}>
-                <CheckBox
-                    value={this.props.value}
-                    onValueChange={this.props.onPress}
-                    tintColors={{ true: "#E1951E", false: "white" }}
-                />
-                <Text style={{ color: Colors.white, flex:1 }}> {this.props.text}</Text>
-            </View>
+const CheckBox = ({ selected, onPress, style, textStyle, size = 30, color = '#211f30', text = '', ...props}) => (
+    <TouchableOpacity style={[{flexDirection: 'row',alignItems: 'center'}, style]} onPress={onPress} {...props}>
+        <Icon
+            size={size}
+            color={color}
+            name={ selected ? 'check-box' : 'check-box-outline-blank'}
+        />
 
-        )
-    }
-}
+        <Text style={textStyle}> {text} </Text>
+    </TouchableOpacity>
+)
+
+export default CheckBox
