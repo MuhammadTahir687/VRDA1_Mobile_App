@@ -1,28 +1,52 @@
-import React, { useState } from "react";
-import { Text, View, ImageBackground, Image, ScrollView } from "react-native";
+import React, {useEffect, useState} from "react";
+import { Text, View, ImageBackground, Image, ScrollView, } from "react-native";
 import Colors from "../../Style_Sheet/Colors";
 import { FormInput } from "../../utilis/Text_input";
 import { Btn } from "../../utilis/Btn";
 import { loginValidation } from "../../utilis/validation";
+import { get_data, save_data } from "../../utilis/AsyncStorage/Controller";
+import Loader from "../../utilis/Loader";
+import {LoginApi} from "../../utilis/Api/Api_controller";
+import Toast from "react-native-simple-toast";
+
 
 const Login = ({navigation}) => {
-
   const [secure, setSecure] = useState(true);
-  const [email, setEmail] = useState("talha@yahoo.com");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("vrda1@vrda1.com");
+  const [password, setPassword] = useState("Vr6@1Vr6@1");
   const [errors, setErrors] = useState(null);
+  const [isloading, setLoading] = useState(false);
 
-  const Login=()=>{
-    let validate = loginValidation(email)
+    const login=async ()=>{
+    let validate = loginValidation(email,password)
     if (validate.valid === false) {
       setErrors(validate.errors)
     } else {
-      navigation.replace("Drawers");
+        setErrors("")
+        let body = {email: email, password: password,};
+        setLoading(true)
+        let response = await LoginApi(body)
+        if (response !== "Error") {
+            if (response.data.status == true) {
+                let Bearer = response.data.access_token;
+                await save_data("ACCOUNT_DATA", Bearer)
+                setLoading(false);
+                navigation.replace("Drawers");
+            }else {
+                Toast.show("Invalid Email or Password !", Toast.LONG);
+                setLoading(false);
+            }
+        }else {
+            alert(JSON.stringify(response))
+            Toast.show("Network Error: There is something wrong!", Toast.LONG);
+            setLoading(false);
+        }
     }
   }
   return (
     <ImageBackground style={{flex: 1 }} source={require("../../Assets/background.png")}>
-      <View style={{marginHorizontal:30,justifyContent:"space-evenly",bottom:5}}>
+        <Loader animating={isloading} />
+        <View style={{marginHorizontal:30,justifyContent:"space-evenly",bottom:5}}>
       <ScrollView>
       <Image resizeMode="contain" style={{ alignSelf: "center", height: 250, width: 219,marginTop:20 }} source={require("../../Assets/vector.png")} />
       <Text style={{ fontSize: 40, color: Colors.white, fontWeight: "bold" }}>Login</Text>
@@ -52,10 +76,10 @@ const Login = ({navigation}) => {
         secureTextEntry={secure}
         onChangeText={(text) => { setErrors(""), setPassword(text) }}
         ForgetPassword={() => { alert("adadadada") }}
-      error={errors === "Please Enter Your Password" ? "Please Enter Your Password" : null}
+      error={errors === "Please Enter Your Password" ? "Please Enter Your Password" : null ||errors === "Password must should contain 6 digits"?"Password must should contain 6 digits":null}
       />
       </ScrollView>
-      <Btn text={"Login"} onPress={()=>Login()} containerStyle={{ backgroundColor: Colors.white, padding: 15, borderRadius: 25, marginTop: 15,marginHorizontal:50 }}/>
+      <Btn text={"Login"} onPress={() =>{login()}}  containerStyle={{ backgroundColor: Colors.white, padding: 15, borderRadius: 25, marginTop: 15,marginHorizontal:50 }}/>
       </View>
     </ImageBackground>
   );

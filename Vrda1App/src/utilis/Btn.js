@@ -2,16 +2,18 @@ import React, { Component } from 'react'
 import { Text, TouchableOpacity,Image } from 'react-native'
 import PropTypes from 'prop-types';
 import Colors from "../Style_Sheet/Colors";
+import Entypo from "react-native-vector-icons/Entypo";
 
 class Btn extends Component {
     static propTypes = {
         text: PropTypes.string,
-        containerStyle: PropTypes.any,
-        onPress: PropTypes.func,
         text1: PropTypes.string,
-        image: PropTypes.any,
         text_style: PropTypes.any,
-        img_style: PropTypes.any
+        containerStyle: PropTypes.any,
+        img_style: PropTypes.any,
+        onPress: PropTypes.func,
+        image: PropTypes.any,
+        onPress_icon: PropTypes.func,
     }
     render() {
         return (

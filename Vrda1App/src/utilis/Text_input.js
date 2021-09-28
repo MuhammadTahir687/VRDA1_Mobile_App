@@ -37,12 +37,12 @@ class FormInput extends Component {
                         style={{ height: 40, flex: 1,color }} />
                     <Entypo color={this.props.icon_color} onPress={this.props.onPress_icon} size={18} name={this.props.iconName} />
                 </View>
+                {this.props.error && <AppText style={{ color: "red" }} >{this.props.error}</AppText>}
                 {this.props.forget &&
                     <TouchableOpacity style={{ marginTop: 5 }} onPress={this.props.ForgetPassword}>
                         <Text style={{ textAlign: 'right', marginTop: 10, color: Color.white }}>Forget password?</Text>
                     </TouchableOpacity>
                 }
-                {this.props.error && <AppText style={{ color: "red" }} >{this.props.error}</AppText>}
             </View>
         );
     }

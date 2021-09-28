@@ -1,11 +1,10 @@
 import React,{useState} from "react";
-import {Text, View, SafeAreaView, FlatList} from "react-native";
+import {Text, View, SafeAreaView, Picker} from "react-native";
 import Colors from "../../../../Style_Sheet/Colors";
 import {Btn} from "../../../../utilis/Btn";
 import DoubleText from "../../../../utilis/DoubleText";
 import {FormInput} from "../../../../utilis/Text_input";
 import CheckBox from "../../../../utilis/Checkbox";
-import Picker from "@react-native-picker/picker";
 
 const TransferFunds = () => {
     const [amount,setAmount]=useState("");
@@ -29,7 +28,8 @@ const TransferFunds = () => {
                 {buttons.map((item, indexs) => (
                     <Btn onPress={() => { setIndex(indexs);
                         // getData(indexs)
-                    }} containerStyle={{ backgroundColor: index == indexs ? Colors.primary : Colors.secondary, paddingVertical: 10, paddingHorizontal: 10, flex: 1, borderRadius: 5, marginLeft: 3, borderWidth: 1, borderColor: 'white' }} text= {item.name} text_style={{color:Colors.white}} />))}
+                    }} containerStyle={{ backgroundColor: index == indexs ? Colors.primary : Colors.white, paddingVertical: 10, paddingHorizontal: 10, flex: 1, borderRadius: 5, marginLeft: 3, borderWidth: 1, borderColor:Colors.primary }} text= {item.name} text_style={{color:index == indexs?Colors.white:Colors.primary}} />
+                ))}
             </View>
             {index == 0?
                 <View style={{marginVertical:20,justifyContent:"space-evenly"}}>

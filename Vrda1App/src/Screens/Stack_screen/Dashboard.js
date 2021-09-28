@@ -1,19 +1,33 @@
-import React, {useState} from 'react';
-import {SafeAreaView, ScrollView, Text,ImageBackground, View, FlatList, Dimensions,Platform} from 'react-native';
-import Colors from '../../Style_Sheet/Colors';
-import * as Progress from 'react-native-progress';
 import moment from 'moment';
+import Loader from "../../utilis/Loader";
+import Colors from '../../Style_Sheet/Colors';
+import React, {useEffect, useState} from 'react';
+import * as Progress from 'react-native-progress';
+import {getDashboard, } from "../../utilis/Api/Api_controller";
+import {get_data, save_data} from "../../utilis/AsyncStorage/Controller";
 import { ExpandableCalendar, Timeline, CalendarProvider } from 'react-native-calendars';
+import {SafeAreaView, ScrollView, Text, ImageBackground, View, FlatList, Dimensions, Platform,} from 'react-native';
+import Toast from "react-native-simple-toast";
 
 const deviceHeight = Dimensions.get('screen').height;
 const deviceWidth = Dimensions.get('screen').width;
 const Dashboard = () => {
+    const [isloading,setLoading]=useState(false);
     const [currentDate,setCurrentDate]=useState("");
+    const [leftBV,setLeftBV]=useState("");
+    const [rightBV,setRightBV]=useState("");
+    const [leftCF,setLeftCF]=useState("");
+    const [rightCF,setRightCF]=useState("");
+    const [VREITPoint,setVREITPoint]=useState("");
+    const [VREITBonus,setVREITBonus]=useState("");
+    const [weeklyReserve,setWeeklyReserve]=useState("");
+    const [weeklyEarned,setWeeklyEarned]=useState("");
+    const [totalEarned,setTotalEarned]=useState("");
     const getCurrentDate=()=>{
         const date = new Date().getDate();
         const month = new Date().getMonth() + 1;
         const year = new Date().getFullYear();
-        return date + '-' + month + '-' + year;//format: dd-mm-yyyy;
+        return year + '-' + month + '-' +date;//format: yyyy-mm-dd;
     }
     const renderEmptyItem=()=> {
         return (
@@ -28,11 +42,15 @@ const Dashboard = () => {
         // console.warn('ExpandableCalendarScreen onMonthChange: ', month, updateSource);
     };
     const Data = [
-        {price: '92.22', desccription: 'E-wallet Balance'},
-        {price: '92.22', desccription: 'E-wallet Balance'},
-        {price: '92.22', desccription: 'E-wallet Balance'},
-        {price: '92.22', desccription: 'E-wallet Balance'},
-        {price: '92.22', desccription: 'E-wallet Balance'},
+        {price: leftBV, name: 'LEFT BV'},
+        {price: rightBV, name: 'Right BV'},
+        {price: leftCF, name: 'Left CF'},
+        {price: rightCF, name: 'Right CF'},
+        {price: VREITPoint, name: 'Vreit Point'},
+        {price: VREITBonus, name: 'Vreit Bonus'},
+        {price: weeklyReserve, name: 'Weekly Reserve'},
+        {price: weeklyEarned, name: 'Weekly Earned'},
+        {price: totalEarned, name: 'Total Earned'},
     ]
     const EVENTS= [
         {start: '2021-01-15 22:30',title: 'Dr. nauman',summary: '3412 Piedmont Rd NE, GA 3032',color: '#e6add8',selected: true, marked: true, selectedColor: 'blue',id: 2},
@@ -62,7 +80,7 @@ const Dashboard = () => {
         const Black1 = Colors.primary
         return {
             // arrows
-            arrowColor: Black1, arrowStyle: { padding: 0 },
+            arrowColor: Black1, arowStyle: { padding: 0 },
             // month
             monthTextColor: Black1, textMonthFontSize: 16, textMonthFontFamily: 'HelveticaNeue', textMonthFontWeight: 'bold',
             // day names
@@ -79,8 +97,39 @@ const Dashboard = () => {
             dotColor: themeColor, selectedDotColor: white, disabledDotColor: disabledColor, dotStyle: { marginTop: -2 }
         };
     };
+
+    useEffect(async ()=>{
+        await getallData();
+    },[]);
+
+    const getallData=async ()=>{
+        setLoading(true)
+        let response = await getDashboard()
+        if (response !== "Error") {
+            if (response.data.status == true) {
+                setLeftBV(response.data.data.lbv);
+                setRightBV(response.data.data.rbv);
+                setLeftCF(response.data.data.lcf);
+                setRightCF(response.data.data.rcf);
+                setVREITPoint(response.data.data.earned_sto);
+                // setVREITBonus(response.data.data.);
+                setWeeklyReserve(response.data.data.reserve);
+                setWeeklyEarned(response.data.data.earning);
+                setTotalEarned(response.data.data.earned);
+                setLoading(false);
+            }else {
+                Toast.show("Something Went Wrong !", Toast.LONG);
+                setLoading(false);
+            }
+        }else {
+            alert(JSON.stringify(response))
+            Toast.show("Network Error: There is something wrong!", Toast.LONG);
+            setLoading(false);
+        }
+    }
     return (
         <SafeAreaView style={{flex: 1}}>
+            <Loader animating={isloading}/>
             <View style={{backgroundColor: Colors.white, borderTopLeftRadius: 20, borderTopRightRadius: 20}}>
                 <ScrollView>
                     <View style={{margin: 20}}>
@@ -91,8 +140,8 @@ const Dashboard = () => {
                             renderItem={({item, index}) =>
                                 <ImageBackground borderRadius={12} style={{width: deviceWidth / 2.4, margin: 5, height: deviceHeight / 9}} source={require('../../Assets/Box.png')}>
                                     <View style={{margin: 15, alignSelf: 'flex-end'}}>
-                                        <Text style={{color: Colors.white, fontWeight: 'bold', fontSize: 16}}>LEFT BV</Text>
-                                        <Text style={{color: Colors.white, fontWeight: 'bold',}}>0.0</Text>
+                                        <Text style={{color: Colors.white, fontWeight: 'bold', fontSize: 16}}>{item.name}</Text>
+                                        <Text style={{color: Colors.white, fontWeight: 'bold',}}>{parseFloat(item.price).toFixed(2)}</Text>
                                     </View>
                                 </ImageBackground>
                             }/>

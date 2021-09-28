@@ -10,6 +10,7 @@ import Commission_Logs from "../Screens/Stack_screen/CommissionLogs/Commission_L
 import Commission_Reports from "../Screens/Stack_screen/Commission_Report/Commission_Reports";
 import {Image, SafeAreaView, Text, TouchableOpacity, View} from "react-native";
 import { createDrawerNavigator, DrawerContentScrollView,DrawerItemList } from '@react-navigation/drawer';
+import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 
 const Drawer = createDrawerNavigator();
 
@@ -25,7 +26,7 @@ const CustomDrawer=(props)=>{
                 <DrawerItemList {...props}/>
             </DrawerContentScrollView>
             <TouchableOpacity style={{position:"absolute",right:0,left:0,bottom:5,backgroundColor:"rgba(157,154,154,0.32)"}}>
-                <Text style={{backgroundColor:"rgba(162,160,160,0.29)",width:"100%",height:40,textAlign:"center",paddingTop:8}}>LogOut</Text>
+                <Text style={{backgroundColor:"rgba(162,160,160,0.29)",width:"100%",height:40,textAlign:"center",paddingTop:8}}><SimpleLineIcons name={"logout"} size={15} color={Colors.primary}/> LogOut</Text>
             </TouchableOpacity>
         </View>
     )

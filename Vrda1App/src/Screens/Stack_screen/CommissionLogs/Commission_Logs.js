@@ -28,7 +28,7 @@ const Commission_Logs=()=>{
         },
     ]
     const renderItem=({item})=>(
-        <TouchableOpacity onPress={()=>{setVisible(true)}} style={{height:105,width:"46%", backgroundColor: Colors.secondary, borderColor: Colors.white, borderRadius: 10, borderBottomWidth: 2, padding: 10,margin:"2%" }}>
+        <TouchableOpacity onPress={()=>{setVisible(true)}} style={{backgroundColor: Colors.secondary, borderColor: Colors.white, borderRadius: 10, borderBottomWidth: 2, padding: 10}}>
                 <Text style={{ fontSize: 14, color: Colors.white }}>Transactions ({item.id})</Text>
             <Text style={{ fontSize: 14, color: Colors.white }}>Total ({item.id})</Text>
             <Text style={{ fontSize: 14, color: Colors.white }}>Status ({item.id}%)</Text>
@@ -52,7 +52,6 @@ const Commission_Logs=()=>{
                         <Progress.Bar width={deviceWidth / 3.6} progress={0.1} color={Colors.primary} backgroundColor={Colors.secondary} borderColor={Colors.secondary} marginVertical={5}/>
                         <Text style={{color: Colors.primary, fontWeight: 'bold', fontSize: 12}}> 37%</Text>
                     </View>
-
                 {/*<Dialog.Description>Do you want to delete this account? You cannot undo this action.</Dialog.Description>*/}
                 {/*<Dialog.Button label="Cancel" onPress={()=>{setVisible(false)}} />*/}
             </Dialog.Container>
@@ -70,7 +69,6 @@ const Commission_Logs=()=>{
             <FlatList
                 data={Data}
                 renderItem={renderItem}
-                numColumns={2}
                 style={{ flex: 1 }}
                 contentContainerStyle={{ marginVertical: 20 }}
             />

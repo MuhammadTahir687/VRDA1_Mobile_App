@@ -1,4 +1,4 @@
-export const loginValidation = (email) => {
+export const loginValidation = (email,password) => {
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
     if (email === '') {
         return {
@@ -10,6 +10,18 @@ export const loginValidation = (email) => {
         return {
             valid: false,
             errors: reg.test(email) === false ? "Email format is invalid" : null
+        }
+    }
+    else if (password === '') {
+        return {
+            valid: false,
+            errors: password === '' ? "Please Enter Your Password" : null
+        }
+    }
+    else if (password.length < 6) {
+        return {
+            valid: false,
+            errors: password.length < 6 ? "Password must should contain 6 digits" : null
         }
     }
     else {
