@@ -7,24 +7,35 @@ import Entypo from "react-native-vector-icons/Entypo";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { Btn } from "../../../utilis/Btn";
 import DoubleText from "../../../utilis/DoubleText";
-import {getShop} from "../../../utilis/Api/Api_controller";
+import {getShop, sendShopPayment} from "../../../utilis/Api/Api_controller";
 import Toast from "react-native-simple-toast";
 import {Picker} from "@react-native-picker/picker";
 import Notes from "../../../Zextra/Note";
 import Alert from "../../../Zextra/Alert";
+import Loader from "../../../utilis/Loader";
+import {FormInput} from "../../../utilis/Text_input";
 
 const Shop = () => {
     const refRBSheet = useRef();
-    const [index, setIndex] = useState(0);
-    const [ids, setIds] = useState({});
     const [data,setData]=useState([]);
-    const [isloading,setLoading]=useState("");
-    const [detail, setDetail] = useState("");
+    const [iban,setIban]=useState("");
+    const [ids, setIds] = useState({});
+    const [index, setIndex] = useState(0);
     const [errors, setErrors] = useState("");
+    const [detail, setDetail] = useState("");
+    const [isloading,setLoading]=useState("");
+    const [bankName,setBankName]=useState("");
+    const [packageID,setPackageID]=useState("");
+    const [swiftCode,setSwiftCode]=useState("");
+    const [cifNumber,setCifNumber]=useState("");
+    const [branchName,setBranchName]=useState("");
+    const [branchCode,setBranchCode]=useState("");
+    const [accountName,setAccountName]=useState("");
+    const [accountNumber,setAccountNumber]=useState("");
     const [selectedValue, setSelectedValue] = useState("Please Select");
     const buttons = [{ name: 'Package Detail', id: 0 }, { name: 'Proceed Order', id: 1 }]
 
-    useEffect(async ()=>{await getShopData()},[])
+    useEffect(async ()=>{await getShopData();await gettingDetails();},[selectedValue]);
 
     const getShopData=async ()=>{
         setLoading(true)
@@ -43,9 +54,34 @@ const Shop = () => {
             setLoading(false);
         }
     }
+
+    const gettingDetails=async ()=>{
+        setLoading(true)
+        let body = {package_id: packageID, value: selectedValue,};
+        let response = await sendShopPayment(body);
+        if (response !== "Error") {
+            if (response.data.status === true) {
+                setIban(response.data.data.bank_form.iban);
+                setBankName(response.data.data.bank_form.bank_name);
+                setCifNumber(response.data.data.bank_form.cif_number);
+                setSwiftCode(response.data.data.bank_form.swift_code);
+                setBranchName(response.data.data.bank_form.branch_name);
+                setBranchCode(response.data.data.bank_form.branch_code);
+                setAccountName(response.data.data.bank_form.account_name);
+                setAccountNumber(response.data.data.bank_form.account_number);
+                setLoading(false);
+            }else {
+                Toast.show("Something Went Wrong !", Toast.LONG);
+                setLoading(false);
+            }
+        }else {
+            Toast.show("Network Error: There is something wrong!", Toast.LONG);
+            setLoading(false);
+        }
+    }
     const renderItem = ({ item, index }) => (
         <View style={{ flex: 1 }}>
-            <TouchableOpacity onPress={() => { refRBSheet.current.open(); setIds(item) }} style={{ flex: 1, marginHorizontal: 5 }}>
+            <TouchableOpacity onPress={() => { refRBSheet.current.open(); setIds(item);setPackageID(item.id) }} style={{ flex: 1, marginHorizontal: 5 }}>
                 <LinearGradient colors={['#333232', '#a9a6a6']} style={{ paddingHorizontal: 15, borderRadius: 10, margin: 4, flex: 1 }}>
                     <View style={{ padding: 10 }}>
                         <Text style={{ fontWeight: "bold", color: Colors.white, fontSize: 18 }}>{item.title}</Text>
@@ -57,7 +93,6 @@ const Shop = () => {
                         </View>
                     </View>
                 </LinearGradient>
-
             </TouchableOpacity>
         </View>
     )
@@ -114,29 +149,36 @@ const Shop = () => {
                                         style={{ height: 50, width:"100%"}}
                                         onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
                                     >
-                                        <Picker.Item label="Bank" value={"Bank"} testID={"1"}/>
-                                        <Picker.Item label="USDT" value={"USDT"} testID={"2"} />
-                                        <Picker.Item label="Wallet" value={"Wallet"} testID={"3"} />
-                                        <Picker.Item label="Vreit" value={"Vreit"} testID={"4"} />
+                                        <Picker.Item label="Bank" value={"bank"} testID={"1"}/>
+                                        <Picker.Item label="USDT" value={"usdt"} testID={"2"} />
+                                        <Picker.Item label="Wallet" value={"wallet"} testID={"3"} />
+                                        <Picker.Item label="Vreit" value={"vreit"} testID={"4"} />
                                         <Picker.Item label="Please Select" value={"Please Select"} testID={"4"} color={"rgba(152,148,148,0.63)"} />
                                     </Picker>
                                 </View>
-                                {selectedValue == "Bank"?
+                                {selectedValue == "bank"?
                                     <View>
-                                    <DoubleText text1={"Account Name"} text2={"$57,482.17185"} textstyle={{ textAlign: "center" }} containerstyle={{ padding: 6 }} />
-                                    <DoubleText text1={"Bank Name"} text2={"$12,574"} textstyle={{ textAlign: "center" }} containerstyle={{ backgroundColor: "rgba(152,148,148,0.63)", padding: 6 }} />
-                                    <DoubleText text1={"Account Number"} text2={"$1,250"} textstyle={{ textAlign: "center" }} containerstyle={{ padding: 6 }} />
-                                    <DoubleText text1={"IBAN"} text2={"$25,000"} textstyle={{ textAlign: "center" }} containerstyle={{ backgroundColor: "rgba(152,148,148,0.63)", padding: 6 }} />
-                                    <DoubleText text1={"Swift Code"} text2={"$600"} textstyle={{ textAlign: "center" }} containerstyle={{ padding: 6 }} />
-                                    <DoubleText text1={"CIF Number"} text2={"$0"} textstyle={{ textAlign: "center" }} containerstyle={{ backgroundColor: "rgba(152,148,148,0.63)", padding: 6 }} />
-                                    <DoubleText text1={"Branch Name"} text2={"$20,558.20000"} textstyle={{ textAlign: "center" }} containerstyle={{ padding: 6 }} />
-                                    <DoubleText text1={"Branch Code"} text2={"$0"} textstyle={{ textAlign: "center" }} containerstyle={{ backgroundColor: "rgba(152,148,148,0.63)", padding: 6 }} />
-                                    <TextInput value={null} placeholder={"hello"} />
+                                    <DoubleText text1={"Account Name"} text2={accountName} textstyle={{ textAlign: "center" }} containerstyle={{ padding: 6 }} />
+                                    <DoubleText text1={"Bank Name"} text2={bankName} textstyle={{ textAlign: "center" }} containerstyle={{ backgroundColor: "rgba(152,148,148,0.63)", padding: 6 }} />
+                                    <DoubleText text1={"Account Number"} text2={accountNumber} textstyle={{ textAlign: "center" }} containerstyle={{ padding: 6 }} />
+                                    <DoubleText text1={"IBAN"} text2={iban} textstyle={{ textAlign: "center" }} containerstyle={{ backgroundColor: "rgba(152,148,148,0.63)", padding: 6 }} />
+                                    <DoubleText text1={"Swift Code"} text2={swiftCode} textstyle={{ textAlign: "center" }} containerstyle={{ padding: 6 }} />
+                                    <DoubleText text1={"CIF Number"} text2={cifNumber} textstyle={{ textAlign: "center" }} containerstyle={{ backgroundColor: "rgba(152,148,148,0.63)", padding: 6 }} />
+                                    <DoubleText text1={"Branch Name"} text2={branchName} textstyle={{ textAlign: "center" }} containerstyle={{ padding: 6 }} />
+                                    <DoubleText text1={"Branch Code"} text2={branchCode} textstyle={{ textAlign: "center" }} containerstyle={{ backgroundColor: "rgba(152,148,148,0.63)", padding: 6 }} />
+                                        <FormInput
+                                            placeholder={"Details"}
+                                            placeholderTextColor={Colors.lightgray}
+                                            value={detail}
+                                            color={Colors.primary}
+                                            containerStyle={{ margin: 15,borderWidth:1 }}
+                                            onChangeText={(text) => { setDetail(text) }}
+                                        />
                                     <Btn containerStyle={{ flex: 1, backgroundColor: Colors.primary, marginVertical: 8, padding: 10, borderRadius: 5,marginHorizontal:20 }} text={"Choose File"} text_style={{ color: Colors.white }} />
                                     <Notes/>
                                     <Btn text_style={{ color: Colors.white }} text={"Submit"} containerStyle={{ width: 100, borderRadius: 5, padding: 10, backgroundColor: Colors.primary, alignSelf: "center", bottom: 20, marginTop: 30, }} />
                                     </View>
-                                    :selectedValue == "USDT"?
+                                    :selectedValue == "usdt"?
                                         <View>
                                             <Text style={{top:25,width:58,padding:8,backgroundColor:"#2c754a",color:Colors.white,textAlign:"center",borderRadius:6}}>TRC20</Text>
                                             <Image source={require("../../../Assets/Qr.png")} style={{width: '50%',height:150,alignSelf:"center"}}/>
@@ -158,9 +200,12 @@ const Shop = () => {
                                             <Btn text_style={{ color: Colors.white }} text={"Submit"} containerStyle={{ width: 100, borderRadius: 5, padding: 10, backgroundColor: Colors.primary, alignSelf: "center", marginTop: 12, }} />
                                             <Text></Text>
                                         </View>
-                                        :selectedValue == "Wallet"?
+                                        :selectedValue == "wallet"?
+                                            <View>
+                                            <Loader animating={isloading}/>
                                             <Alert value={"Wallet"}/>
-                                            :selectedValue == "Vreit"?
+                                            </View>
+                                            :selectedValue == "vreit"?
                                                 <Alert value={"Verit Wallet"}/>
                                                 : null
                                 }

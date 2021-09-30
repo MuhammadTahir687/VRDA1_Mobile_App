@@ -2,27 +2,33 @@ import moment from 'moment';
 import Loader from "../../utilis/Loader";
 import Colors from '../../Style_Sheet/Colors';
 import React, {useEffect, useState} from 'react';
-import * as Progress from 'react-native-progress';
 import {getDashboard, } from "../../utilis/Api/Api_controller";
-import {get_data, save_data} from "../../utilis/AsyncStorage/Controller";
 import { ExpandableCalendar, Timeline, CalendarProvider } from 'react-native-calendars';
 import {SafeAreaView, ScrollView, Text, ImageBackground, View, FlatList, Dimensions, Platform,} from 'react-native';
 import Toast from "react-native-simple-toast";
+import PBar from "../../Zextra/Progressbar";
 
 const deviceHeight = Dimensions.get('screen').height;
 const deviceWidth = Dimensions.get('screen').width;
 const Dashboard = () => {
     const [isloading,setLoading]=useState(false);
     const [currentDate,setCurrentDate]=useState("");
-    const [leftBV,setLeftBV]=useState("");
-    const [rightBV,setRightBV]=useState("");
-    const [leftCF,setLeftCF]=useState("");
-    const [rightCF,setRightCF]=useState("");
-    const [VREITPoint,setVREITPoint]=useState("");
-    const [VREITBonus,setVREITBonus]=useState("");
-    const [weeklyReserve,setWeeklyReserve]=useState("");
-    const [weeklyEarned,setWeeklyEarned]=useState("");
-    const [totalEarned,setTotalEarned]=useState("");
+    const [leftBV,setLeftBV]=useState(0);
+    const [rightBV,setRightBV]=useState(0);
+    const [leftCF,setLeftCF]=useState(0);
+    const [rightCF,setRightCF]=useState(0);
+    const [VREITPoint,setVREITPoint]=useState(0);
+    const [VREITBonus,setVREITBonus]=useState(0);
+    const [weeklyReserve,setWeeklyReserve]=useState(0);
+    const [weeklyEarned,setWeeklyEarned]=useState(0);
+    const [totalEarned,setTotalEarned]=useState(0);
+    const [Progress,setProgress]=useState(0);
+    const [achievedLeft,setAchievedLeft]=useState(0);
+    const [achievedRight,setAchievedRight]=useState(0);
+    const [remainingLeft,setRemainingLeft]=useState(0);
+    const [requiredLeft,setRequiredLeft]=useState(0);
+    const [remainingRight,setRemainingRight]=useState(0);
+    const [requiredRight,setRequiredRight]=useState(0);
     const getCurrentDate=()=>{
         const date = new Date().getDate();
         const month = new Date().getMonth() + 1;
@@ -106,16 +112,14 @@ const Dashboard = () => {
         setLoading(true)
         let response = await getDashboard()
         if (response !== "Error") {
-            if (response.data.status == true) {
-                setLeftBV(response.data.data.lbv);
-                setRightBV(response.data.data.rbv);
-                setLeftCF(response.data.data.lcf);
-                setRightCF(response.data.data.rcf);
-                setVREITPoint(response.data.data.earned_sto);
-                // setVREITBonus(response.data.data.);
-                setWeeklyReserve(response.data.data.reserve);
-                setWeeklyEarned(response.data.data.earning);
-                setTotalEarned(response.data.data.earned);
+            if (response.data.status === true) {
+                var res=response.data.data;
+                var resL=response.data.data.next_achievement.next_left_rank;
+                var resR=response.data.data.next_achievement.next_right_rank;
+                setLeftBV(res.lbv); setRightBV(res.rbv); setLeftCF(res.lcf); setRightCF(res.rcf); setVREITPoint(res.earned_sto);
+                setVREITBonus(res.reward); setWeeklyReserve(res.reserve); setWeeklyEarned(res.earning);setTotalEarned(res.earned);
+                setAchievedLeft(resL.achieved);setRemainingLeft(resL.remaining_points);setRequiredLeft(resL.required_points)
+                setAchievedRight(resR.achieved);setRemainingRight(resR.remaining_points);setRequiredRight(resR.required_points)
                 setLoading(false);
             }else {
                 Toast.show("Something Went Wrong !", Toast.LONG);
@@ -146,34 +150,8 @@ const Dashboard = () => {
                                 </ImageBackground>
                             }/>
                         <Text style={{color: Colors.primary, fontWeight: 'bold', marginVertical: 10, marginTop: 45}}>For the Rank Achievement</Text>
-                        <View style={{backgroundColor:Colors.white,borderRadius:15,elevation:6,shadowOpacity:0.1,shadowOffset:({height:0,width:0}),padding:25,marginVertical:10}}>
-                            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                                <Text>Achieved Left BV </Text>
-                                <Text style={{fontSize: 10}}>0.0%</Text>
-                            </View>
-                            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                                <Progress.Bar width={deviceWidth / 1.4} progress={0.8} color={Colors.primary} backgroundColor={Colors.secondary} borderColor={Colors.secondary} marginVertical={5}/>
-                                <Text style={{color: Colors.primary, fontWeight: 'bold', fontSize: 16}}> 87%</Text>
-                            </View>
-                            <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-                                <Text style={{fontSize: 10}}>Remaining Points 2.0</Text>
-                                <Text style={{fontSize: 10}}>Require Left Points 2.0 </Text>
-                            </View>
-                        </View>
-                        <View style={{backgroundColor: Colors.white,borderRadius: 15,elevation: 6,shadowOpacity: 0.1,shadowOffset: ({height: 0, width: 0}),padding: 25,marginVertical: 10}}>
-                            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                                <Text>Achieved Left BV </Text>
-                                <Text style={{fontSize: 10}}>0.0%</Text>
-                            </View>
-                            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                                <Progress.Bar width={deviceWidth / 1.4} progress={0.1} color={Colors.primary} backgroundColor={Colors.secondary} borderColor={Colors.secondary} marginVertical={5}/>
-                                <Text style={{color: Colors.primary, fontWeight: 'bold', fontSize: 16}}> 37%</Text>
-                            </View>
-                            <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-                                <Text style={{fontSize: 10}}>Remaining Points 2.0</Text>
-                                <Text style={{fontSize: 10}}>Require Left Points 2.0 </Text>
-                            </View>
-                        </View>
+                        <PBar heading={"Achieved Left BV "} value={parseFloat(achievedLeft).toFixed(0)/100} progressValue={parseFloat(achievedLeft).toFixed(1)} Remaining={parseFloat(remainingLeft).toFixed(1)} Require={"Left Points "+parseFloat(requiredLeft).toFixed(1)}/>
+                        <PBar heading={"Achieved Right BV "} value={parseFloat(achievedRight).toFixed(0)/100} progressValue={parseFloat(achievedRight).toFixed(1)} Remaining={parseFloat(remainingRight).toFixed(1)} Require={"Right Points "+parseFloat(requiredRight).toFixed(1)}/>
                         <Text style={{color: Colors.primary, fontWeight: 'bold', marginVertical: 10, marginTop: 45}}>VRDA1 Events</Text>
                         <View>
                             <CalendarProvider
