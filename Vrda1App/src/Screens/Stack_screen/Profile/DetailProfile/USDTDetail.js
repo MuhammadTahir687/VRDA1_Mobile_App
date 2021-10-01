@@ -1,16 +1,17 @@
 import React from "react";
-import {Text, View, SafeAreaView, ToastAndroid, Image, TouchableOpacity,ImageBackground} from "react-native";
+import {Text, View, SafeAreaView, Image, TouchableOpacity,ImageBackground} from "react-native";
 import Clipboard from "@react-native-community/clipboard";
 import Colors from "../../../../Style_Sheet/Colors";
 import DoubleText from "../../../../utilis/DoubleText";
 import Entypo from "react-native-vector-icons/Entypo";
 import ProfileView from "../../../../utilis/ProfileView";
+import Toast from "react-native-simple-toast";
 
 const USDTDetail = ({route,navigation}) => {
     var name=route.params.tittle;
     const copyToClipboard = () => {
         Clipboard.setString("tjgjgjgjgjgjg");
-        ToastAndroid.showWithGravityAndOffset("Text Copied", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
+        Toast.show("Text Copied !", Toast.LONG);
     };
     return (
         <SafeAreaView style={{flex:1}}>

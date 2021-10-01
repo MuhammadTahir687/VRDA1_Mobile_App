@@ -126,7 +126,6 @@ const Dashboard = () => {
                 setLoading(false);
             }
         }else {
-            alert(JSON.stringify(response))
             Toast.show("Network Error: There is something wrong!", Toast.LONG);
             setLoading(false);
         }

@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
-import {View, Text, FlatList, SafeAreaView, TouchableOpacity, ScrollView, TextInput, Image} from "react-native";
+import {View, Text, FlatList, SafeAreaView, TouchableOpacity, ScrollView, Image,Platform} from "react-native";
 import Colors from "../../../Style_Sheet/Colors";
 import LinearGradient from 'react-native-linear-gradient';
 import RBSheet from "react-native-raw-bottom-sheet";
@@ -9,16 +9,17 @@ import { Btn } from "../../../utilis/Btn";
 import DoubleText from "../../../utilis/DoubleText";
 import {getShop, sendShopPayment} from "../../../utilis/Api/Api_controller";
 import Toast from "react-native-simple-toast";
-import {Picker} from "@react-native-picker/picker";
 import Notes from "../../../Zextra/Note";
 import Alert from "../../../Zextra/Alert";
 import Loader from "../../../utilis/Loader";
 import {FormInput} from "../../../utilis/Text_input";
+import Dropdown from "../../../utilis/Picker/Picker";
+import Clipboard from "@react-native-community/clipboard";
 
 const Shop = () => {
     const refRBSheet = useRef();
     const [data,setData]=useState([]);
-    const [iban,setIban]=useState("");
+    const [iban,setIban]=useState(0);
     const [ids, setIds] = useState({});
     const [index, setIndex] = useState(0);
     const [errors, setErrors] = useState("");
@@ -32,11 +33,22 @@ const Shop = () => {
     const [branchCode,setBranchCode]=useState("");
     const [accountName,setAccountName]=useState("");
     const [accountNumber,setAccountNumber]=useState("");
-    const [selectedValue, setSelectedValue] = useState("Please Select");
+    const [selectedValue, setSelectedValue] = useState("");
+    const [imageUri,setImageUri]=useState("");
+    const [usdtAddress,setUsdtAddress]=useState("");
+    const [walletmsg,setwalletmsg]=useState("");
+    const []=useState("");
+
     const buttons = [{ name: 'Package Detail', id: 0 }, { name: 'Proceed Order', id: 1 }]
 
-    useEffect(async ()=>{await getShopData();await gettingDetails();},[selectedValue]);
+    useEffect(async ()=>{await getShopData();},[]);
 
+    const picker=[
+        { label: 'Bank', value: 'bank', color:Colors.primary },
+        { label: 'USDT', value: 'usdt',color:Colors.primary },
+        { label: 'Wallet', value: 'wallet',color:Colors.primary },
+        { label: 'Vreit', value: 'vreit',color:Colors.primary },
+    ];
     const getShopData=async ()=>{
         setLoading(true)
         let response = await getShop()
@@ -49,28 +61,42 @@ const Shop = () => {
                 setLoading(false);
             }
         }else {
-            alert(JSON.stringify(response))
+            // alert(JSON.stringify(response))
             Toast.show("Network Error: There is something wrong!", Toast.LONG);
             setLoading(false);
         }
     }
 
-    const gettingDetails=async ()=>{
+    const gettingDetails=async ({text})=>{
         setLoading(true)
-        let body = {package_id: packageID, value: selectedValue,};
+        let body = {package_id: packageID, value: text,};
         let response = await sendShopPayment(body);
         if (response !== "Error") {
             if (response.data.status === true) {
-                setIban(response.data.data.bank_form.iban);
-                setBankName(response.data.data.bank_form.bank_name);
-                setCifNumber(response.data.data.bank_form.cif_number);
-                setSwiftCode(response.data.data.bank_form.swift_code);
-                setBranchName(response.data.data.bank_form.branch_name);
-                setBranchCode(response.data.data.bank_form.branch_code);
-                setAccountName(response.data.data.bank_form.account_name);
-                setAccountNumber(response.data.data.bank_form.account_number);
-                setLoading(false);
-            }else {
+                var res=response.data.data;
+               if (text=="bank") {
+                   alert("bank")
+                   setIban(res.bank_form.iban); setBankName(res.bank_form.bank_name);
+                   setCifNumber(res.bank_form.cif_number); setSwiftCode(res.bank_form.swift_code);
+                   setBranchName(res.bank_form.branch_name); setBranchCode(res.bank_form.branch_code);
+                   setAccountName(res.bank_form.account_name); setAccountNumber(res.bank_form.account_number);
+                   setLoading(false);
+               }else if (text == "usdt") {
+                   alert("usdt")
+                   setImageUri(res.usdt_form.image);
+                   setUsdtAddress(res.usdt_form.code);
+                   setLoading(false);
+               }else if (text == "wallet") {
+                   alert("wallet")
+                   setwalletmsg(res.wallet_form.message);
+                   setLoading(false);
+               }else if (text == "vreit") {
+                   alert("vreit")
+                   setLoading(false);
+               } else {
+                   setLoading(false);
+               }
+            } else {
                 Toast.show("Something Went Wrong !", Toast.LONG);
                 setLoading(false);
             }
@@ -96,6 +122,10 @@ const Shop = () => {
             </TouchableOpacity>
         </View>
     )
+    const copyToClipboard = () => {
+        Clipboard.setString("tjgjgjgjgjgjg");
+        Toast.show("Text Copied !", Toast.LONG);
+    };
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <Text style={{ textAlign: "center", fontSize: 18, fontWeight: "bold", color: Colors.secondary }}>Buy Package</Text>
@@ -142,19 +172,8 @@ const Shop = () => {
                         <ScrollView showsVerticalScrollIndicator={true}>
                             <TouchableOpacity activeOpacity={1}>
                                 <Text style={{ fontSize: 14, fontWeight: "bold" }}>Proceed With</Text>
-                                <View style={{ borderBottomWidth: 1, borderColor: Colors.secondary }}>
-                                    <Picker
-                                        mode={"dropdown"}
-                                        selectedValue={selectedValue}
-                                        style={{ height: 50, width:"100%"}}
-                                        onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
-                                    >
-                                        <Picker.Item label="Bank" value={"bank"} testID={"1"}/>
-                                        <Picker.Item label="USDT" value={"usdt"} testID={"2"} />
-                                        <Picker.Item label="Wallet" value={"wallet"} testID={"3"} />
-                                        <Picker.Item label="Vreit" value={"vreit"} testID={"4"} />
-                                        <Picker.Item label="Please Select" value={"Please Select"} testID={"4"} color={"rgba(152,148,148,0.63)"} />
-                                    </Picker>
+                                <View style={{ borderBottomWidth: 1, borderColor: Colors.secondary,paddingTop:Platform.OS === 'ios' ? 25 : null,marginBottom:Platform.OS === 'ios' ? 5 : null,paddingHorizontal:Platform.OS === 'ios' ? 15 : null }}>
+                                    <Dropdown onValueChange={(text)=>{gettingDetails({text}),setSelectedValue(text)}} PickerData={picker} onDonePress={(text)=>gettingDetails(text)}/>
                                 </View>
                                 {selectedValue == "bank"?
                                     <View>
@@ -165,25 +184,25 @@ const Shop = () => {
                                     <DoubleText text1={"Swift Code"} text2={swiftCode} textstyle={{ textAlign: "center" }} containerstyle={{ padding: 6 }} />
                                     <DoubleText text1={"CIF Number"} text2={cifNumber} textstyle={{ textAlign: "center" }} containerstyle={{ backgroundColor: "rgba(152,148,148,0.63)", padding: 6 }} />
                                     <DoubleText text1={"Branch Name"} text2={branchName} textstyle={{ textAlign: "center" }} containerstyle={{ padding: 6 }} />
-                                    <DoubleText text1={"Branch Code"} text2={branchCode} textstyle={{ textAlign: "center" }} containerstyle={{ backgroundColor: "rgba(152,148,148,0.63)", padding: 6 }} />
+                                        <DoubleText text1={"Branch Code"} text2={branchCode} textstyle={{ textAlign: "center" }} containerstyle={{ backgroundColor: "rgba(152,148,148,0.63)", padding: 6 }} />
+                                        <Btn image={require("../../../Assets/picture.png")} img_style={{height:20,width:20,marginHorizontal:5}} containerStyle={{flexDirection:"row", flex: 1, backgroundColor: Colors.primary, marginVertical: 8, padding: 10, borderRadius: 5,marginHorizontal:20,justifyContent:"center",justifyItems:"center" }} text={"Choose File"} text_style={{ color: Colors.white,textAlign:"center" }} />
+                                        <Notes/>
                                         <FormInput
-                                            placeholder={"Details"}
+                                            placeholder={"User Notes"}
                                             placeholderTextColor={Colors.lightgray}
                                             value={detail}
                                             color={Colors.primary}
                                             containerStyle={{ margin: 15,borderWidth:1 }}
-                                            onChangeText={(text) => { setDetail(text) }}
+                                            onChangeText={(text) => { setDetail(text);setErrors("") }}
                                         />
-                                    <Btn containerStyle={{ flex: 1, backgroundColor: Colors.primary, marginVertical: 8, padding: 10, borderRadius: 5,marginHorizontal:20 }} text={"Choose File"} text_style={{ color: Colors.white }} />
-                                    <Notes/>
                                     <Btn text_style={{ color: Colors.white }} text={"Submit"} containerStyle={{ width: 100, borderRadius: 5, padding: 10, backgroundColor: Colors.primary, alignSelf: "center", bottom: 20, marginTop: 30, }} />
                                     </View>
                                     :selectedValue == "usdt"?
                                         <View>
                                             <Text style={{top:25,width:58,padding:8,backgroundColor:"#2c754a",color:Colors.white,textAlign:"center",borderRadius:6}}>TRC20</Text>
-                                            <Image source={require("../../../Assets/Qr.png")} style={{width: '50%',height:150,alignSelf:"center"}}/>
+                                            <Image source={{uri:imageUri }} style={{width: 160,height:155,alignSelf:"center"}}/>
                                         <TouchableOpacity style={{alignItems: 'center', justifyContent: 'center', }} onPress={() => { copyToClipboard() }}>
-                                            <Text>0xWjsS354dfd545s3afa54wf</Text>
+                                            <Text>{usdtAddress}</Text>
                                             <View style={{flexDirection: 'row'}}>
                                                 <Entypo color={Colors.primary}  size={20} name={"copy"}/>
                                                 <Text style={{ color: Colors.primary, }}> Tap to Copy!</Text>
@@ -202,8 +221,9 @@ const Shop = () => {
                                         </View>
                                         :selectedValue == "wallet"?
                                             <View>
-                                            <Loader animating={isloading}/>
-                                            <Alert value={"Wallet"}/>
+                                                <Text style={{margin:10}}>{walletmsg}</Text>
+                                                <Btn text_style={{ color: Colors.white }} text={"Submit"} containerStyle={{ width: 100, borderRadius: 5, padding: 10, backgroundColor: Colors.primary, alignSelf: "center", marginTop: 12, }} />
+                                                {/*<Alert value={"Wallet"}/>*/}
                                             </View>
                                             :selectedValue == "vreit"?
                                                 <Alert value={"Verit Wallet"}/>
