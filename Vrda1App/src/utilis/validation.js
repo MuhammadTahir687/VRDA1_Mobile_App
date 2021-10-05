@@ -28,3 +28,19 @@ export const loginValidation = (email,password) => {
         return { valid: true, errors: null }
     }
 }
+export const ShopValidation = (detail,fileName) => {
+    if (fileName === ''){
+        return {
+            valid: false,
+            errors: fileName === '' ? "Please Add Image First" : null
+        }
+    }else if (detail === '') {
+        return {
+            valid: false,
+            errors: detail === '' ? "Please Enter Notes Details" : null
+        }
+    }
+    else{
+        return { valid: true, errors: null }
+    }
+}

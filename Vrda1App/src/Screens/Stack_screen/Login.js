@@ -76,7 +76,7 @@ const Login = ({navigation}) => {
         secureTextEntry={secure}
         onChangeText={(text) => { setErrors(""), setPassword(text) }}
         ForgetPassword={() => { alert("adadadada") }}
-      error={errors === "Please Enter Your Password" ? "Please Enter Your Password" : null ||errors === "Password must should contain 6 digits"?"Password must should contain 6 digits":null}
+        error={errors === "Please Enter Your Password" ? "Please Enter Your Password" : null ||errors === "Password must should contain 6 digits"?"Password must should contain 6 digits":null}
       />
       </ScrollView>
       <Btn text={"Login"} onPress={() =>{login()}}  containerStyle={{ backgroundColor: Colors.white, padding: 15, borderRadius: 25, marginTop: 15,marginHorizontal:50 }}/>

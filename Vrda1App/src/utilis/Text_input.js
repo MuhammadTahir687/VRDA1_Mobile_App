@@ -23,13 +23,14 @@ class FormInput extends Component {
         forget: PropTypes.bool,
         iconName_s: PropTypes.string,
         color:PropTypes.any,
+        styleBorder:PropTypes.any,
     }
 
     render() {
         const { title, error, iconName, style, containerStyle, icon_color, onPress_icon, ForgetPassword, forget,color } = this.props;
         return (
             <View style={[this.props.containerStyle]} >
-                <View style={Theme.text_input_container}>
+                <View style={[Theme.text_input_container,this.props.styleBorder]}>
                     <AntDesign color={this.props.icon_color} size={18} name={this.props.iconName_s} />
                     <TextInput
                         {...this.props}

@@ -7,7 +7,7 @@ import Entypo from "react-native-vector-icons/Entypo";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { Btn } from "../../../utilis/Btn";
 import DoubleText from "../../../utilis/DoubleText";
-import {getShop, sendShopPayment} from "../../../utilis/Api/Api_controller";
+import { getShop, sendShopPayment, sendShopSubmit } from "../../../utilis/Api/Api_controller";
 import Toast from "react-native-simple-toast";
 import Notes from "../../../Zextra/Note";
 import Alert from "../../../Zextra/Alert";
@@ -15,11 +15,13 @@ import Loader from "../../../utilis/Loader";
 import {FormInput} from "../../../utilis/Text_input";
 import Dropdown from "../../../utilis/Picker/Picker";
 import Clipboard from "@react-native-community/clipboard";
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { ShopValidation } from "../../../utilis/validation";
 
 const Shop = () => {
     const refRBSheet = useRef();
     const [data,setData]=useState([]);
-    const [iban,setIban]=useState(0);
+    const [iban,setIban]=useState("");
     const [ids, setIds] = useState({});
     const [index, setIndex] = useState(0);
     const [errors, setErrors] = useState("");
@@ -37,18 +39,23 @@ const Shop = () => {
     const [imageUri,setImageUri]=useState("");
     const [usdtAddress,setUsdtAddress]=useState("");
     const [walletmsg,setwalletmsg]=useState("");
+    const [vreitMsg,setVreitMsg]=useState("");
+    const [response, setResponse] = useState(null);
+    const [imageSourceData, setImageSourceData] = useState(null);
+    const [fileName,setFileName]=useState("");
     const []=useState("");
 
-    const buttons = [{ name: 'Package Detail', id: 0 }, { name: 'Proceed Order', id: 1 }]
+    const buttons = [{ name: 'Package Detail', id: 0 }, { name: 'Proceed Order', id: 1 }] //false
 
     useEffect(async ()=>{await getShopData();},[]);
 
     const picker=[
-        { label: 'Bank', value: 'bank', color:Colors.primary },
+      { label: 'Bank', value: 'bank', color:Colors.primary },
         { label: 'USDT', value: 'usdt',color:Colors.primary },
         { label: 'Wallet', value: 'wallet',color:Colors.primary },
         { label: 'Vreit', value: 'vreit',color:Colors.primary },
     ];
+
     const getShopData=async ()=>{
         setLoading(true)
         let response = await getShop()
@@ -75,34 +82,85 @@ const Shop = () => {
             if (response.data.status === true) {
                 var res=response.data.data;
                if (text=="bank") {
-                   alert("bank")
                    setIban(res.bank_form.iban); setBankName(res.bank_form.bank_name);
                    setCifNumber(res.bank_form.cif_number); setSwiftCode(res.bank_form.swift_code);
                    setBranchName(res.bank_form.branch_name); setBranchCode(res.bank_form.branch_code);
                    setAccountName(res.bank_form.account_name); setAccountNumber(res.bank_form.account_number);
                    setLoading(false);
                }else if (text == "usdt") {
-                   alert("usdt")
                    setImageUri(res.usdt_form.image);
                    setUsdtAddress(res.usdt_form.code);
                    setLoading(false);
                }else if (text == "wallet") {
-                   alert("wallet")
                    setwalletmsg(res.wallet_form.message);
                    setLoading(false);
                }else if (text == "vreit") {
-                   alert("vreit")
+                   setVreitMsg("");
                    setLoading(false);
                } else {
                    setLoading(false);
                }
             } else {
-                Toast.show("Something Went Wrong !", Toast.LONG);
                 setLoading(false);
             }
         }else {
             Toast.show("Network Error: There is something wrong!", Toast.LONG);
             setLoading(false);
+        }
+    }
+    const selectPhoto_gallery = () => {
+        const options = {
+            mediaType: 'photo',
+            quality: 0.2
+        };
+        launchImageLibrary(options, response => {
+            if (response.didCancel) {
+                //cancel
+            } else if (response.error) {
+                Toast.show("Something Went Wrong", Toast.LONG);
+            }
+            else {
+                if (response.assets[0].fileSize <= "200000") {
+                    let source = { uri: response.assets[0].uri };
+                    var name = (response.assets[0].fileName).slice(25);
+                    setFileName(name);
+                    setResponse(response);
+                    setImageSourceData(source);
+                    alert(JSON.stringify(name));
+                    Toast.show("Succeed", Toast.LONG);
+                } else {
+                    Toast.show("File size is exceeded from 8 MB", Toast.LONG);
+                }
+            }
+        });
+    };
+    const Submit=async () => {
+        let validate = ShopValidation(detail,fileName)
+        if (validate.valid === false) {
+            setErrors(validate.errors)
+        } else {
+            setErrors("")
+            console.log(imageSourceData.uri);
+            alert(JSON.stringify(imageSourceData.uri));
+            let body = {package_id: ids.id, proceed_with: selectedValue ,files:imageSourceData.uri};
+            // setLoading(true)
+            // let response = await sendShopSubmit(body)
+            // alert(JSON.stringify(response.data))
+            // if (response !== "Error") {
+                // if (response.data.status == true) {
+            //         let Bearer = response.data.access_token;
+            //         await save_data("ACCOUNT_DATA", Bearer)
+            //         setLoading(false);
+            //         navigation.replace("Drawers");
+            //     }else {
+            //         Toast.show("Invalid Email or Password !", Toast.LONG);
+            //         setLoading(false);
+            //     }
+            // }else {
+            //     alert(JSON.stringify(response))
+            //     Toast.show("Network Error: There is something wrong!", Toast.LONG);
+            //     setLoading(false);
+            // }
         }
     }
     const renderItem = ({ item, index }) => (
@@ -173,10 +231,11 @@ const Shop = () => {
                             <TouchableOpacity activeOpacity={1}>
                                 <Text style={{ fontSize: 14, fontWeight: "bold" }}>Proceed With</Text>
                                 <View style={{ borderBottomWidth: 1, borderColor: Colors.secondary,paddingTop:Platform.OS === 'ios' ? 25 : null,marginBottom:Platform.OS === 'ios' ? 5 : null,paddingHorizontal:Platform.OS === 'ios' ? 15 : null }}>
-                                    <Dropdown onValueChange={(text)=>{gettingDetails({text}),setSelectedValue(text)}} PickerData={picker} onDonePress={(text)=>gettingDetails(text)}/>
+                                    <Dropdown onValueChange={(text)=>{gettingDetails({text}),setSelectedValue(text)}} PickerData={picker}/>
                                 </View>
                                 {selectedValue == "bank"?
                                     <View>
+                                    <Loader animating={isloading}/>
                                     <DoubleText text1={"Account Name"} text2={accountName} textstyle={{ textAlign: "center" }} containerstyle={{ padding: 6 }} />
                                     <DoubleText text1={"Bank Name"} text2={bankName} textstyle={{ textAlign: "center" }} containerstyle={{ backgroundColor: "rgba(152,148,148,0.63)", padding: 6 }} />
                                     <DoubleText text1={"Account Number"} text2={accountNumber} textstyle={{ textAlign: "center" }} containerstyle={{ padding: 6 }} />
@@ -184,21 +243,28 @@ const Shop = () => {
                                     <DoubleText text1={"Swift Code"} text2={swiftCode} textstyle={{ textAlign: "center" }} containerstyle={{ padding: 6 }} />
                                     <DoubleText text1={"CIF Number"} text2={cifNumber} textstyle={{ textAlign: "center" }} containerstyle={{ backgroundColor: "rgba(152,148,148,0.63)", padding: 6 }} />
                                     <DoubleText text1={"Branch Name"} text2={branchName} textstyle={{ textAlign: "center" }} containerstyle={{ padding: 6 }} />
-                                        <DoubleText text1={"Branch Code"} text2={branchCode} textstyle={{ textAlign: "center" }} containerstyle={{ backgroundColor: "rgba(152,148,148,0.63)", padding: 6 }} />
-                                        <Btn image={require("../../../Assets/picture.png")} img_style={{height:20,width:20,marginHorizontal:5}} containerStyle={{flexDirection:"row", flex: 1, backgroundColor: Colors.primary, marginVertical: 8, padding: 10, borderRadius: 5,marginHorizontal:20,justifyContent:"center",justifyItems:"center" }} text={"Choose File"} text_style={{ color: Colors.white,textAlign:"center" }} />
+                                    <DoubleText text1={"Branch Code"} text2={branchCode} textstyle={{ textAlign: "center" }} containerstyle={{ backgroundColor: "rgba(152,148,148,0.63)", padding: 6 }} />
+                                    <Btn onPress={selectPhoto_gallery.bind(this)} image={require("../../../Assets/picture.png")} img_style={{height:20,width:20,marginHorizontal:5}} containerStyle={{flexDirection:"row", flex: 1, backgroundColor: Colors.primary, marginVertical: 8, padding: 10, borderRadius: 5,marginHorizontal:20,justifyContent:"center",justifyItems:"center" }} text={"Choose File"} text_style={{ color: Colors.white,textAlign:"center" }} />
+                                        {errors ==="Please Add Image First"?
+                                          <Text style={{textAlign:"center",fontSize:11,fontWeight:"bold",color:"red"}}>{!fileName?"Please Add Image First":null}</Text>
+                                          :<Text style={{textAlign:"center",fontSize:11,fontWeight:"bold"}}>{fileName?fileName:null}</Text>
+                                        }
                                         <Notes/>
                                         <FormInput
                                             placeholder={"User Notes"}
                                             placeholderTextColor={Colors.lightgray}
                                             value={detail}
                                             color={Colors.primary}
-                                            containerStyle={{ margin: 15,borderWidth:1 }}
-                                            onChangeText={(text) => { setDetail(text);setErrors("") }}
+                                            containerStyle={{ margin: 15 }}
+                                            styleBorder={{borderWidth:1,borderColor:Colors.primary}}
+                                            onChangeText={(text) => { setDetail(text),setErrors("") }}
+                                            error={errors === "Please Enter Notes Details" ? "Please Enter Notes Details" : null }
                                         />
-                                    <Btn text_style={{ color: Colors.white }} text={"Submit"} containerStyle={{ width: 100, borderRadius: 5, padding: 10, backgroundColor: Colors.primary, alignSelf: "center", bottom: 20, marginTop: 30, }} />
+                                    <Btn onPress={()=>{Submit()}} text_style={{ color: Colors.white }} text={"Submit"} containerStyle={{ width: 100, borderRadius: 5, padding: 10, backgroundColor: Colors.primary, alignSelf: "center", bottom: 20, marginTop: 30, }} />
                                     </View>
                                     :selectedValue == "usdt"?
                                         <View>
+                                            <Loader animating={isloading}/>
                                             <Text style={{top:25,width:58,padding:8,backgroundColor:"#2c754a",color:Colors.white,textAlign:"center",borderRadius:6}}>TRC20</Text>
                                             <Image source={{uri:imageUri }} style={{width: 160,height:155,alignSelf:"center"}}/>
                                         <TouchableOpacity style={{alignItems: 'center', justifyContent: 'center', }} onPress={() => { copyToClipboard() }}>
@@ -221,9 +287,14 @@ const Shop = () => {
                                         </View>
                                         :selectedValue == "wallet"?
                                             <View>
-                                                <Text style={{margin:10}}>{walletmsg}</Text>
-                                                <Btn text_style={{ color: Colors.white }} text={"Submit"} containerStyle={{ width: 100, borderRadius: 5, padding: 10, backgroundColor: Colors.primary, alignSelf: "center", marginTop: 12, }} />
-                                                {/*<Alert value={"Wallet"}/>*/}
+                                                <Loader animating={isloading}/>
+                                                {walletmsg ?
+                                                  <View>
+                                                  <Text style={{ margin: 10 }}>{walletmsg}</Text>
+                                                  <Btn text_style={{ color: Colors.white }} text={"Buy"} containerStyle={{ width: 100, borderRadius: 5, padding: 10, backgroundColor: Colors.primary, alignSelf: "center", marginTop: 12, }} />
+                                                  </View>
+                                                    :<Alert value={"Wallet"}/>
+                                                }
                                             </View>
                                             :selectedValue == "vreit"?
                                                 <Alert value={"Verit Wallet"}/>
