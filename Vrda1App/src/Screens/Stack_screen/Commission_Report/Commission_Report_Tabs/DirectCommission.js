@@ -1,65 +1,95 @@
-import React, {useState} from "react";
-import {Text, View, SafeAreaView, TouchableOpacity, FlatList} from "react-native";
+import React, {useEffect, useState} from "react";
+import {Text, View, SafeAreaView, TouchableOpacity, FlatList, RefreshControl} from "react-native";
 import Colors from "../../../../Style_Sheet/Colors";
-import Dialog from "react-native-dialog";
 import EvilIcons from "react-native-vector-icons/EvilIcons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import DoubleText from "../../../../utilis/DoubleText";
+import {getcommissiondirect} from "../../../../utilis/Api/Api_controller";
+import Toast from "react-native-simple-toast";
+import Dialogs from "../../../../utilis/Dialog";
+import Loader from "../../../../utilis/Loader";
 
 const DirectCommission = () => {
     const [visible, setVisible] = useState(false);
-    const Data=[
-        {
-            id: '1',
-            title: 'C2C Vreit Points Received',
-        },
-        {
-            id: '2',
-            title: 'UniLevel Commission',
-        },
-        {
-            id: '3',
-            title: 'Weekly Commission',
-        },
-    ]
+    const [isloading,setLoading]=useState(false);
+    const [refreshing,setRefreshing]=useState(false);
+    const [apiData,setApiData]=useState("");
+    const [res,setRes]=useState("");
+    const [receiver,setReceiver]=useState("");
+    const [pin,setPin]=useState("");
+
+    useEffect(async ()=>{
+        await getData();
+    },[])
+
+    const getData=async ()=>{
+        setLoading(true)
+        let response = await getcommissiondirect();
+        if (response !== "Error") {
+            if (response.data.status === true) {
+                setApiData(response.data.data);
+                setRefreshing(!refreshing)
+                setLoading(false);
+            }else {
+                Toast.show("Something Went Wrong !", Toast.LONG);
+                setLoading(false);
+            }
+        }else {
+            Toast.show("Network Error: There is something wrong!", Toast.LONG);
+            setLoading(false);
+        }
+    }
+    const onRefresh = async () => {
+        await getData();
+    }
     const renderItem=({item})=>(
-        <TouchableOpacity onPress={()=>{setVisible(true)}} style={{height:105,width:"46%", backgroundColor: Colors.secondary, borderColor: Colors.white, borderRadius: 10, borderBottomWidth: 2, padding: 10,margin:"2%" }}>
-            <Text style={{ fontSize: 14, color: Colors.white }}>Ref.Code ({item.id})</Text>
-            <Text style={{ fontSize: 14, color: Colors.white }}>Amount ({item.id})</Text>
-            <Text style={{ fontSize: 14, color: Colors.white }}>Status ({item.id}%)</Text>
-            <Text style={{ fontSize: 13, color: Colors.lightgray, flex: 1, }}>Activity Date: {item.id}</Text>
-            <Dialog.Container visible={visible}>
-                <Dialog.Title>Description:</Dialog.Title>
-                <Text style={{fontSize:13,textAlign:"center",paddingHorizontal:10 }}>BV:100 - Commission on: 100 - Direct Bonus without JS:10%</Text>
-                <View style={{flexDirection:"row",justifyContent:"space-between",marginHorizontal:12}}>
-                    <TouchableOpacity style={{backgroundColor: Colors.primary,borderRadius: 25,flexDirection:"row",padding:7,justifyContent:"center",width:70, }}>
-                        <EvilIcons color={Colors.white}  size={22} name={"user"}/>
-                        <Text style={{color:Colors.white,fontSize:12}}>user {item.id}</Text>
-                    </TouchableOpacity>
-                    <AntDesign color={Colors.primary}  size={20} name={"closecircle"} onPress={()=>{setVisible(false)}}/>
-                </View>
-                <DoubleText text1={"Ref.Code"} text2={"7"}/>
-                <DoubleText text1={"Receiver"} text2={"15000"}/>
-                <DoubleText text1={"Generator"} text2={"7"}/>
-                <DoubleText text1={"Side"} text2={"7"}/>
-                <DoubleText text1={"Type"} text2={"7"}/>
-                <DoubleText text1={"Amount"} text2={"7"}/>
-                <DoubleText text1={"Status"} text2={"7"}/>
-                <DoubleText text1={"Closing"} text2={"7"}/>
-                <DoubleText text1={"Date"} text2={"7"}/>
-                {/*<Dialog.Button label="Cancel" onPress={()=>{setVisible(false)}} />*/}
-            </Dialog.Container>
+        <TouchableOpacity onPress={()=>{setVisible(true),setRes(item),setReceiver(item.user.name),setPin(item.pin.purchase_pin)}} style={{height:110,width:"46.9%", backgroundColor: Colors.secondary, borderColor: Colors.white, borderRadius: 10, borderBottomWidth: 2, padding: 10,margin:"1.5%" }}>
+            <Text style={{ fontSize: 14, color: Colors.white }}>{item.pin_code}</Text>
+            <Text style={{ fontSize: 14, color: Colors.white }}>Total ({parseFloat(item.total).toFixed(1)})</Text>
+            <Text style={{ fontSize: 14, color: Colors.white }}>Status ({item.status})</Text>
+            <Text style={{ fontSize: 13, color: Colors.lightgray, flex: 1, }}>Activity Date: {item.created_at}</Text>
         </TouchableOpacity>
     )
     return (
         <SafeAreaView style={{flex:1}}>
+            {apiData?null:
+            <Loader animating={isloading}/>}
             <FlatList
-                data={Data}
+                data={apiData}
                 renderItem={renderItem}
                 numColumns={2}
                 style={{ flex: 1 }}
-                contentContainerStyle={{ marginVertical: 20 }}
+                contentContainerStyle={{ marginVertical: 5 }}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={false}
+                        onRefresh={onRefresh} />
+                }
             />
+            <Dialogs visible={visible} onPress={()=>{setVisible(false)}} title={"Description"}>
+                <Text style={{fontSize:13,paddingHorizontal:10 }}>Pin Code = {res.pin_code}</Text>
+                <Text style={{fontSize:13,paddingHorizontal:10 }}>Pin Package = {pin.package_name}</Text>
+                <Text style={{fontSize:13,paddingHorizontal:10 }}>Pin Package Price = {pin.package_price}</Text>
+                <Text style={{fontSize:13,paddingHorizontal:10 }}>Pin Package BV = {pin.package_business_volume}</Text>
+                {/*<Text style={{fontSize:13,paddingHorizontal:10 }}>Pin Package BV = {pin.package_business_volume}</Text>*/}
+                <Text style={{fontSize:13,paddingHorizontal:10 }}>Generated By = {pin.generated_by}</Text>
+                <View style={{flexDirection:"row",justifyContent:"space-between",marginHorizontal:12,alignItems:"center",marginTop:10}}>
+                    <TouchableOpacity style={{backgroundColor: Colors.primary,borderRadius: 25,flexDirection:"row",padding:7,justifyContent:"center",width:70, }}>
+                        <EvilIcons color={Colors.white} size={22} name={"user"}/>
+                        <Text style={{color:Colors.white,fontSize:12}}>user {res.user_id} </Text>
+                    </TouchableOpacity>
+                    <AntDesign color={Colors.primary}  size={20} name={"closecircle"} onPress={()=>{setVisible(false)}}/>
+                </View>
+                    <DoubleText text1={"Ref.Code"} text2={res.pin_code}/>
+                    <DoubleText text1={"Receiver"} text2={receiver}/>
+                    <DoubleText text1={"Generator"} text2={res.fromUser?res.fromUser:"Not Available"}/>
+                    <DoubleText text1={"Side"} text2={res.side}/>
+                    <DoubleText text1={"Type"} text2={res.type}/>
+                    <DoubleText text1={"Amount"} text2={res.total}/>
+                    <DoubleText text1={"Status"} text2={res.status}/>
+                    <DoubleText text1={"Closing"} text2={res.closing_date?res.closing_date:"Not Available"}/>
+                    <DoubleText text1={"Date"} text2={res.created_at?res.created_at:"Not Available"}/>
+            </Dialogs>
         </SafeAreaView>
     )
 }
