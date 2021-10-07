@@ -36,6 +36,10 @@ const getcommissionbinary = async () => {
     const Test = await get_request("/api/get-commission-report/binary");
     return Test
 }
+const getallcommission = async () => {
+    const Test = await get_request("/api/get-commission-report/all");
+    return Test
+}
 const getwithdrawfunds = async () => {
     const Test = await get_request("/api/withdraw-funds");
     return Test
@@ -44,9 +48,13 @@ const gettransferfunds = async () => {
     const Test = await get_request("/api/transfer-funds");
     return Test
 }
+const sendProcessWithdraw = async (body) => {
+    const Test = await post_request({ target: "/api/post-withdraw-funds", body: body });
+    return Test
+}
 
 // const getAccountBalance = async (link) => {
 //     const Test = await get_request("/api/home" + link);
 //     return Test
 // }
-export {LoginApi,getDashboard,getShop,sendShopPayment,sendShopSubmit,getcommissionlogs,getactivityfeed,getcommissiondirect,getcommissionbinary,getwithdrawfunds,gettransferfunds}
+export {LoginApi,getDashboard,getShop,sendShopPayment,sendShopSubmit,getcommissionlogs,getactivityfeed,getcommissiondirect,getcommissionbinary,getallcommission,getwithdrawfunds,gettransferfunds,sendProcessWithdraw}

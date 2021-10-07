@@ -22,7 +22,6 @@ const Dashboard = () => {
     const [weeklyReserve,setWeeklyReserve]=useState(0);
     const [weeklyEarned,setWeeklyEarned]=useState(0);
     const [totalEarned,setTotalEarned]=useState(0);
-    const [Progress,setProgress]=useState(0);
     const [achievedLeft,setAchievedLeft]=useState(0);
     const [achievedRight,setAchievedRight]=useState(0);
     const [remainingLeft,setRemainingLeft]=useState(0);

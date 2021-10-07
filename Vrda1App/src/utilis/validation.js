@@ -44,3 +44,34 @@ export const ShopValidation = (detail,fileName) => {
         return { valid: true, errors: null }
     }
 }
+export const processWithdrawValidation = (amount,selectedValue,detail) => {
+    if (amount === ''){
+        return {
+            valid: false,
+            errors: amount === '' ? "Please Enter Amount" : null
+        }
+    }else if (amount < 500) {
+        return {
+            valid: false,
+            errors: amount < 500 ? "Minimum Amount is 500" : null
+        }
+    }else if (selectedValue === "") {
+        return {
+            valid: false,
+            errors: selectedValue === "" ? "Please Select Value" : null
+        }
+    }else if (selectedValue === null) {
+        return {
+            valid: false,
+            errors: selectedValue === null ? "Please Select Value" : null
+        }
+    }else if (detail === '') {
+        return {
+            valid: false,
+            errors: detail === '' ? "Please Enter Details" : null
+        }
+    }
+    else{
+        return { valid: true, errors: null }
+    }
+}

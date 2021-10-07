@@ -23,8 +23,17 @@ const TransferFunds = () => {
     const [selectedValue, setSelectedValue] = useState("Please Select");
     const buttons = [{name: 'Wallet', id: 0}, {name: 'Process Withdraw', id: 1},]
 
+
     useEffect(async ()=>{
         await getData();
+        var value=apiData.childs;
+        const items=()=>{apiData.map(obj => (
+            {
+                key: obj.id,
+                label: obj.name,
+                value: obj.id,
+                color: "rgba(77,38,22,1)",
+            }))}
     },[]);
 
     const getData=async ()=>{
@@ -76,19 +85,21 @@ const TransferFunds = () => {
             </View>
             {index == 0?
                 <View style={{marginVertical:20,justifyContent:"space-evenly"}}>
-                    <DoubleText text1={"Earning (+)"} text2={"$"+parseFloat(available.earning).toFixed(2)} textstyle={{textAlign:"center"}} containerstyle={{marginHorizontal:15,padding:6,backgroundColor:"rgba(152,148,148,0.63)"}}/>
-                    <DoubleText text1={"Transfer (-)"} text2={"$"+parseFloat(available.sent).toFixed(2)} textstyle={{textAlign:"center"}} containerstyle={{marginHorizontal:15,padding:6}}/>
-                    <DoubleText text1={"Received (+)"} text2={"$"+parseFloat(available.receieved).toFixed(2)} textstyle={{textAlign:"center"}} containerstyle={{marginHorizontal:15,padding:6,backgroundColor:"rgba(152,148,148,0.63)"}}/>
-                    <DoubleText text1={"Pin Purchased (-)"} text2={"$"+parseFloat(available.spent).toFixed(2)} textstyle={{textAlign:"center"}} containerstyle={{marginHorizontal:15,padding:6}}/>
-                    <DoubleText text1={"Withdraw (-)"} text2={"$"+parseFloat(available.withdraw).toFixed(2)} textstyle={{textAlign:"center"}} containerstyle={{marginHorizontal:15,padding:6,backgroundColor:"rgba(152,148,148,0.63)",}}/>
-                    <DoubleText text1={"Vreit (+)"} text2={"$"+parseFloat(available.vreit).toFixed(2)} textstyle={{textAlign:"center"}} containerstyle={{marginHorizontal:15,padding:6}}/>
-                    <DoubleText text1={"Available (=)"} text2={"$"+parseFloat(available.available).toFixed(2)} textstyle={{textAlign:"center",color:Colors.white}} textstyle1={{color:Colors.white}} containerstyle={{marginHorizontal:15,padding:6,backgroundColor:"rgb(51,51,51)",}}/>
+                    <DoubleText text1={"Earning (+)"} text2={available.earning?"$"+parseFloat(available.earning).toFixed(1):"$0"} textstyle={{textAlign:"center"}} containerstyle={{marginHorizontal:15,padding:6,backgroundColor:"rgba(152,148,148,0.63)"}}/>
+                    <DoubleText text1={"Transfer (-)"} text2={available.sent?"$"+parseFloat(available.sent).toFixed(1):"$0"} textstyle={{textAlign:"center"}} containerstyle={{marginHorizontal:15,padding:6}}/>
+                    <DoubleText text1={"Received (+)"} text2={available.receieved?"$"+parseFloat(available.receieved).toFixed(1):"$0"} textstyle={{textAlign:"center"}} containerstyle={{marginHorizontal:15,padding:6,backgroundColor:"rgba(152,148,148,0.63)"}}/>
+                    <DoubleText text1={"Pin Purchased (-)"} text2={available.spent?"$"+parseFloat(available.spent).toFixed(1):"$0"} textstyle={{textAlign:"center"}} containerstyle={{marginHorizontal:15,padding:6}}/>
+                    <DoubleText text1={"Withdraw (-)"} text2={available.withdraw?"$"+parseFloat(available.withdraw).toFixed(1):"$0"} textstyle={{textAlign:"center"}} containerstyle={{marginHorizontal:15,padding:6,backgroundColor:"rgba(152,148,148,0.63)",}}/>
+                    <DoubleText text1={"Vreit (+)"} text2={available.vreit?"$"+parseFloat(available.vreit).toFixed(1):"$0"} textstyle={{textAlign:"center"}} containerstyle={{marginHorizontal:15,padding:6}}/>
+                    <DoubleText text1={"Available (=)"} text2={available.available?"$"+parseFloat(available.available).toFixed(1):"$0"} textstyle={{textAlign:"center",color:Colors.white}} textstyle1={{color:Colors.white}} containerstyle={{marginHorizontal:15,padding:6,backgroundColor:"rgb(51,51,51)",}}/>
                 </View>
                 :
                 <View style={{margin:20}}>
                     <Text style={{fontWeight:"bold"}}>Proceed With</Text>
                     <View style={{borderBottomWidth:1,borderColor:Colors.secondary}}>
-                        <Dropdown onValueChange={(text)=>{setSelectedValue(text)}} PickerData={apiData.childs}/>
+                        <Dropdown onValueChange={(text)=>{setSelectedValue(text)}} PickerData={Object.keys(apiData.childs).map((item, index) => (
+                            [{label:item.name, value: item.name,}]
+                        ))}/>
 
                         {/*<Picker*/}
                         {/*    mode={"dropdown"}*/}
@@ -100,19 +111,19 @@ const TransferFunds = () => {
                         {/*</Picker>*/}
                     </View>
                     <FormInput
-                        containerStyle={{marginTop:5}}
                         placeholder={"In Amount 100 ..."}
                         placeholderTextColor={Colors.secondary}
-                        iconName_s="user"
-                        icon_color={Colors.secondary}
                         value={amount}
                         color={Colors.primary}
+                        containerStyle={{marginTop:5}}
                         onChangeText={(text) => { setErrors(""), setAmount(text) }}
                         error={errors === "Please Enter Your Email" ? "Please Enter Your Email" : null || errors === "Email format is invalid" ? "Email format is invalid" : null}
                     />
                     {/*<Text>{selectedValue}</Text>*/}
-                    <Text style={{padding:10,fontWeight:"bold",color:Colors.secondary}}>Withdraw Details:</Text>
+                    <Text style={{padding:10,fontWeight:"bold",color:Colors.primary}}>Withdraw Details:</Text>
                     <FormInput
+                        placeholder={"Withdraw Details"}
+                        placeholderTextColor={Colors.secondary}
                         value={detail}
                         onChangeText={(text) => { setErrors(""), setDetail(text) }}
                         error={errors === "Please Enter Your Email" ? "Please Enter Your Email" : null || errors === "Email format is invalid" ? "Email format is invalid" : null}
@@ -124,7 +135,7 @@ const TransferFunds = () => {
                         selected={checked}
                         onPress={() => setChecked(!checked)}
                         text={"Terms of condition"}/>
-                    <Btn text_style={{color:Colors.white}} text={"Process Transfer"} containerStyle={{width:160,borderRadius:20,padding:10,backgroundColor:Colors.primary,alignSelf:"center",bottom:20,marginTop:40,}}/>
+                    <Btn disabled={checked == true ? false : true} text_style={{color:Colors.white}} text={"Process Transfer"} containerStyle={{width:160,borderRadius:20,padding:10,backgroundColor:checked ===true?Colors.primary:Colors.secondary,alignSelf:"center",bottom:20,marginTop:40,}}/>
                 </View>
             }
             </ScrollView>

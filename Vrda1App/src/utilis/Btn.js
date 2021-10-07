@@ -14,10 +14,11 @@ class Btn extends Component {
         onPress: PropTypes.func,
         image: PropTypes.any,
         onPress_icon: PropTypes.func,
+        disabled:PropTypes.bool,
     }
     render() {
         return (
-            <TouchableOpacity style={this.props.containerStyle} onPress={this.props.onPress}>
+            <TouchableOpacity disabled={this.props.disabled} style={this.props.containerStyle} onPress={this.props.onPress}>
                 {this.props.image &&
                 <Image source={this.props.image} style={this.props.img_style}/>
                 }
