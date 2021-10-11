@@ -22,7 +22,7 @@ const WithdrawFunds=()=>{
     const [checked,setChecked]=useState(false);
     const [selectedValue, setSelectedValue] = useState("");
     const buttons = [{name: 'Wallet', id: 0}, {name: 'Process Withdraw', id: 1},]
-    const Item = [{ label: 'Bank', value: 'bank' },{ label: 'USDT', value: 'usdt' },{ label: 'Wallet', value: 'wallet' },{ label: 'Vreit', value: 'vreit' },]
+    const Item = [{ label: 'Bank', value: 'bank' },{ label: 'USDT', value: 'usdt' },{ label: 'BTC', value: 'btc' }]
 
     useEffect(async ()=>{
         await getData();
@@ -54,7 +54,7 @@ const WithdrawFunds=()=>{
             setErrors(validate.errors)
         } else {
             setErrors("")
-            let body = {payment_type: selectedValue, amount: amount,details: detail};
+            let body = {payment_type: selectedValue, amount: amount,details: detail,user_id:"3"};
             setLoading(true)
             let response = await sendProcessWithdraw(body)
             if (response !== "Error") {

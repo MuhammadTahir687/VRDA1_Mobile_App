@@ -1,5 +1,5 @@
 import React from 'react';
-import {Image, SafeAreaView, Text, View} from 'react-native';
+import {Image, SafeAreaView } from 'react-native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import Quarterly from "./Tab_Screens/Quarterly_vreits";
 import Withdrawal from "./Tab_Screens/Vreit_withdrawal";
@@ -10,6 +10,7 @@ import Colors from "../../../Style_Sheet/Colors";
 const Tab = createMaterialBottomTabNavigator();
 
 const Vreit_Points=()=>{
+
     return(
         <SafeAreaView style={{flex:1}}>
             <Tab.Navigator  initialRouteName="Quarterly" activeColor="#fff">

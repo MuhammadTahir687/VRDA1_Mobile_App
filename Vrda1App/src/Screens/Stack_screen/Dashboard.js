@@ -153,9 +153,6 @@ const Dashboard = () => {
                         <Text style={{color: Colors.primary, fontWeight: 'bold', marginVertical: 10, marginTop: 45}}>VRDA1 Events</Text>
                         <View>
                             <CalendarProvider
-                                // date={this.state.EVENTS[0].title}
-                                // showTodayButton
-                                // todayBottomMargin={16}
                                 date={currentDate}
                                 onDateChanged={onDateChanged}
                                 onMonthChange={onMonthChange}
@@ -166,13 +163,12 @@ const Dashboard = () => {
                                     firstDay={1}
                                     markedDates={EVENTS.color}
                                     markingType={'dot'}
-                                    markedDates={getMarkedDates()} // {'2019-06-01': {marked: true}, '2019-06-02': {marked: true}, '2019-06-03': {marked: true}};
+                                    markedDates={getMarkedDates()}
                                     theme={getTheme()}
-                                    headerStyle={{paddingHorizontal:20}} // for horizontal only
+                                    headerStyle={{paddingHorizontal:20}}
                                 />
                                 <Timeline
                                     format24h={true}
-                                    // eventTapped={(e) => { this.props.navigation.navigate("CalendarEventOpen", { data: e }) }}
                                     eventTapped={(e) => {console.log(e);} }
                                     events={EVENTS.filter(event => moment(event.start).isSame(currentDate, 'day'))}
                                 />

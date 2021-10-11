@@ -2,7 +2,7 @@ import React from "react";
 import Colors from "../Style_Sheet/Colors";
 import Shop from "../Screens/Stack_screen/Shop/Shop";
 import Wallet from "../Screens/Stack_screen/Wallet/Wallet";
-import Reports from "../Screens/Stack_screen/Reports";
+import Reports from "../Screens/Stack_screen/Reports/Reports";
 import Dashboard from "../Screens/Stack_screen/Dashboard";
 import Vreit_Points from "../Screens/Stack_screen/VreitPoints/Vreit_Points";
 import Activity_Feeds from "../Screens/Stack_screen/ActivityFeed/Activity_Feeds";

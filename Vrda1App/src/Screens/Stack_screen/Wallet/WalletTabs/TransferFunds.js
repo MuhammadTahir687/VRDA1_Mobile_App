@@ -1,14 +1,15 @@
 import React, {useEffect, useState} from "react";
-import {Text, View, SafeAreaView, Picker, RefreshControl, ScrollView} from "react-native";
+import {Text, View, SafeAreaView, RefreshControl, ScrollView} from "react-native";
 import Colors from "../../../../Style_Sheet/Colors";
 import {Btn} from "../../../../utilis/Btn";
 import DoubleText from "../../../../utilis/DoubleText";
 import {FormInput} from "../../../../utilis/Text_input";
 import CheckBox from "../../../../utilis/Checkbox";
-import {gettransferfunds} from "../../../../utilis/Api/Api_controller";
+import {gettransferfunds, sendProcessTransfer} from "../../../../utilis/Api/Api_controller";
 import Toast from "react-native-simple-toast";
 import Loader from "../../../../utilis/Loader";
 import Dropdown from "../../../../utilis/Picker/Picker";
+import {processTransferValidation} from "../../../../utilis/validation";
 
 const TransferFunds = () => {
     const [detail,setDetail]=useState("");
@@ -16,7 +17,7 @@ const TransferFunds = () => {
     const [errors,setErrors]=useState("");
     const [amount,setAmount]=useState("");
     const [index, setIndex] = useState(0);
-    const [apiData,setApiData]=useState("");
+    const [apiData,setApiData]=useState([]);
     const [refreshing,setRefreshing]=useState(false)
     const [checked,setChecked]=useState(false);
     const [available,setAvailable]=useState("");
@@ -26,14 +27,6 @@ const TransferFunds = () => {
 
     useEffect(async ()=>{
         await getData();
-        var value=apiData.childs;
-        const items=()=>{apiData.map(obj => (
-            {
-                key: obj.id,
-                label: obj.name,
-                value: obj.id,
-                color: "rgba(77,38,22,1)",
-            }))}
     },[]);
 
     const getData=async ()=>{
@@ -41,7 +34,7 @@ const TransferFunds = () => {
         let response = await gettransferfunds();
         if (response !== "Error") {
             if (response.data.status === true) {
-                setApiData(response.data.data);
+                setApiData(response.data.data.childs);
                 setAvailable(response.data.data.available)
                 setRefreshing(!refreshing)
                 setLoading(false);
@@ -57,14 +50,28 @@ const TransferFunds = () => {
     const onRefresh = async () => {
         await getData();
     }
-
-    const numberArray = ["1","2","3","4"];
-    // useEffect(async () => {
-    //     await getData(index)
-    // }, [])
-    // const getData = async (type) => {
-    //     alert("hello")
-    // }
+    const Submit = async () => {
+        let validate = processTransferValidation(amount,selectedValue,detail)
+        if (validate.valid === false) {
+            setErrors(validate.errors)
+        } else {
+            setErrors("")
+            let body = {user_id: selectedValue, amount: amount,details: detail};
+            setLoading(true)
+            let response = await sendProcessTransfer(body)
+            if (response !== "Error") {
+                if (response.data.status == true) {
+                    setLoading(false);
+                }else {
+                    Toast.show(response.data.data, Toast.LONG);
+                    setLoading(false);
+                }
+            }else {
+                Toast.show("Network Error: There is something wrong!", Toast.LONG);
+                setLoading(false);
+            }
+        }
+    }
     return(
         <SafeAreaView style={{flex:1}}>
             <Loader animating={isloading}/>
@@ -97,27 +104,20 @@ const TransferFunds = () => {
                 <View style={{margin:20}}>
                     <Text style={{fontWeight:"bold"}}>Proceed With</Text>
                     <View style={{borderBottomWidth:1,borderColor:Colors.secondary}}>
-                        <Dropdown onValueChange={(text)=>{setSelectedValue(text)}} PickerData={Object.keys(apiData.childs).map((item, index) => (
-                            [{label:item.name, value: item.name,}]
-                        ))}/>
-
-                        {/*<Picker*/}
-                        {/*    mode={"dropdown"}*/}
-                        {/*    selectedValue={selectedValue}*/}
-                        {/*    style={{ height: 50, width:"100%"}}*/}
-                        {/*    onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}>*/}
-                        {/*    {numberArray.length > 0 ? numberArray.map(item =><Picker.Item label={item} value={item} /> ):''}*/}
-                        {/*    <Picker.Item label="Please Select" value={"Please Select"} testID={"4"} color={"rgba(152,148,148,0.63)"} />*/}
-                        {/*</Picker>*/}
+                        <Dropdown onValueChange={(text)=>{setSelectedValue(text)}} PickerData={apiData.map(obj => ({key: obj.id, label: obj.name, value: obj.id, color: "rgba(77,38,22,1)",}))}/>
                     </View>
+                    {errors === "Please Select Value" &&
+                    <Text style={{ color: "red",fontSize:12 }}>{errors === "Please Select Value" ? "Please Select Value" : null}</Text>
+                    }
                     <FormInput
                         placeholder={"In Amount 100 ..."}
                         placeholderTextColor={Colors.secondary}
                         value={amount}
+                        keyboardType={'phone-pad'}
                         color={Colors.primary}
                         containerStyle={{marginTop:5}}
                         onChangeText={(text) => { setErrors(""), setAmount(text) }}
-                        error={errors === "Please Enter Your Email" ? "Please Enter Your Email" : null || errors === "Email format is invalid" ? "Email format is invalid" : null}
+                        error={errors === "Please Enter Amount" ? "Please Enter Amount" : errors === "Minimum Amount is 100" ? "Minimum Amount is 100":null}
                     />
                     {/*<Text>{selectedValue}</Text>*/}
                     <Text style={{padding:10,fontWeight:"bold",color:Colors.primary}}>Withdraw Details:</Text>
@@ -126,7 +126,7 @@ const TransferFunds = () => {
                         placeholderTextColor={Colors.secondary}
                         value={detail}
                         onChangeText={(text) => { setErrors(""), setDetail(text) }}
-                        error={errors === "Please Enter Your Email" ? "Please Enter Your Email" : null || errors === "Email format is invalid" ? "Email format is invalid" : null}
+                        error={errors === "Please Enter Details" ? "Please Enter Details" : null }
                     />
                     <CheckBox
                         style={{margin:10}}
@@ -135,7 +135,7 @@ const TransferFunds = () => {
                         selected={checked}
                         onPress={() => setChecked(!checked)}
                         text={"Terms of condition"}/>
-                    <Btn disabled={checked == true ? false : true} text_style={{color:Colors.white}} text={"Process Transfer"} containerStyle={{width:160,borderRadius:20,padding:10,backgroundColor:checked ===true?Colors.primary:Colors.secondary,alignSelf:"center",bottom:20,marginTop:40,}}/>
+                    <Btn disabled={checked == true ? false : true} onPress={()=>Submit()} text_style={{color:Colors.white}} text={"Process Transfer"} containerStyle={{width:160,borderRadius:20,padding:10,backgroundColor:checked ===true?Colors.primary:Colors.secondary,alignSelf:"center",bottom:20,marginTop:40,}}/>
                 </View>
             }
             </ScrollView>

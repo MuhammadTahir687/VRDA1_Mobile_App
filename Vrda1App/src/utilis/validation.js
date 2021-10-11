@@ -75,3 +75,39 @@ export const processWithdrawValidation = (amount,selectedValue,detail) => {
         return { valid: true, errors: null }
     }
 }
+export const processTransferValidation = (amount,selectedValue,detail) => {
+    if (selectedValue === "") {
+        return {
+            valid: false,
+            errors: selectedValue === "" ? "Please Select Value" : null
+        }
+    }else if (selectedValue === null) {
+        return {
+            valid: false,
+            errors: selectedValue === null ? "Please Select Value" : null
+        }
+    }else if (selectedValue === "Please Select") {
+        return {
+            valid: false,
+            errors: selectedValue === "Please Select" ? "Please Select Value" : null
+        }
+    }else if (amount === ''){
+        return {
+            valid: false,
+            errors: amount === '' ? "Please Enter Amount" : null
+        }
+    }else if (amount < 100) {
+        return {
+            valid: false,
+            errors: amount < 100 ? "Minimum Amount is 100" : null
+        }
+    }else if (detail === '') {
+        return {
+            valid: false,
+            errors: detail === '' ? "Please Enter Details" : null
+        }
+    }
+    else{
+        return { valid: true, errors: null }
+    }
+}
