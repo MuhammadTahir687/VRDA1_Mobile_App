@@ -56,9 +56,9 @@ const TransferFunds = () => {
             setErrors(validate.errors)
         } else {
             setErrors("")
-            let body = {user_id: selectedValue, amount: amount,details: detail};
+            let body = {details: detail,amount:amount,user_id:selectedValue};
             setLoading(true)
-            let response = await sendProcessTransfer(body)
+            var response = await sendProcessTransfer(body)
             if (response !== "Error") {
                 if (response.data.status == true) {
                     setLoading(false);

@@ -15,6 +15,8 @@ const Commission_Logs=()=>{
     const [isloading,setLoading]=useState(false);
     const [data,setData]=useState("");
     const [ids,setIds]=useState(0);
+    const [time,setTime]=useState(0);
+    const [showTime, setShowTime] = useState(false)
     // useEffect(() => {
     //   let chic = []
     //   for (const value of Object.values(data.data.logs)) {
@@ -29,15 +31,21 @@ const Commission_Logs=()=>{
 
     const getData=async ()=>{
         setLoading(true)
+        setShowTime(false)
         let response = await getcommissionlogs();
         if (response !== "Error") {
+            let a=18000;
+            let b=response.data.data.next_second;
+            let c=parseFloat(b) - parseFloat(a);
             if (response.data.status === true) {
                 let chic = []
                 for (const value of Object.values(response.data.data.logs)) {
                     chic.push(value)
                 }
                 setData(chic)
+                setTime(c);
                 setLoading(false);
+                setShowTime(true)
             }else {
                 Toast.show("Something Went Wrong !", Toast.LONG);
                 setLoading(false);
@@ -50,7 +58,6 @@ const Commission_Logs=()=>{
 
     const renderItem=({item})=>(
         <TouchableOpacity
-            // onPress={() => { setOpacity(item.closing_date); changeLayout() }}
             activeOpacity={0.8}
             onPress={()=>{setVisible(true),setIds(item)}}
             style={{backgroundColor: Colors.secondary, borderColor: Colors.white, borderRadius: 10, borderBottomWidth: 2, padding: 10,marginHorizontal:5,marginVertical:2}}>
@@ -64,12 +71,14 @@ const Commission_Logs=()=>{
         <SafeAreaView style={{flex:1}}>
             <Loader animating={isloading}/>
             <Text style={{textAlign:"center",fontWeight:"bold"}}>Next Commissions</Text>
+            {showTime &&
             <CountDown
-                until={604800}
+                until={time}
                 onFinish={() => alert('finished')}
                 onPress={() => alert('hello')}
-                size={20}
+                size={22}
             />
+            }
             <FlatList
                 data={data}
                 renderItem={renderItem}

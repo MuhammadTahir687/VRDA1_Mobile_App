@@ -56,8 +56,36 @@ const sendProcessTransfer = async (body) => {
     const Test = await post_request({ target: "/api/transfer-funds", body: body });
     return Test
 }
+const getMyPurchase = async () => {
+    const Test = await get_request("/api/purchase-report");
+    return Test
+}
+const getOwnershipPurchase = async () => {
+    const Test = await get_request("/api/own-purchase-report");
+    return Test
+}
+const getTeamSale = async () => {
+    const Test = await get_request("/api/team-sale");
+    return Test
+}
+const getPurchaseRequest = async () => {
+    const Test = await get_request("/api/my-requests");
+    return Test
+}
+const getTransferHistory = async () => {
+    const Test = await get_request("/api/my-transfers");
+    return Test
+}
+const getReceiveHistory = async () => {
+    const Test = await get_request("/api/my-receiving");
+    return Test
+}
+const getWithdrawHistory = async () => {
+    const Test = await get_request("/api/withdrawals");
+    return Test
+}
 // const getAccountBalance = async (link) => {
 //     const Test = await get_request("/api/home" + link);
 //     return Test
 // }
-export {LoginApi,getDashboard,getShop,sendShopPayment,sendShopSubmit,getcommissionlogs,getactivityfeed,getcommissiondirect,getcommissionbinary,getallcommission,getwithdrawfunds,gettransferfunds,sendProcessWithdraw,sendProcessTransfer}
+export {LoginApi,getDashboard,getShop,sendShopPayment,sendShopSubmit,getcommissionlogs,getactivityfeed,getcommissiondirect,getcommissionbinary,getallcommission,getwithdrawfunds,gettransferfunds,sendProcessWithdraw,sendProcessTransfer,getMyPurchase,getOwnershipPurchase,getTeamSale,getPurchaseRequest,getTransferHistory,getReceiveHistory,getWithdrawHistory}

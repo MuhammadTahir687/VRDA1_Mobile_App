@@ -1,78 +1,31 @@
-import React, { useState } from "react";
-import {FlatList, SafeAreaView, StatusBar, StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import flex from "native-base/src/theme/components/flex";
+import React from "react";
+import {Image, SafeAreaView} from "react-native";
 import Colors from "../../../Style_Sheet/Colors";
+import OwnershipPurchase from "./RouteScreens/OwnershipPurchase";
+import MyPurchase from "./RouteScreens/MyPurchase";
+import PurchaseRequest from "./RouteScreens/PurchaseRequest";
+import ReceivingHistory from "./RouteScreens/ReceivingHistory";
+import TeamSale from "./RouteScreens/TeamSale";
+import TransferHistory from "./RouteScreens/TransferHistory";
+import WithdrawHistory from "./RouteScreens/WithdrawHistory";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 
-const DATA = [
-    {
-        id: "1",
-        title: "My Purchase",
-    },
-    {
-        id: "2",
-        title: "Ownership Purchase",
-    },
-    {
-        id: "3",
-        title: "Team Sale",
-    },{
-        id: "4",
-        title: "Purchase Request",
-    },{
-        id: "5",
-        title: "Transfer History",
-    },{
-        id: "6",
-        title: "Receiving History",
-    },
-];
+const Tab = createMaterialBottomTabNavigator();
 
-
-const Reports = () => {
-    const Submit = async ({item}) => {
-        if (item.id==1){
-           alert("ddsssssss")
-        }
-        else {
-            alert("ddd")
-        }
-
-    }
-
-    const renderItem = ({ item }) => (
-        <TouchableOpacity onPress={()=>{Submit({item});}} style={{backgroundColor:"transparent",padding:10,alignItems:"center",flex:1,justifyContent:"center"}}>
-            <Text>{item.title}</Text>
-        </TouchableOpacity>
-        )
-    const renderItem1 = ({ item }) => (
-        <View>
-        {item.id ==1?
-        <TouchableOpacity style={{backgroundColor:"transparent",padding:10,flex:1,}}>
-
-            <Text>ff</Text>
-        </TouchableOpacity>
-                :<Text>fff</Text>}
-        </View>
-            )
-    return (
-            <SafeAreaView style={{flex: 1}}>
-                <View style={{flex: 0.915,backgroundColor:"red"}}>
-                    <FlatList
-                        data={DATA}
-                        renderItem={renderItem1}
-                        keyExtractor={(item) => item.id}
-                    />
-                </View>
-                <View style={{flex: 0.085}}>
-                    <FlatList
-                        horizontal={true}
-                        data={DATA}
-                        renderItem={renderItem}
-                        keyExtractor={(item) => item.id}
-                    />
-                </View>
-            </SafeAreaView>
-    );
-};
-
-export default Reports;
+const Commission_Reports=()=>{
+    return(
+        <SafeAreaView style={{flex:1}}>
+            <Tab.Navigator  initialRouteName="MyPurchase" activeColor={Colors.primary} inactiveColor={Colors.lightgray} barStyle={{ backgroundColor:'rgba(0,0,0,0.02)',paddingTop:10 }} lazy={true} optimizationsEnabled={true}>
+                <Tab.Screen name="MyPurchase" component={MyPurchase} options={{tabBarLabel: '', tabBarIcon: ({color}) => (<Image source={require("../../../Assets/MyPurchase.png")} style={{height:27,width:27}}/>)}}/>
+                <Tab.Screen name="OwnershipPurchase" component={OwnershipPurchase} options={{tabBarLabel: '',tabBarIcon: ({color}) => (<Image source={require("../../../Assets/OwnershipPurchase.png")} style={{height:27,width:27}}/>)}}/>
+                <Tab.Screen name="TeamSale" component={TeamSale} options={{tabBarLabel: '', tabBarIcon: ({color}) => (<Image source={require("../../../Assets/TeamSale.png")} style={{height:27,width:27}}/>)}}/>
+                <Tab.Screen name="PurchaseRequest" component={PurchaseRequest} options={{tabBarLabel: '', tabBarIcon: ({color}) => (<Image source={require("../../../Assets/purchaseRequest.png")} style={{height:27,width:27}}/>)}}/>
+                <Tab.Screen name="TransferHistory" component={TransferHistory} options={{tabBarLabel: '',tabBarIcon: ({color}) => (<Image source={require("../../../Assets/TransferHistory.png")} style={{height:27,width:27}}/>)}}/>
+                <Tab.Screen name="ReceivingHistory" component={ReceivingHistory} options={{tabBarLabel: '',tabBarIcon: ({color}) => (<Image source={require("../../../Assets/ReceiveHistory.png")} style={{height:27,width:27}}/>)}}/>
+                <Tab.Screen name="WithdrawHistory" component={WithdrawHistory} options={{tabBarLabel: '',tabBarIcon: ({color}) => (<Image source={require("../../../Assets/WithdrawHistory.png")} style={{height:27,width:27}}/>)}}/>
+             </Tab.Navigator>
+        </SafeAreaView>
+    )
+}
+export default Commission_Reports;

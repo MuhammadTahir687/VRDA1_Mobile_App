@@ -35,7 +35,7 @@ const Shop = () => {
     const [branchCode,setBranchCode]=useState("");
     const [accountName,setAccountName]=useState("");
     const [accountNumber,setAccountNumber]=useState("");
-    const [selectedValue, setSelectedValue] = useState("");
+    const [selectedValue, setSelectedValue] = useState("Bank");
     const [imageUri,setImageUri]=useState("");
     const [usdtAddress,setUsdtAddress]=useState("");
     const [walletmsg,setwalletmsg]=useState("");
@@ -126,7 +126,6 @@ const Shop = () => {
                     setFileName(name);
                     setResponse(response);
                     setImageSourceData(source);
-                    alert(JSON.stringify(name));
                     Toast.show("Succeed", Toast.LONG);
                 } else {
                     Toast.show("File size is exceeded from 8 MB", Toast.LONG);
@@ -135,32 +134,37 @@ const Shop = () => {
         });
     };
     const Submit=async () => {
-        let validate = ShopValidation(detail,fileName)
+        let validate = ShopValidation(detail,fileName,imageSourceData)
         if (validate.valid === false) {
             setErrors(validate.errors)
         } else {
             setErrors("")
-            console.log(imageSourceData.uri);
-            alert(JSON.stringify(imageSourceData.uri));
-            let body = {package_id: ids.id, proceed_with: selectedValue ,files:imageSourceData.uri};
-            // setLoading(true)
-            // let response = await sendShopSubmit(body)
-            // alert(JSON.stringify(response.data))
-            // if (response !== "Error") {
-                // if (response.data.status == true) {
-            //         let Bearer = response.data.access_token;
-            //         await save_data("ACCOUNT_DATA", Bearer)
-            //         setLoading(false);
-            //         navigation.replace("Drawers");
-            //     }else {
-            //         Toast.show("Invalid Email or Password !", Toast.LONG);
-            //         setLoading(false);
-            //     }
-            // }else {
-            //     alert(JSON.stringify(response))
-            //     Toast.show("Network Error: There is something wrong!", Toast.LONG);
-            //     setLoading(false);
-            // }
+            const body = new FormData();
+            body.append('package_id', ids.id,);
+            body.append("proceed_with", selectedValue);
+            body.append("payment_details", detail);
+            body.append("picture", { uri: imageSourceData.uri, name: "photo.jpg", type: `image/jpg`, });
+            setLoading(true)
+            let response = await sendShopSubmit(body)
+            if (response !== "Error") {
+                if (response.data.status == true) {
+                    Toast.show(response.data.success, Toast.LONG);
+                    setSelectedValue("")
+                    setDetail("");
+                    setImageSourceData(null);
+                    setImageUri("");
+                    setFileName("")
+                    refRBSheet.current.close()
+                    setLoading(false);
+                }else {
+                    Toast.show("Invalid Email or Password !", Toast.LONG);
+                    setLoading(false);
+                }
+            }else {
+                alert(JSON.stringify(response))
+                Toast.show("Network Error: There is something wrong!", Toast.LONG);
+                setLoading(false);
+            }
         }
     }
     const renderItem = ({ item, index }) => (

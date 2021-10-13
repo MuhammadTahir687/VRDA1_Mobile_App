@@ -13,7 +13,7 @@ const Notes = () => {
             </View>
             <View style={{flexDirection:"row",backgroundColor:Colors.white,margin:3,borderRadius:5,paddingHorizontal:5}}>
             <Text style={{fontWeight:"bold"}}>Max file size:</Text>
-            <Text> 2MB allowed</Text>
+            <Text> 8MB allowed</Text>
             </View>
             </View>
         </SafeAreaView>

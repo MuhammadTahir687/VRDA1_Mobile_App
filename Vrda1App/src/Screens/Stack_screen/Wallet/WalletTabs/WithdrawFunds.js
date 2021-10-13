@@ -54,7 +54,7 @@ const WithdrawFunds=()=>{
             setErrors(validate.errors)
         } else {
             setErrors("")
-            let body = {payment_type: selectedValue, amount: amount,details: detail,user_id:"3"};
+            let body = {payment_type: selectedValue, amount: amount,details: detail,user_id:apiData.user_id};
             setLoading(true)
             let response = await sendProcessWithdraw(body)
             if (response !== "Error") {

@@ -28,7 +28,7 @@ export const loginValidation = (email,password) => {
         return { valid: true, errors: null }
     }
 }
-export const ShopValidation = (detail,fileName) => {
+export const ShopValidation = (detail,fileName,imageSourceData) => {
     if (fileName === ''){
         return {
             valid: false,
@@ -38,6 +38,11 @@ export const ShopValidation = (detail,fileName) => {
         return {
             valid: false,
             errors: detail === '' ? "Please Enter Notes Details" : null
+        }
+    }else if (imageSourceData === null) {
+        return {
+            valid: false,
+            errors: detail === null ? "Please Add Image First" : null
         }
     }
     else{
