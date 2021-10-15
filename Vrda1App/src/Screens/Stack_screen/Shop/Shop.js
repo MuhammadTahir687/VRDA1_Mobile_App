@@ -16,7 +16,7 @@ import {FormInput} from "../../../utilis/Text_input";
 import Dropdown from "../../../utilis/Picker/Picker";
 import Clipboard from "@react-native-community/clipboard";
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { ShopValidation } from "../../../utilis/validation";
+import {BuyValidation, ShopValidation} from "../../../utilis/validation";
 
 const Shop = () => {
     const refRBSheet = useRef();
@@ -40,10 +40,11 @@ const Shop = () => {
     const [usdtAddress,setUsdtAddress]=useState("");
     const [walletmsg,setwalletmsg]=useState("");
     const [vreitMsg,setVreitMsg]=useState("");
-    const [response, setResponse] = useState(null);
     const [imageSourceData, setImageSourceData] = useState(null);
     const [fileName,setFileName]=useState("");
-    const []=useState("");
+    const [walletAmount,setwalletAmount]=useState("");
+    const [packagePrice,setPackagePrice]=useState("");
+
 
     const buttons = [{ name: 'Package Detail', id: 0 }, { name: 'Proceed Order', id: 1 }] //false
 
@@ -93,9 +94,11 @@ const Shop = () => {
                    setLoading(false);
                }else if (text == "wallet") {
                    setwalletmsg(res.wallet_form.message);
+                   setwalletAmount(res.available)
+                   setPackagePrice(res.package.price)
                    setLoading(false);
                }else if (text == "vreit") {
-                   setVreitMsg("");
+                   setVreitMsg(res.vreit.message);
                    setLoading(false);
                } else {
                    setLoading(false);
@@ -123,9 +126,10 @@ const Shop = () => {
                 if (response.assets[0].fileSize <= "200000") {
                     let source = { uri: response.assets[0].uri };
                     var name = (response.assets[0].fileName).slice(25);
+                    if (selectedValue=="bank" || "usdt"){
                     setFileName(name);
-                    setResponse(response);
                     setImageSourceData(source);
+                    }
                     Toast.show("Succeed", Toast.LONG);
                 } else {
                     Toast.show("File size is exceeded from 8 MB", Toast.LONG);
@@ -134,7 +138,7 @@ const Shop = () => {
         });
     };
     const Submit=async () => {
-        let validate = ShopValidation(detail,fileName,imageSourceData)
+            var validate = ShopValidation(fileName,imageSourceData)
         if (validate.valid === false) {
             setErrors(validate.errors)
         } else {
@@ -149,19 +153,43 @@ const Shop = () => {
             if (response !== "Error") {
                 if (response.data.status == true) {
                     Toast.show(response.data.success, Toast.LONG);
-                    setSelectedValue("")
-                    setDetail("");
-                    setImageSourceData(null);
-                    setImageUri("");
-                    setFileName("")
-                    refRBSheet.current.close()
-                    setLoading(false);
+                    await setSelectedValue("")
+                    await setDetail("");
+                    await setImageSourceData(null);
+                    await setFileName("")
+                    await setLoading(false);
+                    await refRBSheet.current.close();
                 }else {
                     Toast.show("Invalid Email or Password !", Toast.LONG);
                     setLoading(false);
                 }
             }else {
                 alert(JSON.stringify(response))
+                Toast.show("Network Error: There is something wrong!", Toast.LONG);
+                setLoading(false);
+            }
+        }
+    }
+    const walletBuy = async () => {
+        var validate = BuyValidation(walletAmount, packagePrice)
+        if (validate.valid === false) {
+            setErrors(validate.errors)
+        } else {
+            setErrors("")
+            setLoading(true)
+            let body = {package_id: packageID, proceed_with: selectedValue,};
+            let response = await sendShopSubmit(body)
+            if (response !== "Error") {
+                if (response.data.status == true) {
+                    Toast.show(response.data.success, Toast.LONG);
+                    await setLoading(false);
+                    await setSelectedValue("");
+                    await refRBSheet.current.close();
+                } else {
+                    Toast.show("Something Went Wrong !", Toast.LONG);
+                    setLoading(false);
+                }
+            } else {
                 Toast.show("Network Error: There is something wrong!", Toast.LONG);
                 setLoading(false);
             }
@@ -264,7 +292,7 @@ const Shop = () => {
                                             onChangeText={(text) => { setDetail(text),setErrors("") }}
                                             error={errors === "Please Enter Notes Details" ? "Please Enter Notes Details" : null }
                                         />
-                                    <Btn onPress={()=>{Submit()}} text_style={{ color: Colors.white }} text={"Submit"} containerStyle={{ width: 100, borderRadius: 5, padding: 10, backgroundColor: Colors.primary, alignSelf: "center", bottom: 20, marginTop: 30, }} />
+                                    <Btn onPress={()=>Submit()} text_style={{ color: Colors.white }} text={"Submit"} containerStyle={{ width: 100, borderRadius: 5, padding: 10, backgroundColor: Colors.primary, alignSelf: "center", bottom: 20, marginTop: 30, }} />
                                     </View>
                                     :selectedValue == "usdt"?
                                         <View>
@@ -284,25 +312,39 @@ const Shop = () => {
                                                 <Text style={{color:Colors.primary,fontSize:11}}>* Sending coins or tokens other than USDT to this address may result in the loss of your deposit.</Text>
                                                 <Text style={{color:Colors.primary,fontSize:11}}>* Package will be update or upgrade after confirmation.</Text>
                                             </View>
-                                            <Btn containerStyle={{ flex: 1, backgroundColor: Colors.primary, marginVertical:8, padding: 10, borderRadius: 5,marginHorizontal:20 }} text={"Choose File"} text_style={{ color: Colors.white }} />
+                                            <Btn onPress={selectPhoto_gallery.bind(this)} containerStyle={{ flex: 1, backgroundColor: Colors.primary, marginVertical:8, padding: 10, borderRadius: 5,marginHorizontal:20 }} text={"Choose File"} text_style={{ color: Colors.white }} />
+                                            {errors ==="Please Add Image First"?
+                                                <Text style={{textAlign:"center",fontSize:11,fontWeight:"bold",color:"red"}}>{!fileName?"Please Add Image First":null}</Text>
+                                                :<Text style={{textAlign:"center",fontSize:11,fontWeight:"bold"}}>{fileName?fileName:null}</Text>
+                                            }
                                             <Notes/>
-                                            <Btn text_style={{ color: Colors.white }} text={"Submit"} containerStyle={{ width: 100, borderRadius: 5, padding: 10, backgroundColor: Colors.primary, alignSelf: "center", marginTop: 12, }} />
+                                            <Btn onPress={()=>Submit()} text_style={{ color: Colors.white }} text={"Submit"} containerStyle={{ width: 100, borderRadius: 5, padding: 10, backgroundColor: Colors.primary, alignSelf: "center", marginTop: 12, }} />
                                             <Text></Text>
                                         </View>
                                         :selectedValue == "wallet"?
                                             <View>
                                                 <Loader animating={isloading}/>
                                                 {walletmsg ?
-                                                  <View>
+                                                    <View>
                                                   <Text style={{ margin: 10 }}>{walletmsg}</Text>
-                                                  <Btn text_style={{ color: Colors.white }} text={"Buy"} containerStyle={{ width: 100, borderRadius: 5, padding: 10, backgroundColor: Colors.primary, alignSelf: "center", marginTop: 12, }} />
+                                                  <Btn onPress={()=>walletBuy()} text_style={{ color: Colors.white }} text={"Buy"} containerStyle={{ width: 100, borderRadius: 5, padding: 10, backgroundColor: Colors.primary, alignSelf: "center", marginTop: 12, }} />
                                                   </View>
-                                                    :<Alert value={"Wallet"}/>
+                                                    : errors ==="insuffient Balance"?
+                                                        <Alert value={"Wallet"}/>
+                                                        :null
                                                 }
                                             </View>
                                             :selectedValue == "vreit"?
-                                                <Alert value={"Verit Wallet"}/>
-                                                : null
+                                                <View>
+                                                    <Loader animating={isloading}/>
+                                                    {vreitMsg ?
+                                                        <View>
+                                                            <Text style={{ margin: 10 }}>{vreitMsg}</Text>
+                                                            <Btn text_style={{ color: Colors.white }} text={"Buy"} containerStyle={{ width: 100, borderRadius: 5, padding: 10, backgroundColor: Colors.primary, alignSelf: "center", marginTop: 12, }} />
+                                                        </View>
+                                                        :<Alert value={"Vreit Wallet"}/>
+                                                    }
+                                                </View>: null
                                 }
                             </TouchableOpacity>
                         </ScrollView>

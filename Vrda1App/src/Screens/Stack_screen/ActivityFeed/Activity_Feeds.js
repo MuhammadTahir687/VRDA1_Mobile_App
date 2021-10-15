@@ -4,6 +4,7 @@ import Colors from "../../../Style_Sheet/Colors";
 import Dialogs from "../../../utilis/Dialog";
 import {getactivityfeed, } from "../../../utilis/Api/Api_controller";
 import Toast from "react-native-simple-toast";
+import Loader from "../../../utilis/Loader";
 
 const Activity_Feeds=()=>{
 
@@ -48,6 +49,7 @@ const Activity_Feeds=()=>{
 
     return(
         <SafeAreaView style={{flex:1}}>
+            <Loader animating={isloading}/>
             <FlatList
                 data={apiData}
                 renderItem={renderItem}

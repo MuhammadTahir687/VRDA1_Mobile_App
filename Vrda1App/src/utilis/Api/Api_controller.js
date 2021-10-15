@@ -84,8 +84,16 @@ const getWithdrawHistory = async () => {
     const Test = await get_request("/api/withdrawals");
     return Test
 }
+const getPersonalDetail = async () => {
+    const Test = await get_request("/api/profile");
+    return Test
+}
+const getBankDetail = async () => {
+    const Test = await get_request("/api/bank-update");
+    return Test
+}
 // const getAccountBalance = async (link) => {
 //     const Test = await get_request("/api/home" + link);
 //     return Test
 // }
-export {LoginApi,getDashboard,getShop,sendShopPayment,sendShopSubmit,getcommissionlogs,getactivityfeed,getcommissiondirect,getcommissionbinary,getallcommission,getwithdrawfunds,gettransferfunds,sendProcessWithdraw,sendProcessTransfer,getMyPurchase,getOwnershipPurchase,getTeamSale,getPurchaseRequest,getTransferHistory,getReceiveHistory,getWithdrawHistory}
+export {LoginApi,getDashboard,getShop,sendShopPayment,sendShopSubmit,getcommissionlogs,getactivityfeed,getcommissiondirect,getcommissionbinary,getallcommission,getwithdrawfunds,gettransferfunds,sendProcessWithdraw,sendProcessTransfer,getMyPurchase,getOwnershipPurchase,getTeamSale,getPurchaseRequest,getTransferHistory,getReceiveHistory,getWithdrawHistory,getPersonalDetail,getBankDetail}

@@ -28,21 +28,16 @@ export const loginValidation = (email,password) => {
         return { valid: true, errors: null }
     }
 }
-export const ShopValidation = (detail,fileName,imageSourceData) => {
+export const ShopValidation = (fileName,imageSourceData) => {
     if (fileName === ''){
         return {
             valid: false,
             errors: fileName === '' ? "Please Add Image First" : null
         }
-    }else if (detail === '') {
-        return {
-            valid: false,
-            errors: detail === '' ? "Please Enter Notes Details" : null
-        }
     }else if (imageSourceData === null) {
         return {
             valid: false,
-            errors: detail === null ? "Please Add Image First" : null
+            errors: imageSourceData === null ? "Please Add Image First" : null
         }
     }
     else{
@@ -113,6 +108,21 @@ export const processTransferValidation = (amount,selectedValue,detail) => {
         }
     }
     else{
+        return { valid: true, errors: null }
+    }
+}
+export const BuyValidation = (walletAmount,packagePrice) => {
+    if (walletAmount === ''){
+        return {
+            valid: false,
+            errors: walletAmount === ''? "insuffient Balance" : null
+        }
+    }else if (packagePrice > walletAmount) {
+        return {
+            valid: false,
+            errors: packagePrice > walletAmount? "insuffient Balance" : null
+        }
+    } else{
         return { valid: true, errors: null }
     }
 }
