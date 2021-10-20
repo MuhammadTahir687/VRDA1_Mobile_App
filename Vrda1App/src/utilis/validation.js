@@ -126,3 +126,151 @@ export const BuyValidation = (walletAmount,packagePrice) => {
         return { valid: true, errors: null }
     }
 }
+export const UpdateBtc = (fileName,imageSourceData,btcAddress) => {
+    if (btcAddress === "") {
+        return {
+            valid: false,
+            errors: btcAddress === "" ? "Please Enter Address" : null
+        }
+    }else if (btcAddress.length < 16) {
+        return {
+            valid: false,
+            errors: btcAddress.length < 16 ?"Btc address must be 16": null
+        }
+    } else if (fileName === ''){
+        return {
+            valid: false,
+            errors: fileName === '' ? "Please Add Image First" : null
+        }
+    }else if (imageSourceData === null) {
+        return {
+            valid: false,
+            errors: imageSourceData === null ? "Please Add Image First" : null
+        }
+    }
+    else{
+        return { valid: true, errors: null }
+    }
+}
+export const UpdateBankValidation = (fullName,bankname,branchname,accountNumber,phonenumber,completeAdd,country,fileName,imageSourceData) => {
+    if (fullName === "") {
+        return {
+            valid: false,
+            errors: fullName === "" ? "Name is Required" : null
+        }
+    }else if (bankname === "") {
+        return {
+            valid: false,
+            errors: bankname === "" ? "Bank Name is Required" : null
+        }
+    }else if (branchname === "") {
+        return {
+            valid: false,
+            errors: branchname === "" ? "Branch Name is Required" : null
+        }
+    }else if (accountNumber === "") {
+        return {
+            valid: false,
+            errors: accountNumber === "" ? "Account# is Required" : null
+        }
+    }else if (phonenumber === "") {
+        return {
+            valid: false,
+            errors: phonenumber === "" ? "Phone# is Required" : null
+        }
+    }else if (phonenumber.length < 8 ) {
+        return {
+            valid: false,
+            errors: phonenumber.length < 8 ? "The phone number must be at least 8 characters." : null
+        }
+    }else if (completeAdd === "") {
+        return {
+            valid: false,
+            errors: completeAdd === "" ? "Address is Required" : null
+        }
+    }else if (country === "") {
+        return {
+            valid: false,
+            errors: country === "" ? "Country is Required" : null
+        }
+    }else if (fileName === ''){
+        return {
+            valid: false,
+            errors: fileName === '' ? "Please Add Image First" : null
+        }
+    }else if (imageSourceData === null) {
+        return {
+            valid: false,
+            errors: imageSourceData === null ? "Please Add Image First" : null
+        }
+    }
+    else{
+        return { valid: true, errors: null }
+    }
+}
+export const UpdateProfileValidation = (address,city,identity,passport,kinname,kinrelation) => {
+    if (address === "") {
+        return {
+            valid: false,
+            errors: fullName === "" ? "Address is Required" : null
+        }
+    }else if (address.length < 3) {
+        return {
+            valid: false,
+            errors: address.length < 3 ? "Address length at least 3" : null
+        }
+    }else if (city === "") {
+        return {
+            valid: false,
+            errors: city === "" ? "City is Required" : null
+        }
+    }else if (city.length < 3) {
+        return {
+            valid: false,
+            errors: city.length < 3 ? "City length at least 3" : null
+        }
+    }else if (identity === "") {
+        return {
+            valid: false,
+            errors: identity === "" ? "Identity is Required" : null
+        }
+    }else if (identity.length < 3 ) {
+        return {
+            valid: false,
+            errors: identity.length < 3 ? "Identity length at least 3" : null
+        }
+    }else if (passport === "") {
+        return {
+            valid: false,
+            errors: passport === "" ? "Passport is Required" : null
+        }
+    }else if (passport.length < 3) {
+        return {
+            valid: false,
+            errors: passport.length < 3 ? "Passport length at least 3" : null
+        }
+    }else if (kinname === ''){
+        return {
+            valid: false,
+            errors: kinname === '' ? "Kin Name is Required" : null
+        }
+    }else if (kinname.length < 3) {
+        return {
+            valid: false,
+            errors: kinname.length < 3 ? "Kin Name length at least 3" : null
+        }
+    }else if (kinrelation === "") {
+        return {
+            valid: false,
+            errors: kinrelation === "" ? "Kin Relation is Required" : null
+        }
+    }else if (kinrelation.length < 3) {
+        return {
+            valid: false,
+            errors: kinrelation.length < 3 ? "Kin Relation length at least 3" : null
+        }
+    }
+    else{
+        return { valid: true, errors: null }
+    }
+}

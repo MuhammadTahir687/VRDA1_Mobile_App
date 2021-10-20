@@ -213,7 +213,7 @@ const Shop = () => {
         </View>
     )
     const copyToClipboard = () => {
-        Clipboard.setString("tjgjgjgjgjgjg");
+        Clipboard.setString(usdtAddress);
         Toast.show("Text Copied !", Toast.LONG);
     };
     return (
@@ -268,14 +268,14 @@ const Shop = () => {
                                 {selectedValue == "bank"?
                                     <View>
                                     <Loader animating={isloading}/>
-                                    <DoubleText text1={"Account Name"} text2={accountName} textstyle={{ textAlign: "center" }} containerstyle={{ padding: 6 }} />
-                                    <DoubleText text1={"Bank Name"} text2={bankName} textstyle={{ textAlign: "center" }} containerstyle={{ backgroundColor: "rgba(152,148,148,0.63)", padding: 6 }} />
-                                    <DoubleText text1={"Account Number"} text2={accountNumber} textstyle={{ textAlign: "center" }} containerstyle={{ padding: 6 }} />
-                                    <DoubleText text1={"IBAN"} text2={iban} textstyle={{ textAlign: "center" }} containerstyle={{ backgroundColor: "rgba(152,148,148,0.63)", padding: 6 }} />
-                                    <DoubleText text1={"Swift Code"} text2={swiftCode} textstyle={{ textAlign: "center" }} containerstyle={{ padding: 6 }} />
-                                    <DoubleText text1={"CIF Number"} text2={cifNumber} textstyle={{ textAlign: "center" }} containerstyle={{ backgroundColor: "rgba(152,148,148,0.63)", padding: 6 }} />
-                                    <DoubleText text1={"Branch Name"} text2={branchName} textstyle={{ textAlign: "center" }} containerstyle={{ padding: 6 }} />
-                                    <DoubleText text1={"Branch Code"} text2={branchCode} textstyle={{ textAlign: "center" }} containerstyle={{ backgroundColor: "rgba(152,148,148,0.63)", padding: 6 }} />
+                                    <DoubleText text1={"Account Name"} text2={accountName?accountName:"Not Available"} textstyle={{ textAlign: "center" }} containerstyle={{ padding: 6 }} />
+                                    <DoubleText text1={"Bank Name"} text2={bankName ? bankName:"Not Available"} textstyle={{ textAlign: "center" }} containerstyle={{ backgroundColor: "rgba(152,148,148,0.63)", padding: 6 }} />
+                                    <DoubleText text1={"Account Number"} text2={accountNumber ? accountNumber:"Not Available"} textstyle={{ textAlign: "center" }} containerstyle={{ padding: 6 }} />
+                                    <DoubleText text1={"IBAN"} text2={iban ? iban:"Not Available"} textstyle={{ textAlign: "center" }} containerstyle={{ backgroundColor: "rgba(152,148,148,0.63)", padding: 6 }} />
+                                    <DoubleText text1={"Swift Code"} text2={swiftCode ? swiftCode:"Not Available"} textstyle={{ textAlign: "center" }} containerstyle={{ padding: 6 }} />
+                                    <DoubleText text1={"CIF Number"} text2={cifNumber ? cifNumber:"Not Available"} textstyle={{ textAlign: "center" }} containerstyle={{ backgroundColor: "rgba(152,148,148,0.63)", padding: 6 }} />
+                                    <DoubleText text1={"Branch Name"} text2={branchName ? branchName:"Not Available"} textstyle={{ textAlign: "center" }} containerstyle={{ padding: 6 }} />
+                                    <DoubleText text1={"Branch Code"} text2={branchCode ? branchCode:"Not Available"} textstyle={{ textAlign: "center" }} containerstyle={{ backgroundColor: "rgba(152,148,148,0.63)", padding: 6 }} />
                                     <Btn onPress={selectPhoto_gallery.bind(this)} image={require("../../../Assets/picture.png")} img_style={{height:20,width:20,marginHorizontal:5}} containerStyle={{flexDirection:"row", flex: 1, backgroundColor: Colors.primary, marginVertical: 8, padding: 10, borderRadius: 5,marginHorizontal:20,justifyContent:"center",justifyItems:"center" }} text={"Choose File"} text_style={{ color: Colors.white,textAlign:"center" }} />
                                         {errors ==="Please Add Image First"?
                                           <Text style={{textAlign:"center",fontSize:11,fontWeight:"bold",color:"red"}}>{!fileName?"Please Add Image First":null}</Text>

@@ -4,170 +4,379 @@ import ProfileView from "../../../../utilis/ProfileView";
 import Colors from "../../../../Style_Sheet/Colors";
 import {FormInput} from "../../../../utilis/Text_input";
 import {Btn} from "../../../../utilis/Btn";
-import SwitchButton from "@freakycoder/react-native-switch-button";
-import Feather from "react-native-vector-icons/Feather"
 import UploadPic from "../../../../utilis/Upload_Pic";
+import {launchImageLibrary} from "react-native-image-picker";
+import Toast from "react-native-simple-toast";
+import {UpdateBtc, UpdateProfileValidation} from "../../../../utilis/validation";
+import {sendUpdateBTC, sendUpdateProfile} from "../../../../utilis/Api/Api_controller";
+import Loader from "../../../../utilis/Loader";
 
-const UpdateProfile = ({navigation}) => {
+const UpdateProfile = ({navigation,route}) => {
+    const data = route.params.data;
+    const [email,setEmail]=useState(data.email_alter);
+    const [phone,setPhone]=useState(data.phone_no_alter);
+    const [address,setAddress]=useState(data.address);
+    const [city,setCity]=useState(data.city);
+    const [passport,setPassport]=useState(data.passport);
+    const [kinname,setKinname]=useState(data.kin_name);
+    const [kinrelation,setKinrelation]=useState(data.kin_relation);
+    const [identity,setIdentity]=useState(data.identity);
+    const [errors,setErrors]=useState("");
+    const [isloading,setLoading]=useState(false);
+    const [fileName,setFileName]=useState("");
+    const [imageSourceData,setImageSourceData]=useState("fd");
+    const [fileNameId,setFileNameId]=useState("");
+    const [imageSourceDataId,setImageSourceDataId]=useState(null);
+    const [fileNamePass,setFileNamePass]=useState("");
+    const [imageSourceDataPass,setImageSourceDataPass]=useState(null);
+    const [fileNameSig,setFileNameSig]=useState("");
+    const [imageSourceDataSig,setImageSourceDataSig]=useState(null);
 
-    const [title,setTitle]=useState("");
-    const [name,setName]=useState("");
-    const [username,setUsername]=useState("");
-    const [email,setEmail]=useState("");
-    const [phone,setPhone]=useState("");
-    const [address,setAddress]=useState("");
-    const [city,setCity]=useState("");
-    const [country,setCountry]=useState("");
-    const [passport,setPassport]=useState("");
-    const [kinname,setKinname]=useState("");
-    const [kinrelation,setKinrelation]=useState("");
-    const [errors,setErrors]=useState(null);
+    const selectPhoto_gallery = () => {
+        const options = {
+            mediaType: 'photo',
+            quality: 0.2
+        };
+        launchImageLibrary(options, response => {
+            if (response.didCancel) {
+                //cancel
+            } else if (response.error) {
+                Toast.show("Something Went Wrong", Toast.LONG);
+            }
+            else {
+                if (response.assets[0].fileSize <= "200000") {
+                    setLoading(true);
+                    let source = { uri: response.assets[0].uri };
+                    var name = (response.assets[0].fileName).slice(25);
+                    setFileName(name);
+                    setImageSourceData(source);
+                    setLoading(false);
+                    Toast.show("Succeed", Toast.LONG);
+                } else {
+                    Toast.show("File size is exceeded from 8 MB", Toast.LONG);
+                }
+            }
+        });
+    };
+    const selectIdentity_gallery = () => {
+        const options = {
+            mediaType: 'photo',
+            quality: 0.2
+        };
+        launchImageLibrary(options, response => {
+            if (response.didCancel) {
+                //cancel
+            } else if (response.error) {
+                Toast.show("Something Went Wrong", Toast.LONG);
+            }
+            else {
+                if (response.assets[0].fileSize <= "200000") {
+                    setLoading(true);
+                    let source = { uri: response.assets[0].uri };
+                    var name = (response.assets[0].fileName).slice(25);
+                    setFileNameId(name);
+                    setImageSourceDataId(source);
+                    setLoading(false);
+                    Toast.show("Succeed", Toast.LONG);
+                } else {
+                    Toast.show("File size is exceeded from 8 MB", Toast.LONG);
+                }
+            }
+        });
+    };
+    const selectPassport_gallery = () => {
+        const options = {
+            mediaType: 'photo',
+            quality: 0.2
+        };
+        launchImageLibrary(options, response => {
+            if (response.didCancel) {
+                //cancel
+            } else if (response.error) {
+                Toast.show("Something Went Wrong", Toast.LONG);
+            }
+            else {
+                if (response.assets[0].fileSize <= "200000") {
+                    setLoading(true);
+                    let source = { uri: response.assets[0].uri };
+                    var name = (response.assets[0].fileName).slice(25);
+                    setFileNamePass(name);
+                    setImageSourceDataPass(source);
+                    setLoading(false);
+                    Toast.show("Succeed", Toast.LONG);
+                } else {
+                    Toast.show("File size is exceeded from 8 MB", Toast.LONG);
+                }
+            }
+        });
+    };
+    const selectSignature_gallery = () => {
+        const options = {
+            mediaType: 'photo',
+            quality: 0.2
+        };
+        launchImageLibrary(options, response => {
+            if (response.didCancel) {
+                //cancel
+            } else if (response.error) {
+                Toast.show("Something Went Wrong", Toast.LONG);
+            }
+            else {
+                if (response.assets[0].fileSize <= "200000") {
+                    setLoading(true);
+                    let source = { uri: response.assets[0].uri };
+                    var name = (response.assets[0].fileName).slice(25);
+                    setFileNameSig(name);
+                    setImageSourceDataSig(source);
+                    setLoading(false);
+                    Toast.show("Succeed", Toast.LONG);
+                } else {
+                    Toast.show("File size is exceeded from 8 MB", Toast.LONG);
+                }
+            }
+        });
+    };
+    const Submit=async () => {
+        const validate = UpdateProfileValidation(address,city,identity,passport,kinname,kinrelation)
+        if (validate.valid === false) {
+            setErrors(validate.errors)
+        } else {
+            setErrors("")
+            setLoading(true)
+            const body = new FormData();
+            body.append('country_id', data.user_profile.country_id);
+            body.append('address', address);
+            body.append('city', city);
+            body.append('email_alter', email);
+            body.append('phone_no_alter', phone);
+            body.append('identity', identity);
+            body.append('passport', passport);
+            body.append('kin_name', kinname);
+            body.append('kin_relation', kinrelation);
+            {imageSourceData && body.append("picture", { uri: imageSourceData.uri, name: "photo.jpg", type: `image/jpg`, })}
+            {imageSourceDataId && body.append("identity_pic", { uri: imageSourceDataId.uri, name: "photo.jpg", type: `image/jpg`, })}
+            {imageSourceDataPass && body.append("passport_pic", { uri: imageSourceDataPass.uri, name: "photo.jpg", type: `image/jpg`, })}
+            {imageSourceDataSig && body.append("signature_pic", { uri: imageSourceDataSig.uri, name: "photo.jpg", type: `image/jpg`, })}
+            // body.append("kin_identity_pic", { uri: imageSourceData.uri, name: "photo.jpg", type: `image/jpg`, });
+            let response = await sendUpdateProfile(body)
+            if (response !== "Error") {
+                if (response.data.status == true) {
+                    Toast.show("Update Successful", Toast.LONG);
+                    await setLoading(false);
+                    await setImageSourceData(null);
+                    await setFileName("")
+                }else {
+                    Toast.show("Something Went Wrong!", Toast.LONG);
+                    setLoading(false);
+                }
+            }else {
+                Toast.show("Network Error: There is something wrong!", Toast.LONG);
+                setLoading(false);
+            }
+        }
+    }
     return (
         <SafeAreaView style={{flex:1}}>
             <ImageBackground source={require("../../../../Assets/splash.png")} style={{flex:1}}>
+                <Loader animating={isloading}/>
             <ScrollView style={{flex:1}}>
-            <ProfileView screen_title={"Profile"} role={"Designer"} username={"Mr. Syed Ahmed Jahan"} onPress={()=>navigation.goBack()}>
-                <Text style={{fontSize:16,fontWeight:"bold", color:Colors.primary,paddingHorizontal:10}}>Update Profile</Text>
+            <ProfileView source={{uri: data.picture}} screen_title={"Update Profile"} username={data.title+" "} firstname={data.first_name+" "} lastname={data.last_name} onPress={()=>navigation.goBack()}>
+                <Text style={{fontSize:16,fontWeight:"bold", color:Colors.primary,paddingHorizontal:10,bottom:15}}>Update Profile:</Text>
                 <View style={{marginHorizontal:10}}>
+                    <View style={{flexDirection:"row",justifyContent:"space-between",flex:1}}>
+                        <View style={{flex:1,margin:2}}>
+                            <Text style={{fontWeight:"bold",fontSize:13,paddingLeft:2}}>Title</Text>
+                        <FormInput
+                            placeholder={"Title"}
+                            placeholderTextColor={Colors.secondary}
+                            value={data.title+"."}
+                            editable={false}
+                            containerStyle={{ flex:1,backgroundColor:"rgba(0,0,0,0.13)",borderRadius:5 }}
+                            color={Colors.primary}
+                        />
+                        </View>
+                        <View style={{flex:2,margin:2}}>
+                            <Text style={{fontWeight:"bold",fontSize:13,paddingLeft:2}}>First Name</Text>
+                        <FormInput
+                            placeholder={"Firstname"}
+                            placeholderTextColor={Colors.secondary}
+                            color={Colors.primary}
+                            value={data.first_name}
+                            editable={false}
+                            containerStyle={{ flex:2,backgroundColor:"rgba(0,0,0,0.13)",borderRadius:5 }}
+                        />
+                        </View>
+                        <View style={{flex:2,margin:2}}>
+                            <Text style={{fontWeight:"bold",fontSize:13,paddingLeft:2}}>Last Name</Text>
+                        <FormInput
+                            placeholder={"Lastname"}
+                            placeholderTextColor={Colors.secondary}
+                            color={Colors.primary}
+                            value={data.last_name}
+                            editable={false}
+                            containerStyle={{ flex:2,backgroundColor:"rgba(0,0,0,0.13)",borderRadius:5 }}
+                        />
+                        </View>
+                    </View>
+                    <View style={{flex:1,margin:2}}>
+                        <Text style={{fontWeight:"bold",fontSize:13,paddingLeft:2}}>Username</Text>
+                    <FormInput
+                        placeholder={"Username"}
+                        placeholderTextColor={Colors.secondary}
+                        color={Colors.primary}
+                        value={data.name}
+                        editable={false}
+                        containerStyle={{ flex:1,backgroundColor:"rgba(0,0,0,0.13)",borderRadius:5 }}
+                    />
+                    </View>
                 <View style={{flexDirection:"row",justifyContent:"space-between"}}>
+                    <View style={{flex:2,margin:2}}>
+                        <Text style={{fontWeight:"bold",fontSize:13,paddingLeft:2}}>Email</Text>
                     <FormInput
-                        placeholder={"Title"}
+                        placeholder={"Email"}
                         placeholderTextColor={Colors.secondary}
-                        iconName_s="user"
-                        icon_color={Colors.secondary}
-                        value={title}
-                        containerStyle={{ width:"45%", }}
+                        value={data.email}
+                        editable={false}
+                        containerStyle={{flex:2,backgroundColor:"rgba(0,0,0,0.13)",borderRadius:5}}
                         color={Colors.primary}
-                        onChangeText={(text) => { setErrors(""), setTitle(text) }}
-                        error={errors === "Please Enter Your Email" ? "Please Enter Your Email" : null || errors === "Email format is invalid" ? "Email format is invalid" : null}
                     />
+                    </View>
+                    <View style={{flex:2,margin:2}}>
+                        <Text style={{fontWeight:"bold",fontSize:13,paddingLeft:2}}>Alternative Email</Text>
                     <FormInput
-                        placeholder={"Name"}
+                        placeholder={"Alternative Email"}
                         placeholderTextColor={Colors.secondary}
-                        iconName_s="user"
                         color={Colors.primary}
-                        icon_color={Colors.secondary}
-                        value={name}
-                        containerStyle={{ width:"45%" }}
-                        onChangeText={(text) => { setErrors(""), setName(text) }}
-                        error={errors === "Please Enter Your Email" ? "Please Enter Your Email" : null || errors === "Email format is invalid" ? "Email format is invalid" : null}
+                        value={email}
+                        containerStyle={{flex:2,borderWidth:0.3,borderRadius:5}}
+                        onChangeText={(text) => { setErrors(""), setEmail(text) }}
                     />
+                    </View>
                 </View>
-                <FormInput
-                    placeholder={"Username"}
+                    <View style={{flexDirection:"row",justifyContent:"space-between"}}>
+                        <View style={{flex:2,margin:2}}>
+                            <Text style={{fontWeight:"bold",fontSize:13,paddingLeft:2}}>Phone</Text>
+                        <FormInput
+                            placeholder={"Phone"}
+                            placeholderTextColor={Colors.secondary}
+                            value={data.user_profile.phone_no}
+                            editable={false}
+                            containerStyle={{flex:2,backgroundColor:"rgba(0,0,0,0.13)",borderRadius:5}}
+                            color={Colors.primary}
+                        />
+                        </View>
+                        <View style={{flex:2,margin:2}}>
+                            <Text style={{fontWeight:"bold",fontSize:13,paddingLeft:2}}>Alternative Phone</Text>
+                        <FormInput
+                            placeholder={"Alternative Phone"}
+                            placeholderTextColor={Colors.secondary}
+                            color={Colors.primary}
+                            value={phone}
+                            containerStyle={{flex:2,borderWidth:0.3,borderRadius:5}}
+                            onChangeText={(text) => { setErrors(""), setPhone(text) }}
+                        />
+                        </View>
+                    </View>
+                    <View style={{flex:1,margin:2}}>
+                        <Text style={{fontWeight:"bold",fontSize:13,paddingLeft:2}}>Address*</Text>
+                    <FormInput
+                    placeholder={"Address"}
                     placeholderTextColor={Colors.secondary}
-                    iconName_s="user"
                     color={Colors.primary}
-                    icon_color={Colors.secondary}
-                    value={username}
-                    containerStyle={{ marginTop:5 }}
-                    onChangeText={(text) => { setErrors(""), setUsername(text) }}
-                    error={errors === "Please Enter Your Email" ? "Please Enter Your Email" : null || errors === "Email format is invalid" ? "Email format is invalid" : null}
+                    value={address}
+                    containerStyle={{flex:1,borderWidth:0.3,borderRadius:5}}
+                    onChangeText={(text) => { setErrors(""), setAddress(text) }}
+                    error={errors === "Address is Required" ? "Address is Required" : errors === "Address length at least 3" ? "Address length at least 3" : null}
                 />
-                <FormInput
-                    placeholder={"Email"}
-                    placeholderTextColor={Colors.secondary}
-                    iconName_s="user"
-                    color={Colors.primary}
-                    icon_color={Colors.secondary}
-                    value={email}
-                    containerStyle={{ marginTop:5 }}
-                    onChangeText={(text) => { setErrors(""), setEmail(text) }}
-                    error={errors === "Please Enter Your Email" ? "Please Enter Your Email" : null || errors === "Email format is invalid" ? "Email format is invalid" : null}
-                />
-                <FormInput
-                    placeholder={"Phone"}
-                    placeholderTextColor={Colors.secondary}
-                    iconName_s="user"
-                    color={Colors.primary}
-                    icon_color={Colors.secondary}
-                    value={phone}
-                    containerStyle={{ marginTop:5 }}
-                    onChangeText={(text) => { setErrors(""), setPhone(text) }}
-                    error={errors === "Please Enter Your Email" ? "Please Enter Your Email" : null || errors === "Email format is invalid" ? "Email format is invalid" : null}
-                />
+                    </View>
+                    <View style={{flexDirection:"row", justifyContent:"space-between"}}>
+                        <View style={{flex:2,margin:2}}>
+                            <Text style={{fontWeight:"bold",fontSize:13,paddingLeft:2}}>City*</Text>
+                        <FormInput
+                            placeholder={"City*"}
+                            placeholderTextColor={Colors.secondary}
+                            color={Colors.primary}
+                            value={city}
+                            containerStyle={{flex:2,borderWidth:0.3,borderRadius:5}}
+                            onChangeText={(text) => { setErrors(""), setCity(text) }}
+                            error={errors === "City is Required" ? "City is Required" :errors === "City length at least 3" ? "City length at least 3" : null}
+                        />
+                        </View>
+                        <View style={{flex:2,margin:2}}>
+                            <Text style={{fontWeight:"bold",fontSize:13,paddingLeft:2}}>Country*</Text>
+                        <FormInput
+                            placeholder={"Country"}
+                            placeholderTextColor={Colors.secondary}
+                            color={Colors.primary}
+                            value={data.country}
+                            editable={false}
+                            containerStyle={{flex:2,backgroundColor:"rgba(0,0,0,0.13)",borderRadius:5}}
+                        />
+                        </View>
+                    </View>
                 <View style={{flexDirection:"row", justifyContent:"space-between"}}>
+                    <View style={{flex:2,margin:2}}>
+                        <Text style={{fontWeight:"bold",fontSize:13,paddingLeft:2}}>Identity*</Text>
                     <FormInput
-                        placeholder={"Address"}
+                        placeholder={"Identity*"}
                         placeholderTextColor={Colors.secondary}
-                        iconName_s="user"
                         color={Colors.primary}
-                        icon_color={Colors.secondary}
-                        value={address}
-                        containerStyle={{ marginTop:5,width:"45%" }}
-                        onChangeText={(text) => { setErrors(""), setAddress(text) }}
-                        error={errors === "Please Enter Your Email" ? "Please Enter Your Email" : null || errors === "Email format is invalid" ? "Email format is invalid" : null}
+                        value={identity}
+                        containerStyle={{flex:2,borderWidth:0.3,borderRadius:5}}
+                        onChangeText={(text) => { setErrors(""), setIdentity(text) }}
+                        error={errors === "Identity is Required" ? "Identity is Required" :errors === "Identity length at least 3" ? "Identity length at least 3" : null}
                     />
+                    </View>
+                    <View style={{flex:2,margin:2}}>
+                        <Text style={{fontWeight:"bold",fontSize:13,paddingLeft:2}}>Passport*</Text>
                     <FormInput
-                        placeholder={"Passport"}
+                        placeholder={"Passport*"}
                         placeholderTextColor={Colors.secondary}
-                        iconName_s="user"
                         color={Colors.primary}
-                        icon_color={Colors.secondary}
                         value={passport}
-                        containerStyle={{ marginTop:5,width:"45%" }}
+                        containerStyle={{flex:2,borderWidth:0.3,borderRadius:5}}
                         onChangeText={(text) => { setErrors(""), setPassport(text) }}
-                        error={errors === "Please Enter Your Email" ? "Please Enter Your Email" : null || errors === "Email format is invalid" ? "Email format is invalid" : null}
+                        error={errors === "Passport is Required" ? "Passport is Required" :errors === "Passport length at least 3" ? "Passport length at least 3" : null}
                     />
-                </View>
-                <View style={{flexDirection:"row", justifyContent:"space-between"}}>
-                    <FormInput
-                        placeholder={"City"}
-                        placeholderTextColor={Colors.secondary}
-                        iconName_s="user"
-                        color={Colors.primary}
-                        icon_color={Colors.secondary}
-                        value={city}
-                        containerStyle={{ marginTop:5,width:"45%" }}
-                        onChangeText={(text) => { setErrors(""), setCity(text) }}
-                        error={errors === "Please Enter Your Email" ? "Please Enter Your Email" : null || errors === "Email format is invalid" ? "Email format is invalid" : null}
-                    />
-                    <FormInput
-                        placeholder={"Country"}
-                        placeholderTextColor={Colors.secondary}
-                        iconName_s="user"
-                        color={Colors.primary}
-                        icon_color={Colors.secondary}
-                        value={country}
-                        containerStyle={{ marginTop:5,width:"45%" }}
-                        onChangeText={(text) => { setErrors(""), setCountry(text) }}
-                        error={errors === "Please Enter Your Email" ? "Please Enter Your Email" : null || errors === "Email format is invalid" ? "Email format is invalid" : null}
-                    />
+                    </View>
                 </View>
                     <View style={{flexDirection:"row", justifyContent:"space-between"}}>
+                        <View style={{flex:2,margin:2}}>
+                            <Text style={{fontWeight:"bold",fontSize:13,paddingLeft:2}}>Kin Name*</Text>
                         <FormInput
-                            placeholder={"Kin Name"}
+                            placeholder={"Kin Name*"}
                             placeholderTextColor={Colors.secondary}
-                            iconName_s="user"
                             color={Colors.primary}
-                            icon_color={Colors.secondary}
                             value={kinname}
-                            containerStyle={{ marginTop:5,width:"45%" }}
+                            containerStyle={{flex:2,borderWidth:0.3,borderRadius:5}}
                             onChangeText={(text) => { setErrors(""), setKinname(text) }}
-                            error={errors === "Please Enter Your Email" ? "Please Enter Your Email" : null || errors === "Email format is invalid" ? "Email format is invalid" : null}
+                            error={errors === "Kin Name is Required" ? "Kin Name is Required" :errors === "Kin Name length at least 3" ? "Kin Name length at least 3" : null}
                         />
+                        </View>
+                        <View style={{flex:2,margin:2}}>
+                            <Text style={{fontWeight:"bold",fontSize:13,paddingLeft:2}}>Kin Relation*</Text>
                         <FormInput
-                            placeholder={"Kim Relation"}
+                            placeholder={"Kim Relation*"}
                             placeholderTextColor={Colors.secondary}
-                            iconName_s="user"
                             color={Colors.primary}
-                            icon_color={Colors.secondary}
                             value={kinrelation}
-                            containerStyle={{ marginTop:5,width:"45%" }}
+                            containerStyle={{flex:2,borderWidth:0.3,borderRadius:5}}
                             onChangeText={(text) => { setErrors(""), setKinrelation(text) }}
-                            error={errors === "Please Enter Your Email" ? "Please Enter Your Email" : null || errors === "Email format is invalid" ? "Email format is invalid" : null}
+                            error={errors === "Kin Relation is Required" ? "Kin Relation is Required" :errors === "Kin Relation length at least 3" ? "Kin Relation length at least 3" : null}
                         />
+                        </View>
                     </View>
                 </View>
                 <Text></Text>
             </ProfileView>
                 <View style={{flexDirection:"row",justifyContent:"space-between",marginHorizontal:"8%",marginTop:10,flex:1}}>
-                    <UploadPic image={require("../../../../Assets/upload_image.png")} name={"Picture"}/>
-                    <UploadPic image={require("../../../../Assets/upload_image.png")} name={"Identity"}/>
-                    <UploadPic image={require("../../../../Assets/upload_image.png")} name={"Passport"}/>
-                    <UploadPic image={require("../../../../Assets/upload_image.png")} name={"Signature"}/>
+                    <UploadPic onPress={()=>{selectPhoto_gallery()}} source={{uri: data.picture}} name={"Picture"}/>
+                    <UploadPic onPress={()=>{selectIdentity_gallery()}} source={{uri: "https://staging.vrda1.net/"+ data.identity_pic}} name={"Identity"}/>
+                    <UploadPic onPress={()=>{selectPassport_gallery()}} source={{uri: "https://staging.vrda1.net/"+ data.passport_pic}} name={"Passport"}/>
+                    <UploadPic onPress={()=>{selectSignature_gallery()}} source={{uri: "https://staging.vrda1.net/"+ data.signature_pic}} name={"Signature"}/>
+                    <UploadPic onPress={()=>{selectSignature_gallery()}} source={{uri: "https://staging.vrda1.net/"+ data.kin_identity_pic}} name={"Next to Kin"}/>
                    </View>
-                <Btn text_style={{color:Colors.white}} text={"Update Info"} containerStyle={{width:170,borderRadius:20,padding:10,flexDirection:"row",backgroundColor:Colors.primary,justifyContent:"center",marginTop:20,alignSelf:"center"}}/>
+                <Btn onPress={()=>{Submit()}} text_style={{color:Colors.white}} text={"Update Info"} containerStyle={{width:170,borderRadius:20,padding:10,flexDirection:"row",backgroundColor:Colors.primary,justifyContent:"center",marginTop:20,alignSelf:"center"}}/>
                 <Text></Text>
             </ScrollView>
             </ImageBackground>

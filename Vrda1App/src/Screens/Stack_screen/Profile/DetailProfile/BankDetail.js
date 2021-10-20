@@ -8,7 +8,10 @@ import Toast from "react-native-simple-toast";
 import Loader from "../../../../utilis/Loader";
 
 const BankDetail = ({navigation,route}) => {
-    var name=route.params.tittle
+    var name=route.params.tittle;
+    var title=route.params.title;
+    var firstname=route.params.firstname;
+    var lastname =route.params.lastname;
     const [isloading,setLoading]=useState(false);
     const [apiData,setApiData]=useState("");
     const [country,setCountry]=useState("");
@@ -22,9 +25,9 @@ const BankDetail = ({navigation,route}) => {
         let response = await getBankDetail();
         if (response !== "Error") {
             if (response.data.status === true) {
-                setApiData(response.data.data.bank);
-                setCountry(response.data.data.bank.bank_country)
-                setLoading(false);
+                await setApiData(response.data.data.bank);
+                await setCountry(response.data.data.getCountry.geoplugin_countryName)
+                await setLoading(false);
             }else {
                 Toast.show("Something Went Wrong !", Toast.LONG);
                 setLoading(false);
@@ -38,7 +41,7 @@ const BankDetail = ({navigation,route}) => {
         <SafeAreaView style={{flex:1}}>
             <ImageBackground source={require("../../../../Assets/splash.png")} style={{flex:1}}>
                 <Loader animating={isloading}/>
-                <ProfileView screen_title={name} username={"Mr. Syed Ahmed Jahan"} onPress={()=>navigation.goBack()} onPressForUpdate={()=>{navigation.navigate("UpdateBank")}}>
+                <ProfileView source={{uri: apiData.picture}} screen_title={name} username={title+" "} firstname={firstname+" "} lastname={lastname} onPress={()=>navigation.goBack()} onPressForUpdate={()=>{navigation.navigate("UpdateBank",{title:title,firstname:firstname,lastname:lastname})}}>
                         <View>
                         <Text style={{fontSize:16,fontWeight:"bold", color:Colors.primary,paddingHorizontal:10,bottom:10}}>{name}:</Text>
                             <DoubleText text1={"Full Name"} text2={apiData.full_name?apiData.full_name:"Not Available"}/>

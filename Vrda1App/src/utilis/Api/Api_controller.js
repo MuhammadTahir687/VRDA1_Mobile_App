@@ -92,8 +92,28 @@ const getBankDetail = async () => {
     const Test = await get_request("/api/bank-update");
     return Test
 }
+const getBTCDetail = async () => {
+    const Test = await get_request("/api/btc-profile");
+    return Test
+}
+const getUSDTDetail = async () => {
+    const Test = await get_request("/api/usdt-profile");
+    return Test
+}
+const sendUpdateBTC = async (body) => {
+    const Test = await post_request({ target: "/api/btc-profile-update", body: body });
+    return Test
+}
+const sendUpdateBank = async (body) => {
+    const Test = await post_request({ target: "/api/update-bank-info", body: body });
+    return Test
+}
+const sendUpdateProfile = async (body) => {
+    const Test = await post_request({ target: "/api/update-info", body: body });
+    return Test
+}
 // const getAccountBalance = async (link) => {
 //     const Test = await get_request("/api/home" + link);
 //     return Test
 // }
-export {LoginApi,getDashboard,getShop,sendShopPayment,sendShopSubmit,getcommissionlogs,getactivityfeed,getcommissiondirect,getcommissionbinary,getallcommission,getwithdrawfunds,gettransferfunds,sendProcessWithdraw,sendProcessTransfer,getMyPurchase,getOwnershipPurchase,getTeamSale,getPurchaseRequest,getTransferHistory,getReceiveHistory,getWithdrawHistory,getPersonalDetail,getBankDetail}
+export {LoginApi,getDashboard,getShop,sendShopPayment,sendShopSubmit,getcommissionlogs,getactivityfeed,getcommissiondirect,getcommissionbinary,getallcommission,getwithdrawfunds,gettransferfunds,sendProcessWithdraw,sendProcessTransfer,getMyPurchase,getOwnershipPurchase,getTeamSale,getPurchaseRequest,getTransferHistory,getReceiveHistory,getWithdrawHistory,getPersonalDetail,getBankDetail,getBTCDetail,getUSDTDetail,sendUpdateBTC,sendUpdateBank,sendUpdateProfile}

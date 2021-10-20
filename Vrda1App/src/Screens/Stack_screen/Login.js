@@ -57,6 +57,7 @@ const Login = ({navigation}) => {
         icon_color={Colors.white}
         value={email}
         color={Colors.white}
+        keyboardType={'email-address'}
         containerStyle={{ marginTop: 15 }}
         onChangeText={(text) => { setErrors(""), setEmail(text) }}
         error={errors === "Please Enter Your Email" ? "Please Enter Your Email" : null || errors === "Email format is invalid" ? "Email format is invalid" : null}
