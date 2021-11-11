@@ -9,6 +9,7 @@ import DoubleText from "../../../utilis/DoubleText";
 import { getcommissionlogs } from "../../../utilis/Api/Api_controller";
 import Toast from "react-native-simple-toast";
 import Loader from "../../../utilis/Loader";
+import Dialogs from "../../../utilis/Dialog";
 
 const Commission_Logs=()=>{
     const [visible, setVisible] = useState(false);
@@ -24,7 +25,6 @@ const Commission_Logs=()=>{
     //   }
     //   setdata(chic)
     // },[])
-
     useEffect(async ()=>{
         await getData();
     },[]);
@@ -85,7 +85,7 @@ const Commission_Logs=()=>{
                 style={{ flex: 1, }}
                 contentContainerStyle={{ marginVertical: 20,paddingBottom:20, }}
             />
-            <Dialog.Container visible={visible}>
+            <Dialogs visible={visible} onPress={()=>{setVisible(false)}} title={"Description"}>
                 <View style={{flexDirection:"row",justifyContent:"space-between",marginHorizontal:12}}>
                     <TouchableOpacity style={{backgroundColor: Colors.primary,borderRadius: 25,flexDirection:"row",padding:7,justifyContent:"center",width:70, }}>
                         <EvilIcons color={Colors.white}  size={22} name={"user"}/>
@@ -104,8 +104,7 @@ const Commission_Logs=()=>{
                 {/*        <Text style={{color: Colors.primary, fontWeight: 'bold', fontSize: 12}}> 37%</Text>*/}
                 {/*    </View>*/}
                 {/*<Dialog.Description>Do you want to delete this account? You cannot undo this action.</Dialog.Description>*/}
-                <Dialog.Button label="Cancel" onPress={()=>{setVisible(false)}} />
-            </Dialog.Container>
+            </Dialogs>
         </SafeAreaView>
     )
 }

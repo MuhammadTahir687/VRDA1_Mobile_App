@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Text, View, SafeAreaView, TouchableOpacity, FlatList, RefreshControl} from "react-native";
 import Colors from "../../../../Style_Sheet/Colors";
-import Dialog from "react-native-dialog";
 import EvilIcons from "react-native-vector-icons/EvilIcons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import DoubleText from "../../../../utilis/DoubleText";

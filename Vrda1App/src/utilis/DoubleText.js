@@ -1,5 +1,5 @@
 import React from "react";
-import {Text, View, SafeAreaView, Image} from "react-native";
+import {Text, View, SafeAreaView, Image,Platform} from "react-native";
 import {Tooltip} from "react-native-elements";
 import Colors from "../Style_Sheet/Colors";
 
@@ -9,10 +9,13 @@ const DoubleText = ({text1,text2,textstyle,containerstyle,textstyle1,sourceimg})
                 <Text style={[{ width: '50%',fontWeight:"bold"},textstyle1]}>{text1}</Text>
                 {text2 &&
                 <Text style={[{width: '50%', fontSize: 13}, textstyle]}>
-                    {text2.length > 15 ?
+                    {text2.length > 13 ?
                         <Tooltip width={220} backgroundColor={Colors.primary}
                                  popover={<Text style={{color: Colors.white}}>{text2}</Text>}>
-                            <Text>{text2.slice(0, 15) + "..."}</Text>
+                            {Platform.OS == "ios" ?
+                                <Text>{text2.slice(0, 13) + "..."}</Text>
+                                : <Text>{text2.slice(0, 15) + "..."}</Text>
+                            }
                         </Tooltip>
                         : text2
                     }

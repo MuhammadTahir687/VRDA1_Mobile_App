@@ -55,6 +55,11 @@ export const processWithdrawValidation = (amount,selectedValue,detail) => {
             valid: false,
             errors: amount < 500 ? "Minimum Amount is 500" : null
         }
+    }else if (amount > 5000) {
+        return {
+            valid: false,
+            errors: amount > 5000 ? "Maximum Amount is 5000" : null
+        }
     }else if (selectedValue === "") {
         return {
             valid: false,
@@ -126,7 +131,7 @@ export const BuyValidation = (walletAmount,packagePrice) => {
         return { valid: true, errors: null }
     }
 }
-export const UpdateBtc = (fileName,imageSourceData,btcAddress) => {
+export const UpdateBtcvalid = (fileName,imageSourceData,btcAddress) => {
     if (btcAddress === "") {
         return {
             valid: false,
@@ -268,6 +273,114 @@ export const UpdateProfileValidation = (address,city,identity,passport,kinname,k
         return {
             valid: false,
             errors: kinrelation.length < 3 ? "Kin Relation length at least 3" : null
+        }
+    }
+    else{
+        return { valid: true, errors: null }
+    }
+}
+export const VreitWithdrawlValidation = (amount,exceedAmount) => {
+    if (amount === "") {
+        return {
+            valid: false,
+            errors: amount === "" ? "Please Enter Amount" : null
+        }
+    }else if (exceedAmount < amount) {
+        return {
+            valid: false,
+            errors: exceedAmount < amount ?"Amount Exceeded": null
+        }
+    }
+    else{
+        return { valid: true, errors: null }
+    }
+}
+export const processVreitTransferValidae = (amount,selectedValue,exceedvalue) => {
+    if (selectedValue === "") {
+        return {
+            valid: false,
+            errors: selectedValue === "" ? "Please Select Value" : null
+        }
+    }else if (selectedValue === null) {
+        return {
+            valid: false,
+            errors: selectedValue === null ? "Please Select Value" : null
+        }
+    }else if (selectedValue === "Please Select") {
+        return {
+            valid: false,
+            errors: selectedValue === "Please Select" ? "Please Select Value" : null
+        }
+    }else if (selectedValue === "parent") {
+        return {
+            valid: false,
+            errors: selectedValue === "parent" ? "Please Select Value" : null
+        }
+    }else if (selectedValue === "child") {
+        return {
+            valid: false,
+            errors: selectedValue === "child" ? "Please Select Value" : null
+        }
+    }else if (amount === ''){
+        return {
+            valid: false,
+            errors: amount === '' ? "Please Enter Points" : null
+        }
+    }else if (amount > exceedvalue) {
+        return {
+            valid: false,
+            errors: amount > exceedvalue ? "Amount Exceeded" : null
+        }
+    }else{
+        return { valid: true, errors: null }
+    }
+}
+export const UpdateVreitvalid = (fileName,imageSourceData,btcAddress) => {
+    if (btcAddress === "") {
+        return {
+            valid: false,
+            errors: btcAddress === "" ? "Please Enter Address" : null
+        }
+    }else if (btcAddress.length < 16) {
+        return {
+            valid: false,
+            errors: btcAddress.length < 16 ?"Vreit Address must be 16": null
+        }
+    } else if (fileName === ''){
+        return {
+            valid: false,
+            errors: fileName === '' ? "Please Add Image First" : null
+        }
+    }else if (imageSourceData === null) {
+        return {
+            valid: false,
+            errors: imageSourceData === null ? "Please Add Image First" : null
+        }
+    }
+    else{
+        return { valid: true, errors: null }
+    }
+}
+export const UpdateUsdtvalid = (fileName,imageSourceData,btcAddress) => {
+    if (btcAddress === "") {
+        return {
+            valid: false,
+            errors: btcAddress === "" ? "Please Enter Address" : null
+        }
+    }else if (btcAddress.length < 16) {
+        return {
+            valid: false,
+            errors: btcAddress.length < 16 ?"USDT Address must be 16": null
+        }
+    } else if (fileName === ''){
+        return {
+            valid: false,
+            errors: fileName === '' ? "Please Add Image First" : null
+        }
+    }else if (imageSourceData === null) {
+        return {
+            valid: false,
+            errors: imageSourceData === null ? "Please Add Image First" : null
         }
     }
     else{

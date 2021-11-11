@@ -120,9 +120,9 @@ const TransferFunds = () => {
                         error={errors === "Please Enter Amount" ? "Please Enter Amount" : errors === "Minimum Amount is 100" ? "Minimum Amount is 100":null}
                     />
                     {/*<Text>{selectedValue}</Text>*/}
-                    <Text style={{padding:10,fontWeight:"bold",color:Colors.primary}}>Withdraw Details:</Text>
+                    <Text style={{padding:10,fontWeight:"bold",color:Colors.primary}}>Transfer Details:</Text>
                     <FormInput
-                        placeholder={"Withdraw Details"}
+                        placeholder={"Transfer Details"}
                         placeholderTextColor={Colors.secondary}
                         value={detail}
                         onChangeText={(text) => { setErrors(""), setDetail(text) }}

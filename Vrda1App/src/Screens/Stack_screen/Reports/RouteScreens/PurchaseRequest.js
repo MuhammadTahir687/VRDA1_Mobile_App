@@ -47,9 +47,9 @@ const PurchaseRequest = () => {
             onPress={()=>{setVisible(true),setIds(item)}}
             style={{backgroundColor: Colors.secondary, borderColor: Colors.white, borderRadius: 10, borderBottomWidth: 2, padding: 10,marginHorizontal:5,marginVertical:2}}>
             {/*<Text>dddd</Text>*/}
-            <Text style={{ fontSize: 14, color: Colors.white }}>Request Type ({item.submission_type})</Text>
+            <Text style={{ fontSize: 14, color: Colors.white }}>Request Type ({item.submission_type?item.submission_type:null})</Text>
             {/*<Text style={{ fontSize: 14, color: Colors.white }}>Package Name ({item.package.title})</Text>*/}
-            <Text style={{ fontSize: 13, color: Colors.lightgray, flex: 1, }}>Closing Date: {item.created_at}</Text>
+            <Text style={{ fontSize: 13, color: Colors.lightgray, flex: 1, }}>Closing Date: {item.created_at?item.created_at:null}</Text>
         </TouchableOpacity>
     )
     return(

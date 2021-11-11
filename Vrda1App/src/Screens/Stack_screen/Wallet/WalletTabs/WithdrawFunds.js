@@ -5,7 +5,7 @@ import Colors from "../../../../Style_Sheet/Colors";
 import DoubleText from "../../../../utilis/DoubleText";
 import {FormInput} from "../../../../utilis/Text_input";
 import CheckBox from "../../../../utilis/Checkbox";
-import {getwithdrawfunds,sendProcessWithdraw} from "../../../../utilis/Api/Api_controller";
+import {getwithdrawfunds, sendProcessWithdraw, sendWithdrawFunds_Charges} from "../../../../utilis/Api/Api_controller";
 import Toast from "react-native-simple-toast";
 import Loader from "../../../../utilis/Loader";
 import Dropdown from "../../../../utilis/Picker/Picker";
@@ -20,6 +20,7 @@ const WithdrawFunds=()=>{
     const [apiData,setApiData]=useState("");
     const [refreshing,setRefreshing]=useState(false)
     const [checked,setChecked]=useState(false);
+    const [serviceCharges,setServiceCharges]=useState("5");
     const [selectedValue, setSelectedValue] = useState("");
     const buttons = [{name: 'Wallet', id: 0}, {name: 'Process Withdraw', id: 1},]
     const Item = [{ label: 'Bank', value: 'bank' },{ label: 'USDT', value: 'usdt' },{ label: 'BTC', value: 'btc' }]
@@ -33,9 +34,9 @@ const WithdrawFunds=()=>{
         let response = await getwithdrawfunds();
         if (response !== "Error") {
             if (response.data.status === true) {
-                setApiData(response.data.data);
-                setRefreshing(!refreshing)
-                setLoading(false);
+            setApiData(response.data.data);
+            setRefreshing(!refreshing)
+            setLoading(false);
             }else {
                 Toast.show("Something Went Wrong !", Toast.LONG);
                 setLoading(false);
@@ -45,6 +46,19 @@ const WithdrawFunds=()=>{
             setLoading(false);
         }
     }
+    const gettingDetails=async ({text})=>{
+        setLoading(true)
+        let body = {payment_type: text,};
+        let response = await sendWithdrawFunds_Charges(body);
+        if (response !== "Error") {
+            setServiceCharges(response.data.percentage);
+            setLoading(false);
+        }else {
+            Toast.show("Network Error: There is something wrong!", Toast.LONG);
+            setLoading(false);
+        }
+    }
+
     const onRefresh = async () => {
         await getData();
     }
@@ -110,10 +124,10 @@ const WithdrawFunds=()=>{
                         color={Colors.primary}
                         keyboardType={'phone-pad'}
                         onChangeText={(text) => { setAmount(text),setErrors("") }}
-                        error={errors === "Please Enter Amount" ? "Please Enter Amount" : errors === "Minimum Amount is 500" ? "Minimum Amount is 500":null}
+                        error={errors === "Please Enter Amount" ? "Please Enter Amount" : errors === "Minimum Amount is 500" ? "Minimum Amount is 500": errors === "Maximum Amount is 5000" ? "Maximum Amount is 5000" : null}
                     />
                     <View style={{borderBottomWidth:1,borderColor:Colors.secondary}}>
-                        <Dropdown onValueChange={(text)=>{setSelectedValue(text),setErrors("")}} PickerData={Item}/>
+                        <Dropdown onValueChange={(text)=>{gettingDetails({text}),setSelectedValue(text),setErrors("")}} PickerData={Item}/>
                     </View>
                     {errors === "Please Select Value" &&
                     <Text style={{ color: "red",fontSize:12 }}>{errors === "Please Select Value" ? "Please Select Value" : null}</Text>
@@ -127,7 +141,7 @@ const WithdrawFunds=()=>{
                         error={errors === "Please Enter Details" ? "Please Enter Details" : null }
                     />
                     <View style={{backgroundColor:"rgba(255,0,0,0.21)",paddingHorizontal:20,paddingVertical:10,borderRadius:10,marginTop:10}}>
-                        <Text style={{fontWeight:"500",color:"red"}}>5% service charges will be applicable</Text>
+                        <Text style={{fontWeight:"500",color:"red"}}>{serviceCharges?serviceCharges:"5"}% service charges will be applicable</Text>
                         <Text style={{fontWeight:"500",color:"red"}}>7 working days required</Text>
                     </View>
                     <CheckBox

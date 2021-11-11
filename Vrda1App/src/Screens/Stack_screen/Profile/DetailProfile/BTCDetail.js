@@ -11,10 +11,12 @@ import {getBTCDetail} from "../../../../utilis/Api/Api_controller";
 import Loader from "../../../../utilis/Loader";
 
 const BTCDetail = ({navigation,route}) => {
+    var data=route.params.data;
     var name=route.params.tittle;
     var title=route.params.title;
-    var firstname=route.params.firstname;
     var lastname =route.params.lastname;
+    var firstname=route.params.firstname;
+
     const [isloading,setLoading]=useState(false);
     const [apiData,setApiData]=useState("");
 
@@ -46,7 +48,7 @@ const BTCDetail = ({navigation,route}) => {
         <SafeAreaView style={{flex:1}}>
             <ImageBackground source={require("../../../../Assets/splash.png")} style={{flex:1}}>
                 <Loader animating={isloading}/>
-                <ProfileView source={{uri: apiData.btc_img}} screen_title={name} username={title+" "} firstname={firstname+" "} lastname={lastname} onPress={()=>navigation.goBack()} onPressForUpdate={()=>{navigation.navigate("UpdateBTC",{title:title,firstname:firstname,lastname:lastname})}}>
+                <ProfileView source={{uri: data.picture}} screen_title={name} username={title+" "} firstname={firstname+" "} lastname={lastname} onPress={()=>navigation.goBack()} onPressForUpdate={()=>{navigation.navigate("UpdateBTC",{title:title,firstname:firstname,lastname:lastname,data:data})}}>
                 <Text style={{fontSize:16,fontWeight:"bold", color:Colors.primary,paddingHorizontal:10,bottom:10}}>{name}:</Text>
                 <DoubleText text1={"BTC Address"} text2={apiData.btc}/>
                 <DoubleText text1={"Qr Code"} sourceimg={{uri: "https://staging.vrda1.net/"+apiData.btc_img}}/>

@@ -1,7 +1,11 @@
 import React from "react";
 import RNPickerSelect from 'react-native-picker-select';
+import {Text} from "react-native";
+import {placeholderName} from "react-native/template.config";
+import {placeholderTextColor} from "react-native/Libraries/DeprecatedPropTypes/DeprecatedTextInputPropTypes";
+import Colors from "../../Style_Sheet/Colors";
 
-const Dropdown = ({onValueChange,PickerData,onDonePress,onClose,}) => {
+const Dropdown = ({onValueChange,PickerData,onDonePress,onClose,disable,placeholder,value}) => {
   return (
     <RNPickerSelect
       onDonePress={onDonePress}
@@ -18,12 +22,16 @@ const Dropdown = ({onValueChange,PickerData,onDonePress,onClose,}) => {
           fontSize: 18,
           fontWeight: 'bold',
         },
+
       }}      // items={[
       //   { label: 'Football', value: 'football' },
       //   { label: 'Baseball', value: 'baseball' },
       //   { label: 'Hockey', value: 'hockey' },
       // ]}
+        disabled={disable}
+      placeholder={placeholder}
     />
+
   );
 };
 export default Dropdown;

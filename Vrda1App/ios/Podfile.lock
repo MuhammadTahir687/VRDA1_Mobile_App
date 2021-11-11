@@ -273,6 +273,8 @@ PODS:
   - React-jsinspector (0.65.1)
   - react-native-image-picker (4.1.1):
     - React-Core
+  - react-native-netinfo (6.0.4):
+    - React-Core
   - react-native-safe-area-context (3.3.2):
     - React-Core
   - react-native-simple-toast (1.1.3):
@@ -347,6 +349,8 @@ PODS:
   - RNCAsyncStorage (1.12.1):
     - React-Core
   - RNCClipboard (1.5.1):
+    - React-Core
+  - RNCPicker (2.1.0):
     - React-Core
   - RNGestureHandler (1.10.3):
     - React-Core
@@ -430,6 +434,7 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
+  - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-simple-toast (from `../node_modules/react-native-simple-toast`)
   - "react-native-viewpager (from `../node_modules/@react-native-community/viewpager`)"
@@ -447,6 +452,7 @@ DEPENDENCIES:
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
   - "RNCClipboard (from `../node_modules/@react-native-community/clipboard`)"
+  - "RNCPicker (from `../node_modules/@react-native-picker/picker`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -507,6 +513,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   react-native-image-picker:
     :path: "../node_modules/react-native-image-picker"
+  react-native-netinfo:
+    :path: "../node_modules/@react-native-community/netinfo"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-simple-toast:
@@ -541,6 +549,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/async-storage"
   RNCClipboard:
     :path: "../node_modules/@react-native-community/clipboard"
+  RNCPicker:
+    :path: "../node_modules/@react-native-picker/picker"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNReanimated:
@@ -584,6 +594,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 43f2542aed3c26e42175b339f8d37fe3dd683765
   React-jsinspector: 41e58e5b8e3e0bf061fdf725b03f2144014a8fb0
   react-native-image-picker: 92f51a85a62c2d829dcbd0dda5af99e6f988a113
+  react-native-netinfo: 1c7676413ab265759c7b3da205efab163f5366ef
   react-native-safe-area-context: 584dc04881deb49474363f3be89e4ca0e854c057
   react-native-simple-toast: bf002828cf816775a6809f7a9ec3907509bce11f
   react-native-viewpager: b99b53127d830885917ef84809c5065edd614a78
@@ -601,6 +612,7 @@ SPEC CHECKSUMS:
   ReactCommon: eafed38eec7b591c31751bfa7494801618460459
   RNCAsyncStorage: b03032fdbdb725bea0bd9e5ec5a7272865ae7398
   RNCClipboard: 41d8d918092ae8e676f18adada19104fa3e68495
+  RNCPicker: f7a40b21b915b7a187624d52f52b7bc2f73ea413
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
   RNReanimated: ad24db8af24e3fe1b5c462785bc3db8d5baae2ee
   RNScreens: 6e1ea5787989f92b0671049b808aef64fa1ef98c

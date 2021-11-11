@@ -8,8 +8,10 @@ import ProfileView from "../../../../utilis/ProfileView";
 import Toast from "react-native-simple-toast";
 import Warning from "../../../../Zextra/Warning";
 import {getUSDTDetail} from "../../../../utilis/Api/Api_controller";
+import Loader from "../../../../utilis/Loader";
 
 const USDTDetail = ({route,navigation}) => {
+    var data=route.params.data;
     var name=route.params.tittle;
     var title=route.params.title;
     var firstname=route.params.firstname;
@@ -26,7 +28,7 @@ const USDTDetail = ({route,navigation}) => {
         let response = await getUSDTDetail();
         if (response !== "Error") {
             if (response.data.status === true) {
-                setApiData(response.data.data);
+                setApiData(response.data.data.bank);
                 setLoading(false);
             }else {
                 Toast.show("Something Went Wrong !", Toast.LONG);
@@ -44,13 +46,17 @@ const USDTDetail = ({route,navigation}) => {
     return (
         <SafeAreaView style={{flex:1}}>
             <ImageBackground source={require("../../../../Assets/splash.png")} style={{flex:1}}>
-            <ProfileView source={{uri: apiData.picture}} screen_title={name} username={title+" "} firstname={firstname+" "} lastname={lastname} onPress={()=>navigation.goBack()} onPressForUpdate={()=>{navigation.navigate("UpdateUSDT",{title:title,firstname:firstname,lastname:lastname})}}>
+                <Loader animating={isloading}/>
+            <ProfileView source={{uri: data.picture}} screen_title={name} username={title+" "} firstname={firstname+" "} lastname={lastname} onPress={()=>navigation.goBack()} onPressForUpdate={()=>{navigation.navigate("UpdateUSDT",{data:data,title:title,firstname:firstname,lastname:lastname})}}>
                 <View style={{flexDirection:"row",justifyContent:"space-between",alignItems:"center",paddingHorizontal:15}}>
                 <Text style={{fontSize:16,fontWeight:"bold", color:Colors.primary,bottom:15}}>{name}:</Text>
                 <Text style={{width:58,padding:5,backgroundColor:"#2c754a",color:Colors.white,textAlign:"center",borderRadius:6,bottom:15}}>TRC20</Text>
                 </View>
-                <DoubleText text1={"BTC Address"} text2={apiData.usdt}/>
-                <DoubleText text1={"Qr Code"} sourceimg={{uri: "https://staging.vrda1.net/"+apiData.usdt_img}}/>
+                <DoubleText text1={"USDT Address"} text2={apiData.usdt?apiData.usdt:"Not Available"}/>
+                {apiData.usdt_img?
+                    <DoubleText text1={"Qr Code"} sourceimg={{uri: "https://staging.vrda1.net/"+apiData.usdt_img}}/>
+                    :<DoubleText text1={"Qr Code"} text2={"Not Available"}/>
+                }
                 <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center',marginBottom:10 }} onPress={() => { copyToClipboard() }}>
                     <Entypo color={Colors.primary}  size={20} name={"copy"}/>
                     <Text style={{ color: Colors.primary, }}> Tap to Copy!</Text>

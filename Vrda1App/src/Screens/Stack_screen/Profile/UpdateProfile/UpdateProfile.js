@@ -7,8 +7,8 @@ import {Btn} from "../../../../utilis/Btn";
 import UploadPic from "../../../../utilis/Upload_Pic";
 import {launchImageLibrary} from "react-native-image-picker";
 import Toast from "react-native-simple-toast";
-import {UpdateBtc, UpdateProfileValidation} from "../../../../utilis/validation";
-import {sendUpdateBTC, sendUpdateProfile} from "../../../../utilis/Api/Api_controller";
+import {UpdateProfileValidation} from "../../../../utilis/validation";
+import {sendUpdateProfile} from "../../../../utilis/Api/Api_controller";
 import Loader from "../../../../utilis/Loader";
 
 const UpdateProfile = ({navigation,route}) => {

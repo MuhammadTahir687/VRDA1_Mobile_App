@@ -47,10 +47,10 @@ const OwnershipPurchase = () => {
             activeOpacity={0.8}
             onPress={()=>{setVisible(true),setIds(item)}}
             style={{backgroundColor: Colors.secondary, borderColor: Colors.white, borderRadius: 10, borderBottomWidth: 2, padding: 10,marginHorizontal:5,marginVertical:2}}>
-            <Text style={{ fontSize: 14, color: Colors.white }}>Ref. Code ({item.code})</Text>
-            <Text style={{ fontSize: 14, color: Colors.white }}>Price ({item.package_price})</Text>
+            <Text style={{ fontSize: 14, color: Colors.white }}>Ref. Code ({item.code?item.code:"Not Available"})</Text>
+            <Text style={{ fontSize: 14, color: Colors.white }}>Price ({item.package_price?item.package_price:"0"})</Text>
             {/*<Text style={{ fontSize: 14, color: Colors.white }}>Status ({item.id}%)</Text>*/}
-            <Text style={{ fontSize: 13, color: Colors.lightgray, flex: 1, }}>Closing Date: {item.created_at}</Text>
+            <Text style={{ fontSize: 13, color: Colors.lightgray, flex: 1, }}>Closing Date: {item.created_at?item.created_at:"Not Available"}</Text>
         </TouchableOpacity>
     )
     return(
@@ -78,13 +78,13 @@ const OwnershipPurchase = () => {
                     <AntDesign color={Colors.primary}  size={20} name={"closecircle"} onPress={()=>{setVisible(false)}}/>
                 </View>
                 <View>
-                    <DoubleText text1={"Ref.Code"} text2={ids.code}/>
-                    <DoubleText text1={"Price"} text2={"$"+ids.package_price}/>
-                    <DoubleText text1={"Business Volume"} text2={ids.package_business_volume}/>
-                    <DoubleText text1={"VREIT Points"} text2={ids.tokens_assigned}/>
-                    <DoubleText text1={"VREIT Bonus"} text2={ids.extra_tokens_assigned}/>
-                    <DoubleText text1={"VREIT Point Price"} text2={ids.per_token_price}/>
-                    <DoubleText text1={"Package"} text2={ids.package_name}/>
+                    <DoubleText text1={"Ref.Code"} text2={ids.code?ids.code:"Not Available"}/>
+                    <DoubleText text1={"Price"} text2={ids.package_price?"$"+ids.package_price:"0"}/>
+                    <DoubleText text1={"Business Volume"} text2={ids.package_business_volume?ids.package_business_volume:"0"}/>
+                    <DoubleText text1={"VREIT Points"} text2={ids.tokens_assigned?ids.tokens_assigned:"0"}/>
+                    <DoubleText text1={"VREIT Bonus"} text2={ids.extra_tokens_assigned?ids.extra_tokens_assigned:"0"}/>
+                    <DoubleText text1={"VREIT Point Price"} text2={ids.per_token_price?ids.per_token_price:"0"}/>
+                    <DoubleText text1={"Package"} text2={ids.package_name?ids.package_name:"Not Available"}/>
                     <DoubleText text1={"Date"} text2={ids.created_at?ids.created_at:"Not Available"}/>
                 </View>
             </Dialogs>

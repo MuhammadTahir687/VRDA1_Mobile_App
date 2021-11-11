@@ -12,8 +12,8 @@ import Toast from "react-native-simple-toast";
 
 const Login = ({navigation}) => {
   const [secure, setSecure] = useState(true);
-  const [email, setEmail] = useState("vrda1@vrda1.com");
-  const [password, setPassword] = useState("Vr6@1Vr6@1");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [errors, setErrors] = useState(null);
   const [isloading, setLoading] = useState(false);
 

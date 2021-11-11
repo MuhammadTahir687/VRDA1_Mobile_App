@@ -46,9 +46,9 @@ const WithdrawHistory = () => {
             activeOpacity={0.8}
             onPress={()=>{setVisible(true),setIds(item)}}
             style={{backgroundColor: Colors.secondary, borderColor: Colors.white, borderRadius: 10, borderBottomWidth: 2, padding: 10,marginHorizontal:5,marginVertical:2}}>
-            <Text style={{ fontSize: 14, color: Colors.white }}>Ref. Code ({item.code})</Text>
-            <Text style={{ fontSize: 14, color: Colors.white }}>Amount ({"$"+item.amount})</Text>
-            <Text style={{ fontSize: 13, color: Colors.lightgray, flex: 1, }}>Closing Date: {item.created_at}</Text>
+            <Text style={{ fontSize: 14, color: Colors.white }}>Ref. Code ({item.code?item.code:null})</Text>
+            <Text style={{ fontSize: 14, color: Colors.white }}>Amount ({item.amount?"$"+item.amount:null})</Text>
+            <Text style={{ fontSize: 13, color: Colors.lightgray, flex: 1, }}>Closing Date: {item.created_at?item.created_at:null}</Text>
         </TouchableOpacity>
     )
     return(

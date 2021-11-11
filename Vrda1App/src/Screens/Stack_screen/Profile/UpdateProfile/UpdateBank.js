@@ -11,9 +11,11 @@ import {sendUpdateBank, sendUpdateBTC} from "../../../../utilis/Api/Api_controll
 import Loader from "../../../../utilis/Loader";
 
 const UpdateBank = ({navigation,route}) => {
-    const title=route.params.title;
-    const lastname =route.params.lastname;
-    const firstname=route.params.firstname;
+    var title=route.params.title;
+    var lastname =route.params.lastname;
+    var firstname=route.params.firstname;
+    var data=route.params.data;
+
     const [fullName,setFullName]=useState("");
     const [iban,setIban]=useState("");
     const [bankname,setBankname]=useState("");

@@ -64,10 +64,6 @@ const getOwnershipPurchase = async () => {
     const Test = await get_request("/api/own-purchase-report");
     return Test
 }
-const getTeamSale = async () => {
-    const Test = await get_request("/api/team-sale");
-    return Test
-}
 const getPurchaseRequest = async () => {
     const Test = await get_request("/api/my-requests");
     return Test
@@ -112,8 +108,56 @@ const sendUpdateProfile = async (body) => {
     const Test = await post_request({ target: "/api/update-info", body: body });
     return Test
 }
-// const getAccountBalance = async (link) => {
-//     const Test = await get_request("/api/home" + link);
+const sendWithdrawFunds_Charges = async (body) => {
+    const Test = await post_request({ target: "/api/get-services-charges", body: body });
+    return Test
+}
+const getVreitTransferC2C = async () => {
+    const Test = await get_request("/api/vreit-transfer-customer");
+    return Test
+}
+const getVreitLogs = async (link) => {
+    const Test = await get_request("/api/vreits-logs/" + link);
+    return Test
+}
+const getVreitWithdrawl = async () => {
+    const Test = await get_request("/api/vreit-points-withdrawal");
+    return Test
+}
+const sendVreitWithdrawl = async (body) => {
+    const Test = await post_request({ target: "/api/vreit-amount-swapped-withdrawal", body: body });
+    return Test
+}
+const getVreitQuaterly = async () => {
+    const Test = await get_request("/api/quarterly-vreits");
+    return Test
+}
+const sendVreitC2Csubmit = async (body) => {
+    const Test = await post_request({ target: "/api/vreit-transfer-process", body: body });
+    return Test
+}
+// const getTeamSale = async () => {
+//     const Test = await get_request("/api/team-sale");
 //     return Test
 // }
-export {LoginApi,getDashboard,getShop,sendShopPayment,sendShopSubmit,getcommissionlogs,getactivityfeed,getcommissiondirect,getcommissionbinary,getallcommission,getwithdrawfunds,gettransferfunds,sendProcessWithdraw,sendProcessTransfer,getMyPurchase,getOwnershipPurchase,getTeamSale,getPurchaseRequest,getTransferHistory,getReceiveHistory,getWithdrawHistory,getPersonalDetail,getBankDetail,getBTCDetail,getUSDTDetail,sendUpdateBTC,sendUpdateBank,sendUpdateProfile}
+const sendTeamSale = async (body) => {
+    const Test = await post_request({ target: "/api/search-team-sale", body: body });
+    return Test
+}
+const getVREITDetail = async () => {
+    const Test = await get_request("/api/vreit-profile");
+    return Test
+}
+const sendVreitUpdate = async (body) => {
+    const Test = await post_request({ target: "/api/vreit-profile-update", body: body });
+    return Test
+}
+const sendUsdtUpdate = async (body) => {
+    const Test = await post_request({ target: "/api/usdt-profile-update", body: body });
+    return Test
+}
+const sendVreitShiftedBtn = async (body) => {
+    const Test = await post_request({ target: "/api/shift-quarterly-vreit-points", body: body });
+    return Test
+}
+export {LoginApi,getDashboard,getShop,sendShopPayment,sendShopSubmit,getcommissionlogs,getactivityfeed,getcommissiondirect,getcommissionbinary,getallcommission,getwithdrawfunds,gettransferfunds,sendProcessWithdraw,sendProcessTransfer,getMyPurchase,getOwnershipPurchase,getPurchaseRequest,getTransferHistory,getReceiveHistory,getWithdrawHistory,getPersonalDetail,getBankDetail,getBTCDetail,getUSDTDetail,sendUpdateBTC,sendUpdateBank,sendUpdateProfile,sendWithdrawFunds_Charges,getVreitTransferC2C,getVreitLogs,getVreitWithdrawl,sendVreitWithdrawl,getVreitQuaterly,sendVreitC2Csubmit,sendTeamSale,getVREITDetail,sendVreitUpdate,sendUsdtUpdate,sendVreitShiftedBtn}

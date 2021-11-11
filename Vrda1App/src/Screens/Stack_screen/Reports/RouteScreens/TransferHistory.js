@@ -16,9 +16,7 @@ const TransferHistory = () => {
     const [data,setData]=useState("");
     const [ids,setIds]=useState("");
 
-    useEffect(async ()=>{
-        await getData();
-    },[])
+    useEffect(async ()=>{ await getData(); },[])
 
     const getData=async ()=>{
         setLoading(true)
@@ -37,18 +35,15 @@ const TransferHistory = () => {
             setLoading(false);
         }
     }
-    const onRefresh = async () => {
-        await getData();
-    }
-
+    const onRefresh = async () => { await getData();}
     const renderItem=({item})=>(
         <TouchableOpacity
             activeOpacity={0.8}
             onPress={()=>{setVisible(true),setIds(item)}}
             style={{backgroundColor: Colors.secondary, borderColor: Colors.white, borderRadius: 10, borderBottomWidth: 2, padding: 10,marginHorizontal:5,marginVertical:2}}>
-            <Text style={{ fontSize: 14, color: Colors.white }}>Ref. Code ({item.code})</Text>
-            <Text style={{ fontSize: 14, color: Colors.white }}>Amount ({"$"+item.amount})</Text>
-            <Text style={{ fontSize: 13, color: Colors.lightgray, flex: 1, }}>Closing Date: {item.created_at}</Text>
+            <Text style={{ fontSize: 14, color: Colors.white }}>Ref. Code ({item.code?item.code:null})</Text>
+            <Text style={{ fontSize: 14, color: Colors.white }}>Amount ({item.amount?"$"+item.amount:null})</Text>
+            <Text style={{ fontSize: 13, color: Colors.lightgray, flex: 1, }}>Closing Date: {item.created_at?item.created_at:null}</Text>
         </TouchableOpacity>
     )
     return(
@@ -61,11 +56,7 @@ const TransferHistory = () => {
                 renderItem={renderItem}
                 style={{ flex: 1, }}
                 contentContainerStyle={{ marginVertical: 20,paddingBottom:20, }}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={false}
-                        onRefresh={onRefresh} />
-                }
+                refreshControl={<RefreshControl refreshing={false} onRefresh={onRefresh} />}
             />
             <Dialogs visible={visible} onPress={()=>{setVisible(false)}} title={"Description"} description={ids.admin_feedback?ids.admin_feedback:"Not Available"}>
                 <View style={{flexDirection:"row",justifyContent:"space-between",marginHorizontal:12,alignItems:"center",marginTop:10}}>

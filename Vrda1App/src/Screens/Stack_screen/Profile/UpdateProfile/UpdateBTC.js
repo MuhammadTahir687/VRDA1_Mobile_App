@@ -6,14 +6,16 @@ import {FormInput} from "../../../../utilis/Text_input";
 import {Btn} from "../../../../utilis/Btn";
 import {launchImageLibrary} from "react-native-image-picker";
 import Toast from "react-native-simple-toast";
-import {UpdateBtc} from "../../../../utilis/validation";
+import {UpdateBtcvalid} from "../../../../utilis/validation";
 import {sendUpdateBTC} from "../../../../utilis/Api/Api_controller";
 import Loader from "../../../../utilis/Loader";
 
 const UpdateBTC = ({navigation,route}) => {
+    var data=route.params.data;
     var title=route.params.title;
-    var firstname=route.params.firstname;
     var lastname =route.params.lastname;
+    var firstname=route.params.firstname;
+
     const [btcAddress,setBtcaddress]=useState("");
     const [errors,setErrors]=useState("");
     const [fileName,setFileName]=useState("");
@@ -47,7 +49,7 @@ const UpdateBTC = ({navigation,route}) => {
         });
     };
     const Submit=async () => {
-        var validate = UpdateBtc(fileName,imageSourceData,btcAddress)
+        var validate = UpdateBtcvalid(fileName,imageSourceData,btcAddress)
         if (validate.valid === false) {
             setErrors(validate.errors)
         } else {
@@ -80,7 +82,7 @@ const UpdateBTC = ({navigation,route}) => {
                 <Loader animating={isloading}/>
                 <ScrollView contentContainerStyle={{flexGrow:1}}>
                     <ProfileView source={{uri: data.picture}} screen_title={"Update BTC Detail:"} username={title+" "} firstname={firstname+" "} lastname={lastname} onPress={()=>navigation.goBack()} >
-                        <Text style={{fontSize:16,fontWeight:"bold", color:Colors.primary,paddingHorizontal:10}}>Update Bank Detail:</Text>
+                        <Text style={{fontSize:16,fontWeight:"bold", color:Colors.primary,paddingHorizontal:10}}>Update BTC Detail:</Text>
                         <View style={{marginHorizontal:10,marginBottom:20}}>
                                 <FormInput
                                     placeholder={"BTC Address"}
