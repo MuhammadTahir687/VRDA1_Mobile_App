@@ -1,15 +1,12 @@
 import React from "react";
 import RNPickerSelect from 'react-native-picker-select';
-import {Text} from "react-native";
-import {placeholderName} from "react-native/template.config";
-import {placeholderTextColor} from "react-native/Libraries/DeprecatedPropTypes/DeprecatedTextInputPropTypes";
-import Colors from "../../Style_Sheet/Colors";
+import {Platform} from "react-native";
+import { Icon } from 'react-native-elements';
 
 const Dropdown = ({onValueChange,PickerData,onDonePress,onClose,disable,placeholder,value}) => {
   return (
     <RNPickerSelect
       onDonePress={onDonePress}
-      // onValueChange={(value) => console.log(value)}
       onValueChange={onValueChange}
       items={PickerData}
       style={{
@@ -22,14 +19,33 @@ const Dropdown = ({onValueChange,PickerData,onDonePress,onClose,disable,placehol
           fontSize: 18,
           fontWeight: 'bold',
         },
+          // viewContainer:{paddingTop:Platform.OS === 'ios' ? 25 : null,marginBottom:Platform.OS === 'ios' ? 5:null,paddingHorizontal:Platform.OS === 'ios' ? 15 : null,}
+      }}
+        // items={[{ label: 'Football', value: 'football' },{ label: 'Baseball', value: 'baseball' },{ label: 'Hockey', value: 'hockey' },]}
 
-      }}      // items={[
-      //   { label: 'Football', value: 'football' },
-      //   { label: 'Baseball', value: 'baseball' },
-      //   { label: 'Hockey', value: 'hockey' },
-      // ]}
-        disabled={disable}
+      disabled={disable}
       placeholder={placeholder}
+      // Icon={() => {
+      //     return <Icon
+      //         name="chevron-down"
+      //         type="feather"
+      //         underlayColor="transparent"
+      //         iconStyle={{color: '#333333', fontSize:25}}
+      //     />
+      // }}
+      style={{
+          inputAndroid: {
+              backgroundColor: 'transparent',
+              color: 'black',
+              fontSize: 17,
+          },
+          inputIOS: {
+              color: 'black',
+              fontSize: 16,
+              // lineHeight: 21,
+              alignItems: 'center' }, }}
+      useNativeAndroidPickerStyle={false}
+      // textInputProps={{ underlineColorAndroid: 'red' }}
     />
 
   );

@@ -49,7 +49,7 @@ const Vreit_Transfer = () => {
     }
 
     const onRefresh = async () => { await getData(); }
-    
+
     const Submit = async () => {
         if (selectedValue1){
             var validate =await processVreitTransferValidae(amount,selectedValue1,vreitTransfer.available)
@@ -67,6 +67,8 @@ const Vreit_Transfer = () => {
                 if (response.data.status == true) {
                     Toast.show("Transfer Successful", Toast.LONG);
                     setLoading(false);
+                    await setDetail("");
+                    await setAmount("");
                 }else {
                     Toast.show(response.data, Toast.LONG);
                     setLoading(false);

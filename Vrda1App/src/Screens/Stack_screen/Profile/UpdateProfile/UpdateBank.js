@@ -48,6 +48,7 @@ const UpdateBank = ({navigation,route}) => {
                 if (response.assets[0].fileSize <= "200000") {
                     setLoading(true);
                     let source = { uri: response.assets[0].uri };
+                    alert(JSON.stringify(source));
                     var name = (response.assets[0].fileName).slice(25);
                     setFileName(name);
                     setImageSourceData(source);

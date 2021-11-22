@@ -262,7 +262,7 @@ const Shop = () => {
                         <ScrollView showsVerticalScrollIndicator={true}>
                             <TouchableOpacity activeOpacity={1}>
                                 <Text style={{ fontSize: 14, fontWeight: "bold" }}>Proceed With</Text>
-                                <View style={{borderBottomWidth: 1, borderColor: Colors.secondary,paddingTop:Platform.OS === 'ios' ? 25 : null,marginBottom:Platform.OS === 'ios' ? 5 : null,paddingHorizontal:Platform.OS === 'ios' ? 15 : null }}>
+                                <View style={{borderBottomWidth: 1, borderColor: Colors.secondary, }}>
                                     <Dropdown onValueChange={(text)=>{gettingDetails({text}),setSelectedValue(text)}} PickerData={picker}/>
                                 </View>
                                 {selectedValue == "bank"?
@@ -340,7 +340,7 @@ const Shop = () => {
                                                     {vreitMsg ?
                                                         <View>
                                                             <Text style={{ margin: 10 }}>{vreitMsg}</Text>
-                                                            <Btn text_style={{ color: Colors.white }} text={"Buy"} containerStyle={{ width: 100, borderRadius: 5, padding: 10, backgroundColor: Colors.primary, alignSelf: "center", marginTop: 12, }} />
+                                                            <Btn onPress={()=>walletBuy()} text_style={{ color: Colors.white }} text={"Buy"} containerStyle={{ width: 100, borderRadius: 5, padding: 10, backgroundColor: Colors.primary, alignSelf: "center", marginTop: 12, }} />
                                                         </View>
                                                         :<Alert value={"Vreit Wallet"}/>
                                                     }

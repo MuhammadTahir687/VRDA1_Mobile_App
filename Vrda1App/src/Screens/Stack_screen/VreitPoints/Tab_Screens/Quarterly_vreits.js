@@ -70,6 +70,7 @@ const Quarterly_vreits = ({ navigation }) => {
             if (response.data.status == true) {
                 setLoading(false);
                 Toast.show(response.data.message, Toast.LONG);
+                setRefreshing(true);
             }else {
                 Toast.show(response.data.message, Toast.LONG);
                 setLoading(false);

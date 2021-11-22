@@ -52,10 +52,6 @@ const sendProcessWithdraw = async (body) => {
     const Test = await post_request({ target: "/api/post-withdraw-funds", body: body });
     return Test
 }
-const sendProcessTransfer = async (body) => {
-    const Test = await post_request({ target: "/api/transfer-funds", body: body });
-    return Test
-}
 const getMyPurchase = async () => {
     const Test = await get_request("/api/purchase-report");
     return Test
@@ -160,4 +156,8 @@ const sendVreitShiftedBtn = async (body) => {
     const Test = await post_request({ target: "/api/shift-quarterly-vreit-points", body: body });
     return Test
 }
-export {LoginApi,getDashboard,getShop,sendShopPayment,sendShopSubmit,getcommissionlogs,getactivityfeed,getcommissiondirect,getcommissionbinary,getallcommission,getwithdrawfunds,gettransferfunds,sendProcessWithdraw,sendProcessTransfer,getMyPurchase,getOwnershipPurchase,getPurchaseRequest,getTransferHistory,getReceiveHistory,getWithdrawHistory,getPersonalDetail,getBankDetail,getBTCDetail,getUSDTDetail,sendUpdateBTC,sendUpdateBank,sendUpdateProfile,sendWithdrawFunds_Charges,getVreitTransferC2C,getVreitLogs,getVreitWithdrawl,sendVreitWithdrawl,getVreitQuaterly,sendVreitC2Csubmit,sendTeamSale,getVREITDetail,sendVreitUpdate,sendUsdtUpdate,sendVreitShiftedBtn}
+const sendProcessTransferBtn = async (body) => {
+    const Test = await post_request({ target: "/api/transfer-funds", body: body });
+    return Test
+}
+export {LoginApi,getDashboard,getShop,sendShopPayment,sendShopSubmit,getcommissionlogs,getactivityfeed,getcommissiondirect,getcommissionbinary,getallcommission,getwithdrawfunds,gettransferfunds,sendProcessWithdraw,getMyPurchase,getOwnershipPurchase,getPurchaseRequest,getTransferHistory,getReceiveHistory,getWithdrawHistory,getPersonalDetail,getBankDetail,getBTCDetail,getUSDTDetail,sendUpdateBTC,sendUpdateBank,sendUpdateProfile,sendWithdrawFunds_Charges,getVreitTransferC2C,getVreitLogs,getVreitWithdrawl,sendVreitWithdrawl,getVreitQuaterly,sendVreitC2Csubmit,sendTeamSale,getVREITDetail,sendVreitUpdate,sendUsdtUpdate,sendVreitShiftedBtn,sendProcessTransferBtn}

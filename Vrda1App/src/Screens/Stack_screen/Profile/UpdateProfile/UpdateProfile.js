@@ -13,24 +13,25 @@ import Loader from "../../../../utilis/Loader";
 
 const UpdateProfile = ({navigation,route}) => {
     const data = route.params.data;
-    const [email,setEmail]=useState(data.email_alter);
-    const [phone,setPhone]=useState(data.phone_no_alter);
-    const [address,setAddress]=useState(data.address);
     const [city,setCity]=useState(data.city);
-    const [passport,setPassport]=useState(data.passport);
-    const [kinname,setKinname]=useState(data.kin_name);
-    const [kinrelation,setKinrelation]=useState(data.kin_relation);
-    const [identity,setIdentity]=useState(data.identity);
     const [errors,setErrors]=useState("");
+    const [address,setAddress]=useState(data.address);
+    const [email,setEmail]=useState(data.email_alter);
+    const [kinname,setKinname]=useState(data.kin_name);
+    const [phone,setPhone]=useState(data.phone_no_alter);
+    const [passport,setPassport]=useState(data.passport);
+    const [identity,setIdentity]=useState(data.identity);
     const [isloading,setLoading]=useState(false);
+    const [kinrelation,setKinrelation]=useState(data.kin_relation);
     const [fileName,setFileName]=useState("");
-    const [imageSourceData,setImageSourceData]=useState("fd");
     const [fileNameId,setFileNameId]=useState("");
-    const [imageSourceDataId,setImageSourceDataId]=useState(null);
     const [fileNamePass,setFileNamePass]=useState("");
-    const [imageSourceDataPass,setImageSourceDataPass]=useState(null);
     const [fileNameSig,setFileNameSig]=useState("");
+    const [imageSourceData,setImageSourceData]=useState(null);
+    const [imageSourceDataId,setImageSourceDataId]=useState(null);
+    const [imageSourceDataPass,setImageSourceDataPass]=useState(null);
     const [imageSourceDataSig,setImageSourceDataSig]=useState(null);
+    const [imageSourceDatakin,setImageSourceDatakin]=useState(null);
 
     const selectPhoto_gallery = () => {
         const options = {
@@ -136,6 +137,32 @@ const UpdateProfile = ({navigation,route}) => {
             }
         });
     };
+    const selectNextToKin_gallery = () => {
+        const options = {
+            mediaType: 'photo',
+            quality: 0.2
+        };
+        launchImageLibrary(options, response => {
+            if (response.didCancel) {
+                //cancel
+            } else if (response.error) {
+                Toast.show("Something Went Wrong", Toast.LONG);
+            }
+            else {
+                if (response.assets[0].fileSize <= "200000") {
+                    setLoading(true);
+                    let source = { uri: response.assets[0].uri };
+                    var name = (response.assets[0].fileName).slice(25);
+                    setImageSourceDatakin(source);
+                    setLoading(false);
+                    Toast.show("Succeed", Toast.LONG);
+                } else {
+                    Toast.show("File size is exceeded from 8 MB", Toast.LONG);
+                }
+            }
+        });
+    };
+
     const Submit=async () => {
         const validate = UpdateProfileValidation(address,city,identity,passport,kinname,kinrelation)
         if (validate.valid === false) {
@@ -157,7 +184,7 @@ const UpdateProfile = ({navigation,route}) => {
             {imageSourceDataId && body.append("identity_pic", { uri: imageSourceDataId.uri, name: "photo.jpg", type: `image/jpg`, })}
             {imageSourceDataPass && body.append("passport_pic", { uri: imageSourceDataPass.uri, name: "photo.jpg", type: `image/jpg`, })}
             {imageSourceDataSig && body.append("signature_pic", { uri: imageSourceDataSig.uri, name: "photo.jpg", type: `image/jpg`, })}
-            // body.append("kin_identity_pic", { uri: imageSourceData.uri, name: "photo.jpg", type: `image/jpg`, });
+            {imageSourceDatakin && body.append("kin_identity_pic", { uri: imageSourceDatakin.uri, name: "photo.jpg", type: `image/jpg`, })}
             let response = await sendUpdateProfile(body)
             if (response !== "Error") {
                 if (response.data.status == true) {
@@ -374,7 +401,7 @@ const UpdateProfile = ({navigation,route}) => {
                     <UploadPic onPress={()=>{selectIdentity_gallery()}} source={{uri: "https://staging.vrda1.net/"+ data.identity_pic}} name={"Identity"}/>
                     <UploadPic onPress={()=>{selectPassport_gallery()}} source={{uri: "https://staging.vrda1.net/"+ data.passport_pic}} name={"Passport"}/>
                     <UploadPic onPress={()=>{selectSignature_gallery()}} source={{uri: "https://staging.vrda1.net/"+ data.signature_pic}} name={"Signature"}/>
-                    <UploadPic onPress={()=>{selectSignature_gallery()}} source={{uri: "https://staging.vrda1.net/"+ data.kin_identity_pic}} name={"Next to Kin"}/>
+                    <UploadPic onPress={()=>{selectNextToKin_gallery()}} source={{uri: "https://staging.vrda1.net/"+ data.kin_identity_pic}} name={"Next to Kin"}/>
                    </View>
                 <Btn onPress={()=>{Submit()}} text_style={{color:Colors.white}} text={"Update Info"} containerStyle={{width:170,borderRadius:20,padding:10,flexDirection:"row",backgroundColor:Colors.primary,justifyContent:"center",marginTop:20,alignSelf:"center"}}/>
                 <Text></Text>

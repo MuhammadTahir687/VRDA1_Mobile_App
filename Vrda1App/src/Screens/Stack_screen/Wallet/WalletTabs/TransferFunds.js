@@ -5,7 +5,7 @@ import {Btn} from "../../../../utilis/Btn";
 import DoubleText from "../../../../utilis/DoubleText";
 import {FormInput} from "../../../../utilis/Text_input";
 import CheckBox from "../../../../utilis/Checkbox";
-import {gettransferfunds, sendProcessTransfer} from "../../../../utilis/Api/Api_controller";
+import {gettransferfunds, sendProcessTransferBtn} from "../../../../utilis/Api/Api_controller";
 import Toast from "react-native-simple-toast";
 import Loader from "../../../../utilis/Loader";
 import Dropdown from "../../../../utilis/Picker/Picker";
@@ -15,7 +15,7 @@ const TransferFunds = () => {
     const [detail,setDetail]=useState("");
     const [isloading,setLoading]=useState(false);
     const [errors,setErrors]=useState("");
-    const [amount,setAmount]=useState("");
+    const [amounts,setAmounts]=useState("");
     const [index, setIndex] = useState(0);
     const [apiData,setApiData]=useState([]);
     const [refreshing,setRefreshing]=useState(false)
@@ -24,10 +24,7 @@ const TransferFunds = () => {
     const [selectedValue, setSelectedValue] = useState("Please Select");
     const buttons = [{name: 'Wallet', id: 0}, {name: 'Process Withdraw', id: 1},]
 
-
-    useEffect(async ()=>{
-        await getData();
-    },[]);
+    useEffect(async ()=>{ await getData(); },[]);
 
     const getData=async ()=>{
         setLoading(true)
@@ -51,17 +48,21 @@ const TransferFunds = () => {
         await getData();
     }
     const Submit = async () => {
-        let validate = processTransferValidation(amount,selectedValue,detail)
+        let validate = processTransferValidation(amounts,selectedValue,detail)
         if (validate.valid === false) {
             setErrors(validate.errors)
         } else {
             setErrors("")
-            let body = {details: detail,amount:amount,user_id:selectedValue};
+            var id = selectedValue.toString()
+            let body ={details: detail, amount: amounts, user_id: id}
             setLoading(true)
-            var response = await sendProcessTransfer(body)
+            let response = await sendProcessTransferBtn(body)
             if (response !== "Error") {
                 if (response.data.status == true) {
-                    setLoading(false);
+                    Toast.show(response.data.message, Toast.LONG);
+                    await setLoading(false);
+                    await setDetail("");
+                    await setAmounts("");
                 }else {
                     Toast.show(response.data.data, Toast.LONG);
                     setLoading(false);
@@ -112,20 +113,19 @@ const TransferFunds = () => {
                     <FormInput
                         placeholder={"In Amount 100 ..."}
                         placeholderTextColor={Colors.secondary}
-                        value={amount}
+                        value={amounts}
                         keyboardType={'phone-pad'}
                         color={Colors.primary}
                         containerStyle={{marginTop:5}}
-                        onChangeText={(text) => { setErrors(""), setAmount(text) }}
+                        onChangeText={(text) => { setErrors(""); setAmounts(text) }}
                         error={errors === "Please Enter Amount" ? "Please Enter Amount" : errors === "Minimum Amount is 100" ? "Minimum Amount is 100":null}
                     />
-                    {/*<Text>{selectedValue}</Text>*/}
                     <Text style={{padding:10,fontWeight:"bold",color:Colors.primary}}>Transfer Details:</Text>
                     <FormInput
                         placeholder={"Transfer Details"}
                         placeholderTextColor={Colors.secondary}
                         value={detail}
-                        onChangeText={(text) => { setErrors(""), setDetail(text) }}
+                        onChangeText={(text) =>  {setErrors(""); setDetail(text)} }
                         error={errors === "Please Enter Details" ? "Please Enter Details" : null }
                     />
                     <CheckBox
@@ -135,7 +135,7 @@ const TransferFunds = () => {
                         selected={checked}
                         onPress={() => setChecked(!checked)}
                         text={"Terms of condition"}/>
-                    <Btn disabled={checked == true ? false : true} onPress={()=>Submit()} text_style={{color:Colors.white}} text={"Process Transfer"} containerStyle={{width:160,borderRadius:20,padding:10,backgroundColor:checked ===true?Colors.primary:Colors.secondary,alignSelf:"center",bottom:20,marginTop:40,}}/>
+                    <Btn disabled={checked == true ? false : true} onPress={()=>{Submit()}} text_style={{color:Colors.white}} text={"Process Transfer"} containerStyle={{width:160,borderRadius:20,padding:10,backgroundColor:checked ===true?Colors.primary:Colors.secondary,alignSelf:"center",bottom:20,marginTop:40,}}/>
                 </View>
             }
             </ScrollView>

@@ -26,7 +26,7 @@ const VreitDetail = ({route,navigation}) => {
         setLoading(true)
         let response = await getVREITDetail();
         if (response !== "Error") {
-            if (response.data.status === true) {
+            if (response.data.status == true) {
                 setApiData(response.data.data.vreit);
                 setLoading(false);
             }else {
@@ -39,8 +39,11 @@ const VreitDetail = ({route,navigation}) => {
         }
     }
     const copyToClipboard = () => {
-        Clipboard.setString("tjgjgjgjgjgjg");
-        Toast.show("Text Copied !", Toast.LONG);
+        Clipboard.setString(apiData.vreit);
+        if (apiData.vreit){
+            Toast.show("Text Copied !", Toast.LONG);
+        }
+        else { return null }
     };
     return (
         <SafeAreaView style={{flex:1}}>
@@ -48,13 +51,15 @@ const VreitDetail = ({route,navigation}) => {
             <ImageBackground source={require("../../../../Assets/splash.png")} style={{flex:1}}>
                 <ProfileView source={{uri: data.picture}} screen_title={name} username={title+" "} firstname={firstname+" "} lastname={lastname} onPress={()=>navigation.goBack()} onPressForUpdate={()=>{navigation.navigate("UpdateVreit",{data:data,title:title,firstname:firstname,lastname:lastname})}}>
                     <Text style={{fontSize:16,fontWeight:"bold", color:Colors.primary,bottom:15,paddingHorizontal:15}}>{name}:</Text>
-                    <DoubleText text1={"Vreit Address"} text2={apiData.vreit}/>
-                    <DoubleText text1={"Qr Code"} sourceimg={{uri: "https://staging.vrda1.net/"+apiData.vreit_img}}/>
+                    <DoubleText text1={"Vreit Address"} text2={apiData.vreit?apiData.vreit:"Not Available"}/>
+                    {apiData.vreit_img ?
+                        <DoubleText text1={"Qr Code"} sourceimg={{uri: "https://staging.vrda1.net/" + apiData.vreit_img}}/>
+                        :<DoubleText text1={"Qr Code"} text2={"Not Available"}/>
+                    }
                     <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center',marginBottom:10 }} onPress={() => { copyToClipboard() }}>
                         <Entypo color={Colors.primary}  size={20} name={"copy"}/>
                         <Text style={{ color: Colors.primary, }}> Tap to Copy!</Text>
                     </TouchableOpacity>
-                    <Text></Text>
                 </ProfileView>
             </ImageBackground>
         </SafeAreaView>

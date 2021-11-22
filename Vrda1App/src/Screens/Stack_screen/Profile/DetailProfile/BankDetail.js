@@ -16,12 +16,7 @@ const BankDetail = ({navigation,route}) => {
 
     const [apiData,setApiData]=useState("");
     const [isloading,setLoading]=useState(false);
-    const [city,setcity]=useState("Not Available");
     const [country,setCountry]=useState("Not Available");
-    const [fullname,setFullname]=useState("Not Available");
-    const [bank_name,setbank_name]=useState("Not Available");
-    const [branch_name,setbranch_name]=useState("Not Available");
-    const [billing_address,setbilling_address]=useState("Not Available");
     const [residential_address,setresidential_address]=useState("Not Available");
 
     useEffect(async ()=>{ await getData() },[]);
@@ -33,13 +28,7 @@ const BankDetail = ({navigation,route}) => {
             if (response.data.status === true) {
                  setLoading(false);
                  setApiData(response.data.data.bank);
-                 setcity(response.data.data.bank.city);
-                 setFullname(response.data.data.bank.full_name);
-                 setbank_name(response.data.data.bank.bank_name);
-                 setbranch_name(response.data.data.bank.branch_name);
-                 setbilling_address(response.data.data.bank.billing_address);
-                 setCountry(response.data.data.getCountry.geoplugin_countryName);
-                 setresidential_address(response.data.data.bank.residential_address);
+                 setCountry(response.data.data.getCountry);
                  setLoading(false);
             }else {
                  Toast.show("Something Went Wrong !", Toast.LONG);
@@ -57,13 +46,13 @@ const BankDetail = ({navigation,route}) => {
                 <ProfileView source={{uri: data.picture}} screen_title={name} username={title+" "} firstname={firstname+" "} lastname={lastname} onPress={()=>navigation.goBack()} onPressForUpdate={()=>{navigation.navigate("UpdateBank",{title:title,firstname:firstname,lastname:lastname,data:data})}}>
                         <View>
                         <Text style={{fontSize:16,fontWeight:"bold", color:Colors.primary,paddingHorizontal:10,bottom:10}}>{name}:</Text>
-                            <DoubleText text1={"Full Name"} text2={fullname?fullname:""}/>
-                            <DoubleText text1={"Complete Address"} text2={billing_address?billing_address:""}/>
-                            <DoubleText text1={"Residential Address"} text2={residential_address?residential_address:""}/>
-                            <DoubleText text1={"Bank Name"} text2={bank_name?bank_name:""}/>
-                            <DoubleText text1={"Branch Name"} text2={branch_name?branch_name:""}/>
-                            <DoubleText text1={"City"} text2={city ? city : ""}/>
-                            <DoubleText text1={"Country"} text2={country ? country: ""}/>
+                            <DoubleText text1={"Full Name"} text2={apiData ?apiData.full_name:"Not Available"}/>
+                            <DoubleText text1={"Complete Address"} text2={apiData?apiData.billing_address:"Not Available"}/>
+                            <DoubleText text1={"Residential Address"} text2={apiData?apiData.residential_address:"Not Available"}/>
+                            <DoubleText text1={"Bank Name"} text2={apiData?apiData.bank_name:"Not Available"}/>
+                            <DoubleText text1={"Branch Name"} text2={apiData?apiData.branch_name:"Not Available"}/>
+                            <DoubleText text1={"City"} text2={apiData ? apiData.city :"Not Available"}/>
+                            <DoubleText text1={"Country"} text2={country ? country.geoplugin_countryName:"Not Available"}/>
                         </View>
             </ProfileView>
             </ImageBackground>

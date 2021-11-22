@@ -57,6 +57,8 @@ const Vreit_withdrawal = () => {
                 if (response.data.status == true) {
                     Toast.show(response.data.message, Toast.LONG);
                     setLoading(false);
+                    await setAmount("");
+                    await setDetail("");
                 }else {
                     Toast.show(response.data.message, Toast.LONG);
                     setLoading(false);

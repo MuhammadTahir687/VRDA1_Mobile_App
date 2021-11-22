@@ -30,6 +30,7 @@ const Login = ({navigation}) => {
             if (response.data.status == true) {
                 let Bearer = response.data.access_token;
                 await save_data("ACCOUNT_DATA", Bearer)
+
                 setLoading(false);
                 navigation.replace("Drawers");
             }else {
