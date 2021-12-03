@@ -15,58 +15,57 @@ const UpdateBank = ({navigation,route}) => {
     var lastname =route.params.lastname;
     var firstname=route.params.firstname;
     var data=route.params.data;
+    var paramData=route.params.apiData;
 
-    const [fullName,setFullName]=useState("");
-    const [iban,setIban]=useState("");
-    const [bankname,setBankname]=useState("");
-    const [branchname,setBranchname]=useState("");
-    const [swift,setSwift]=useState("");
-    const [accountNumber,setAccountNumber]=useState("");
-    const [phonenumber,setPhonenumber]=useState("");
-    const [completeAdd,setCompleteAdd]=useState("");
-    const [residentialAdd,setResidentialAdd]=useState("");
-    const [bankaddress,setBankaddress]=useState("");
-    const [city,setCity]=useState("");
-    const [country,setCountry]=useState("");
+    const [fullName,setFullName]=useState(paramData.full_name);
+    const [iban,setIban]=useState(paramData.iban);
+    const [bankname,setBankname]=useState(paramData.bank_name);
+    const [branchname,setBranchname]=useState(paramData.branch_name);
+    const [swift,setSwift]=useState(paramData.swift_code);
+    const [accountNumber,setAccountNumber]=useState(paramData.bank);
+    const [phonenumber,setPhonenumber]=useState(paramData.phone_number);
+    const [completeAdd,setCompleteAdd]=useState(paramData.billing_address);
+    const [residentialAdd,setResidentialAdd]=useState(paramData.residential_address);
+    const [bankaddress,setBankaddress]=useState(paramData.bank_address);
+    const [city,setCity]=useState(paramData.city);
+    const [country,setCountry]=useState(paramData.bank_country.country_name);
     const [errors,setErrors]=useState("");
     const [isloading,setLoading]=useState(false);
-    const [fileName,setFileName]=useState("");
-    const [imageSourceData,setImageSourceData]=useState(false);
+    // const [fileName,setFileName]=useState("");
+    // const [imageSourceData,setImageSourceData]=useState(false);
 
-    const selectPhoto_gallery = () => {
-        const options = {
-            mediaType: 'photo',
-            quality: 0.2
-        };
-        launchImageLibrary(options, response => {
-            if (response.didCancel) {
-                //cancel
-            } else if (response.error) {
-                Toast.show("Something Went Wrong", Toast.LONG);
-            }
-            else {
-                if (response.assets[0].fileSize <= "200000") {
-                    setLoading(true);
-                    let source = { uri: response.assets[0].uri };
-                    alert(JSON.stringify(source));
-                    var name = (response.assets[0].fileName).slice(25);
-                    setFileName(name);
-                    setImageSourceData(source);
-                    setLoading(false);
-                    Toast.show("Succeed", Toast.LONG);
-                } else {
-                    Toast.show("File size is exceeded from 8 MB", Toast.LONG);
-                }
-            }
-        });
-    };
+    // const selectPhoto_gallery = () => {
+    //     const options = {
+    //         mediaType: 'photo',
+    //         quality: 0.2
+    //     };
+    //     launchImageLibrary(options, response => {
+    //         if (response.didCancel) {
+    //             //cancel
+    //         } else if (response.error) {
+    //             Toast.show("Something Went Wrong", Toast.LONG);
+    //         }
+    //         else {
+    //             if (response.assets[0].fileSize <= "200000") {
+    //                 setLoading(true);
+    //                 let source = { uri: response.assets[0].uri };
+    //                 var name = (response.assets[0].fileName).slice(25);
+    //                 setFileName(name);
+    //                 setImageSourceData(source);
+    //                 setLoading(false);
+    //                 Toast.show("Succeed", Toast.LONG);
+    //             } else {
+    //                 Toast.show("File size is exceeded from 8 MB", Toast.LONG);
+    //             }
+    //         }
+    //     });
+    // };
     const Submit=async () => {
-        var validate = UpdateBankValidation(fullName,bankname,branchname,accountNumber,phonenumber,completeAdd,country,fileName,imageSourceData)
+        var validate = UpdateBankValidation(fullName,bankname,branchname,accountNumber,phonenumber,completeAdd,country)
         if (validate.valid === false) {
             setErrors(validate.errors)
         } else {
             setErrors("")
-            // alert("gftf")
             const body = new FormData();
             body.append('full_name', fullName,);
             body.append('billing_address', completeAdd,);
@@ -80,15 +79,15 @@ const UpdateBank = ({navigation,route}) => {
             body.append('phone_number', phonenumber,);
             body.append('city', city,);
             body.append('country', country,);
-            body.append("files", { uri: imageSourceData.uri, name: "photo.jpg", type: `image/jpg`, });
+            // body.append("files", { uri: imageSourceData.uri, name: "photo.jpg", type: `image/jpg`, });
             setLoading(true)
             let response = await sendUpdateBank(body)
             if (response !== "Error") {
                 if (response.data.status == true) {
                     Toast.show(response.data.message, Toast.LONG);
                     await setLoading(false);
-                    await setImageSourceData(null);
-                    await setFileName("");
+                    // await setImageSourceData(null);
+                    // await setFileName("");
                     await setFullName("");
                     await setIban("");
                     await setBankname("");
@@ -102,7 +101,6 @@ const UpdateBank = ({navigation,route}) => {
                     await setCity("");
                     await setCountry("");
                 }else {
-                    alert(JSON.stringify(response.data))
                     Toast.show("Something Went Wrong!", Toast.LONG);
                     setLoading(false);
                 }
@@ -111,6 +109,9 @@ const UpdateBank = ({navigation,route}) => {
                 setLoading(false);
             }
         }
+    }
+    const onChanged= (text)=> {
+        setAccountNumber(text.replace(/[^0-9]/g, ''))
     }
     return (
         <SafeAreaView style={{flex:1}}>
@@ -178,7 +179,8 @@ const UpdateBank = ({navigation,route}) => {
                             value={accountNumber}
                             containerStyle={{ width:"45%",height:45,paddingTop:2 }}
                             color={Colors.primary}
-                            onChangeText={(text) => { setErrors(""), setAccountNumber(text) }}
+                            keyboardType={'phone-pad'}
+                            onChangeText={(text) => { setErrors(""); onChanged(text) }}
                             error={errors === "Account# is Required" ? "Account# is Required" : null }
                         />
                     </View>
@@ -245,12 +247,12 @@ const UpdateBank = ({navigation,route}) => {
                             error={errors === "Country is Required" ? "Country is Required" : null }
                         />
                     </View>
-                    <Image source={require("../../../../Assets/upload_image.png")} style={{height:80,width:80,alignSelf:"center",borderWidth:2,borderColor:Colors.primary,marginTop:15,borderRadius:15}}/>
-                    {errors ==="Please Add Image First"?
-                        <Text style={{textAlign:"center",fontSize:11,fontWeight:"bold",color:"red"}}>Please Add Image First</Text>
-                        :<Text style={{textAlign:"center",fontSize:11,fontWeight:"bold"}}>{fileName?fileName:null}</Text>
-                    }
-                    <Btn onPress={()=>selectPhoto_gallery()} containerStyle={{flex:1,backgroundColor:Colors.primary,padding:10,borderRadius:10,marginHorizontal:50}} text={"Upload QrCode Image"} text_style={{color:Colors.white}}/>
+                    {/*<Image source={require("../../../../Assets/upload_image.png")} style={{height:80,width:80,alignSelf:"center",borderWidth:2,borderColor:Colors.primary,marginTop:15,borderRadius:15}}/>*/}
+                    {/*{errors ==="Please Add Image First"?*/}
+                    {/*    <Text style={{textAlign:"center",fontSize:11,fontWeight:"bold",color:"red"}}>Please Add Image First</Text>*/}
+                    {/*    :<Text style={{textAlign:"center",fontSize:11,fontWeight:"bold"}}>{fileName?fileName:null}</Text>*/}
+                    {/*}*/}
+                    {/*<Btn onPress={()=>selectPhoto_gallery()} containerStyle={{flex:1,backgroundColor:Colors.primary,padding:10,borderRadius:10,marginHorizontal:50}} text={"Upload QrCode Image"} text_style={{color:Colors.white}}/>*/}
                 </View>
 
                 <Text></Text>

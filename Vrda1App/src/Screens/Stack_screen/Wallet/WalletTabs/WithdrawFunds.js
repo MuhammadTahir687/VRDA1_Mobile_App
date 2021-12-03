@@ -11,7 +11,7 @@ import Loader from "../../../../utilis/Loader";
 import Dropdown from "../../../../utilis/Picker/Picker";
 import {processWithdrawValidation} from "../../../../utilis/validation";
 
-const WithdrawFunds=()=>{
+const WithdrawFunds=({navigation})=>{
     const [detail,setDetail]=useState("");
     const [isloading,setLoading]=useState(false);
     const [errors,setErrors]=useState("");
@@ -36,7 +36,7 @@ const WithdrawFunds=()=>{
             if (response.data.status === true) {
             setApiData(response.data.data);
             setRefreshing(!refreshing)
-            setLoading(false);
+                setLoading(false);
             }else {
                 Toast.show("Something Went Wrong !", Toast.LONG);
                 setLoading(false);
@@ -73,10 +73,18 @@ const WithdrawFunds=()=>{
             let response = await sendProcessWithdraw(body)
             if (response !== "Error") {
                 if (response.data.status == true) {
-                    alert("ddd")
+                    Toast.show(response.data.message, Toast.LONG);
+                    await setLoading(false);
+                    await setDetail("");
+                    await setAmount("");
+                    await setChecked(false);
+                    await onRefresh();
+                }else if(response.data.status == false)      {
+                    Toast.show("Request "+response.data.data, Toast.LONG);
                     setLoading(false);
-                }else {
-                    Toast.show(response.data.data, Toast.LONG);
+                }
+                else {
+                    Toast.show("Something Went Wrong ", Toast.LONG);
                     setLoading(false);
                 }
             }else {
@@ -89,13 +97,7 @@ const WithdrawFunds=()=>{
     return(
         <SafeAreaView style={{flex:1}}>
             <Loader animating={isloading}/>
-            <ScrollView
-                refreshControl={
-                <RefreshControl
-                    refreshing={false}
-                    onRefresh={onRefresh} />
-            }
-            >
+            <ScrollView refreshControl={ <RefreshControl refreshing={false} onRefresh={onRefresh} /> } >
             <Text style={{textAlign:"center",fontSize:18,fontWeight:"bold",textDecorationLine:"underline",color:Colors.secondary,margin:10}}>Withdraw Funds</Text>
             <View style={{ flexDirection: 'row', alignItems: 'center', margin: 15, }}>
                 {buttons.map((item, indexs) => (
@@ -118,13 +120,13 @@ const WithdrawFunds=()=>{
                 <View style={{margin:20}}>
                     <Text style={{fontWeight:"bold"}}>Process Withdraw</Text>
                     <FormInput
-                        placeholder={"Minimum Amount is 500"}
-                        placeholderTextColor={Colors.secondary}
+                        placeholder={selectedValue==="bank"?"Minimum Amount is 500":"Minimum Amount is 200"}
+                        placeholderTextColor={"rgba(178,176,176,0.72)"}
                         value={amount}
                         color={Colors.primary}
                         keyboardType={'phone-pad'}
                         onChangeText={(text) => { setAmount(text),setErrors("") }}
-                        error={errors === "Please Enter Amount" ? "Please Enter Amount" : errors === "Minimum Amount is 500" ? "Minimum Amount is 500": errors === "Maximum Amount is 5000" ? "Maximum Amount is 5000" : null}
+                        error={errors === "Please Enter Amount" ? "Please Enter Amount" : errors === "Minimum Amount is 500" ? "Minimum Amount is 500": errors === "Maximum Amount is 5000" ? "Maximum Amount is 5000" :errors === "Minimum Amount is 200"?"Minimum Amount is 200": null}
                     />
                     <View style={{borderBottomWidth:1,borderColor:Colors.secondary}}>
                         <Dropdown onValueChange={(text)=>{gettingDetails({text}),setSelectedValue(text),setErrors("")}} PickerData={Item}/>
@@ -135,7 +137,7 @@ const WithdrawFunds=()=>{
                     <Text style={{padding:10,fontWeight:"bold",color:Colors.primary}}>Withdraw Details:</Text>
                     <FormInput
                         placeholder={"Withdraw Details"}
-                        placeholderTextColor={Colors.secondary}
+                        placeholderTextColor={"rgba(178,176,176,0.72)"}
                         value={detail}
                         onChangeText={(text) => { setErrors(""), setDetail(text) }}
                         error={errors === "Please Enter Details" ? "Please Enter Details" : null }
@@ -144,13 +146,16 @@ const WithdrawFunds=()=>{
                         <Text style={{fontWeight:"500",color:"red"}}>{serviceCharges?serviceCharges:"5"}% service charges will be applicable</Text>
                         <Text style={{fontWeight:"500",color:"red"}}>7 working days required</Text>
                     </View>
+                    <View style={{flexDirection:"row"}}>
                     <CheckBox
                         style={{margin:10}}
                         textStyle={{fontWeight:"bold"}}
                         size={20}
                         selected={checked}
                         onPress={() => setChecked(!checked)}
-                        text={"Terms of condition"}/>
+                        text={"I accept"}/>
+                        <Text onPress={()=>{setSelectedValue("");navigation.navigate("TermsAndCondition")}} style={{right:10,color:"#53a0b7",fontWeight:"bold",textDecorationLine:"underline",fontSize:12,alignSelf:"center"}}>Terms & Conditions</Text>
+                    </View>
                     <Btn disabled={checked == true ? false : true}  onPress={()=>Submit()} text_style={{color:Colors.white}} text={"Process Withdraw"} containerStyle={{width:160,borderRadius:20,padding:10,backgroundColor:checked ===true?Colors.primary:Colors.secondary,alignSelf:"center",bottom:20,marginTop:40,}}/>
                 </View>
             }

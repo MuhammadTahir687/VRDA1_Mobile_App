@@ -9,13 +9,24 @@ import React, {useEffect, useState} from 'react';
 import {getDashboard} from "../../utilis/Api/Api_controller";
 import Timeline from 'react-native-timeline-flatlist';
 import Hyperlink from 'react-native-hyperlink'
-import {SafeAreaView, ScrollView, Text, ImageBackground, View, FlatList, Dimensions, Platform,} from 'react-native';
+import {
+    SafeAreaView,
+    ScrollView,
+    Text,
+    ImageBackground,
+    View,
+    FlatList,
+    Dimensions,
+    Platform,
+    RefreshControl,
+} from 'react-native';
 import Dialogs from "../../utilis/Dialog";
 import AsyncStorage from "@react-native-community/async-storage";
 
 const deviceWidth = Dimensions.get('screen').width;
 const deviceHeight = Dimensions.get('screen').height;
 const Dashboard = ({navigation}) => {
+
     const [event,setEvent]=useState([]);
     const [items,setItems]=useState("");
     const [leftCF,setLeftCF]=useState(0);
@@ -39,6 +50,8 @@ const Dashboard = ({navigation}) => {
     const [apiData,setApiData]=useState("");
     const [currentRank,setCurrentRank]=useState("");
     const [nextRank,setNextRank]=useState("");
+    const [refreshing,setRefreshing]=useState(false);
+
 
     // const date = () => { var a = new Date().getDate()-1; var b = new Date().getMonth()+1; var c = new Date().getFullYear(); setCurrentDate(c+'-'+b+'-'+a) }
 
@@ -49,9 +62,8 @@ const Dashboard = ({navigation}) => {
     // const EVENTS = event.map(item =>({ start:item.event_start,end:item.event_end,title:item.event_title,summary:item.description,color:"#585555"}))
     useEffect(async ()=>{
         await getallData();
-        // await date();
+    // await date();
     },[]);
-
     const getallData=async ()=>{
         setLoading(true)
         let response = await getDashboard()
@@ -65,6 +77,7 @@ const Dashboard = ({navigation}) => {
                 setAchievedLeft(resL.achieved);setRemainingLeft(resL.remaining_points);setRequiredLeft(resL.required_points)
                 setAchievedRight(resR.achieved);setRemainingRight(resR.remaining_points);setRequiredRight(resR.required_points),
                 setEvent(res.events);setApiData(res);setCurrentRank(res.next_achievement.current_rank);setNextRank(res.next_achievement.next_rank)
+                setRefreshing(!refreshing)
                 setLoading(false);
             }else {
                 Toast.show("Something Went Wrong !", Toast.LONG);
@@ -77,11 +90,19 @@ const Dashboard = ({navigation}) => {
                 .then(keys => AsyncStorage.multiRemove(keys)).then(() => navigation.reset({ index: 0, routes: [{ name: "Login" }], }));
         }
     }
+    const onRefresh = async () => {
+        await getallData();
+    }
     return (
         <SafeAreaView style={{flex: 1}}>
             <Loader animating={isloading}/>
             <View style={{backgroundColor: Colors.white, borderTopLeftRadius: 20, borderTopRightRadius: 20}}>
-                <ScrollView>
+                <ScrollView
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={false}
+                            onRefresh={onRefresh} />
+                    }>
                     <View style={{margin: 20}}>
                         <FlatList
                             data={Data}
@@ -110,8 +131,8 @@ const Dashboard = ({navigation}) => {
                             </View>
                         </View>
                         <Text style={{color: Colors.primary, fontWeight: 'bold', marginVertical: 10, marginTop: 25}}>For the Rank Achievement</Text>
-                        <PBar heading={"Achieved Left BV "} value={achievedLeft?parseFloat(achievedLeft).toFixed(0)/100:0} progressValue={achievedLeft?parseFloat(achievedLeft).toFixed(1):0} Remaining={remainingLeft?parseFloat(remainingLeft).toFixed(1):0} Require={requiredLeft?"Left Points "+parseFloat(requiredLeft).toFixed(1):0}/>
-                        <PBar heading={"Achieved Right BV "} value={achievedRight?parseFloat(achievedRight).toFixed(0)/100:0} progressValue={achievedRight?parseFloat(achievedRight).toFixed(1):0} Remaining={remainingRight?parseFloat(remainingRight).toFixed(1):0} Require={requiredRight?"Right Points "+parseFloat(requiredRight).toFixed(1):0}/>
+                        <PBar heading={"Achieved Left BV "} value={achievedLeft?parseFloat(achievedLeft).toFixed(0)/100:0} progressValue={achievedLeft?parseFloat(achievedLeft).toFixed(2):0} Remaining={remainingLeft?parseFloat(remainingLeft).toFixed(1):0} Require={requiredLeft?"Left Points "+parseFloat(requiredLeft).toFixed(1):0}/>
+                        <PBar heading={"Achieved Right BV "} value={achievedRight?parseFloat(achievedRight).toFixed(0)/100:0} progressValue={achievedRight?parseFloat(achievedRight).toFixed(2):0} Remaining={remainingRight?parseFloat(remainingRight).toFixed(1):0} Require={requiredRight?"Right Points "+parseFloat(requiredRight).toFixed(1):0}/>
                         <Text style={{color: Colors.primary, fontWeight: 'bold', marginVertical: 10,marginTop: 25}}>VRDa1 Events</Text>
                         {/*<Calender/>*/}
                         <Timeline
@@ -124,18 +145,19 @@ const Dashboard = ({navigation}) => {
                             descriptionStyle={{fontSize:(Platform.OS=="ios")?0.0001:0}}
                             options={{style: {paddingTop: 5}}}
                             innerCircle={'dot'}
-                            onEventPress={(item) => {setVisible(true), setItems(item)}}
+                            onEventPress={(item) => {setVisible(true), setItems(item.description)}}
                             separator={false}
                             detailContainerStyle={{marginBottom: 20, paddingHorizontal: 5, backgroundColor: "#BBDAFF", borderRadius: 10,}}
                             columnFormat="two-column"
                         />
                         <Dialogs visible={visible} onPress={() => { setVisible(false) }} title={"Description"}>
                             <Hyperlink linkDefault={ true } linkStyle={ { color: '#2980b9', fontSize: 16,textDecorationLine:"underline" } }>
-                            <Text style={{paddingHorizontal:15}}>{items.description}</Text>
+                            <Text style={{paddingHorizontal:15}}>{items.replace(/&(nbsp|amp|quot|lt|gt);/g," ")}</Text>
                             </Hyperlink>
                         </Dialogs>
                     </View>
                 </ScrollView>
+
             </View>
         </SafeAreaView>
     )

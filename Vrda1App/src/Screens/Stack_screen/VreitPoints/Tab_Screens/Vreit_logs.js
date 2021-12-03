@@ -37,7 +37,7 @@ const Vreit_Logs = () => {
             setRefreshing(!refreshing)
             await setLoading(false)
         } else {
-            alert("Error")
+            alert("Hold On: too many Hits")
             setLoading(false)
         }
     }
@@ -123,7 +123,7 @@ const Vreit_Logs = () => {
                         <EvilIcons color={Colors.white}  size={22} name={"user"}/>
                         {/*<Text style={{color:Colors.white,fontSize:12}}>user {ids.transactions?ids.transactions:null}</Text>*/}
                     </TouchableOpacity>
-                    <AntDesign color={Colors.primary}  size={20} name={"closecircle"} onPress={()=>{setVisible(false)}}/>
+                    {/*<AntDesign color={Colors.primary}  size={20} name={"closecircle"} onPress={()=>{setVisible(false)}}/>*/}
                 </View>
                 {value == 0 ?
                     <View>
@@ -132,7 +132,8 @@ const Vreit_Logs = () => {
                         <DoubleText text1={"Points"} text2={ids.vreit_points?parseFloat(ids.vreit_points).toFixed(2):null}/>
                         <DoubleText text1={"Token Price"} text2={ids.vreit_price?"$"+parseFloat(ids.vreit_price).toFixed(2):null}/>
                         <DoubleText text1={"Est Amount"} text2={ids.vreit_amount?"$"+parseFloat(ids.vreit_amount).toFixed(2):null}/>
-                        <DoubleText text1={"Shifted At"} text2={ids.shifted_at?ids.shifted_at:null}/>
+                        <DoubleText text1={"Shifted At"} text2={ids.shifted_at?ids.shifted_at.slice(0,10):null}/>
+                        <DoubleText text1={""} text2={ids.shifted_at?ids.shifted_at.slice(11,19):null}/>
                     </View>
                     :value == 1 ?
                         <View>
@@ -143,7 +144,8 @@ const Vreit_Logs = () => {
                             <DoubleText text1={"Type"} text2={ids.type?ids.type:null}/>
                             <DoubleText text1={"Action By"} text2={ids.action_by_name?ids.action_by_name:null}/>
                             <DoubleText text1={"Feedback"} text2={ids.admin_feed?ids.admin_feed:null}/>
-                            <DoubleText text1={"Swapped At"} text2={ids.swapped_at?ids.swapped_at:null}/>
+                            <DoubleText text1={"Swapped At"} text2={ids.swapped_at?ids.swapped_at.slice(0,10):null}/>
+                            <DoubleText text1={""} text2={ids.swapped_at?ids.swapped_at.slice(11,19):null}/>
                         </View>
                         :value == 2 ? null:
                             value == 3 ?
@@ -154,7 +156,8 @@ const Vreit_Logs = () => {
                                     <DoubleText text1={"Token Price"} text2={ids.vreit_price?"$"+parseFloat(ids.vreit_price).toFixed(4):null}/>
                                     <DoubleText text1={"Est Amount"} text2={ids.vreit_amount?"$"+parseFloat(ids.vreit_amount).toFixed(2):null}/>
                                     <DoubleText text1={"Status"} text2={ids.status?ids.status+" ("+ids.purchase_via.slice(4)+")":null}/>
-                                    <DoubleText text1={"Purchased At"} text2={ids.purchased_at?ids.purchased_at:null}/>
+                                    <DoubleText text1={"Purchased At"} text2={ids.purchased_at?ids.purchased_at.slice(0,10):null}/>
+                                    <DoubleText text1={""} text2={ids.purchased_at?ids.purchased_at.slice(11,19):null}/>
                                 </View>
                                 :value == 4 ?
                                     <View>
@@ -164,7 +167,8 @@ const Vreit_Logs = () => {
                                         <DoubleText text1={"Token Price"} text2={ids.vreit_price?"$"+parseFloat(ids.vreit_price).toFixed(4):null}/>
                                         <DoubleText text1={"Est Amount"} text2={ids.vreit_amount?"$"+parseFloat(ids.vreit_amount).toFixed(4):null}/>
                                         <DoubleText text1={"Status"} text2={ids.status?ids.status+" ("+ids.transfer_via.slice(4)+")":null}/>
-                                        <DoubleText text1={"Transfer At"} text2={ids.transfer_at?ids.transfer_at:null}/>
+                                        <DoubleText text1={"Transfer At"} text2={ids.transfer_at?ids.transfer_at.slice(0,10):null}/>
+                                        <DoubleText text1={""} text2={ids.transfer_at?ids.transfer_at.slice(11,19):null}/>
                                     </View>
                                     :value == 5 ?
                                         <View>
@@ -173,7 +177,8 @@ const Vreit_Logs = () => {
                                             <DoubleText text1={"Points"} text2={ids.vreit_points?parseFloat(ids.vreit_points).toFixed(1):null}/>
                                             <DoubleText text1={"Token Price"} text2={ids.vreit_price?"$"+parseFloat(ids.vreit_price).toFixed(4):null}/>
                                             <DoubleText text1={"Est Amount"} text2={ids.vreit_amount?"$"+parseFloat(ids.vreit_amount).toFixed(4):null}/>
-                                            <DoubleText text1={"Received At"} text2={ids.received_at?ids.received_at:null}/>
+                                            <DoubleText text1={"Received At"} text2={ids.received_at?ids.received_at.slice(0,10):null}/>
+                                            <DoubleText text1={""} text2={ids.received_at?ids.received_at.slice(11,19):null}/>
                                         </View>
                                         :null
                 }

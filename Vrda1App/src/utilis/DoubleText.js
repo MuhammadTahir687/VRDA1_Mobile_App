@@ -4,20 +4,27 @@ import {Tooltip} from "react-native-elements";
 import Colors from "../Style_Sheet/Colors";
 
 const DoubleText = ({text1,text2,textstyle,containerstyle,textstyle1,sourceimg}) => {
+    if (Platform.OS == "ios"){
+        var val=13;
+    }else{
+        var val=15;
+    }
     return (
             <View style={[{flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start',margin:3,paddingHorizontal:17.5},containerstyle]}>
                 <Text style={[{ width: '50%',fontWeight:"bold"},textstyle1]}>{text1}</Text>
                 {text2 &&
                 <Text style={[{width: '50%', fontSize: 13}, textstyle]}>
-                    {text2.length > 13 ?
-                        <Tooltip width={220} backgroundColor={Colors.primary}
-                                 popover={<Text style={{color: Colors.white}}>{text2}</Text>}>
-                            {Platform.OS == "ios" ?
-                                <Text>{text2.slice(0, 13) + "..."}</Text>
-                                : <Text>{text2.slice(0, 15) + "..."}</Text>
-                            }
-                        </Tooltip>
-                        : text2
+
+                    {/*{text2.length > val ?*/}
+                    {/*    <Tooltip width={220} backgroundColor={Colors.primary}*/}
+                    {/*             popover={<Text style={{color: Colors.white}}>{text2}</Text>}>*/}
+                    {/*        {Platform.OS == "ios" ?*/}
+                    {/*            <Text>{text2.slice(0, 13) + "..."}</Text>*/}
+                    {/*            : <Text>{text2.slice(0, 15) + "..."}</Text>*/}
+                    {/*        }*/}
+                    {/*    </Tooltip>*/}
+                    {/*    : */}
+                    { text2
                     }
                 </Text>
                 }

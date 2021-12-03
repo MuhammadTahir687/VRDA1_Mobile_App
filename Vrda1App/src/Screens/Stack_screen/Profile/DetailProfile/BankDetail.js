@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Text, View, SafeAreaView, ImageBackground} from "react-native";
+import {Text, RefreshControl, View, SafeAreaView, ImageBackground, ScrollView} from "react-native";
 import Colors from "../../../../Style_Sheet/Colors";
 import DoubleText from "../../../../utilis/DoubleText";
 import ProfileView from "../../../../utilis/ProfileView";
@@ -17,7 +17,7 @@ const BankDetail = ({navigation,route}) => {
     const [apiData,setApiData]=useState("");
     const [isloading,setLoading]=useState(false);
     const [country,setCountry]=useState("Not Available");
-    const [residential_address,setresidential_address]=useState("Not Available");
+    const [refreshing,setRefreshing]=useState(false);
 
     useEffect(async ()=>{ await getData() },[]);
 
@@ -28,8 +28,9 @@ const BankDetail = ({navigation,route}) => {
             if (response.data.status === true) {
                  setLoading(false);
                  setApiData(response.data.data.bank);
-                 setCountry(response.data.data.getCountry);
-                 setLoading(false);
+                 setCountry(response.data.data.bank.bank_country);
+                setRefreshing(!refreshing)
+                setLoading(false);
             }else {
                  Toast.show("Something Went Wrong !", Toast.LONG);
                  setLoading(false);
@@ -39,11 +40,20 @@ const BankDetail = ({navigation,route}) => {
              setLoading(false);
         }
     }
+    const onRefresh = async () => {
+        await getData();
+    }
     return (
         <SafeAreaView style={{flex:1}}>
             <ImageBackground source={require("../../../../Assets/splash.png")} style={{flex:1}}>
                 <Loader animating={isloading}/>
-                <ProfileView source={{uri: data.picture}} screen_title={name} username={title+" "} firstname={firstname+" "} lastname={lastname} onPress={()=>navigation.goBack()} onPressForUpdate={()=>{navigation.navigate("UpdateBank",{title:title,firstname:firstname,lastname:lastname,data:data})}}>
+                <ScrollView
+                    refreshControl={
+                    <RefreshControl
+                        refreshing={false}
+                        onRefresh={onRefresh} />
+                }>
+                <ProfileView source={{uri: data.picture}} screen_title={name} username={title+" "} firstname={firstname+" "} lastname={lastname} update={"Bank Detail"} onPress={()=>navigation.goBack()} onPressForUpdate={()=>{navigation.navigate("UpdateBank",{title:title,firstname:firstname,lastname:lastname,data:data,apiData:apiData})}}>
                         <View>
                         <Text style={{fontSize:16,fontWeight:"bold", color:Colors.primary,paddingHorizontal:10,bottom:10}}>{name}:</Text>
                             <DoubleText text1={"Full Name"} text2={apiData ?apiData.full_name:"Not Available"}/>
@@ -52,9 +62,10 @@ const BankDetail = ({navigation,route}) => {
                             <DoubleText text1={"Bank Name"} text2={apiData?apiData.bank_name:"Not Available"}/>
                             <DoubleText text1={"Branch Name"} text2={apiData?apiData.branch_name:"Not Available"}/>
                             <DoubleText text1={"City"} text2={apiData ? apiData.city :"Not Available"}/>
-                            <DoubleText text1={"Country"} text2={country ? country.geoplugin_countryName:"Not Available"}/>
+                            <DoubleText text1={"Country"} text2={apiData?country ? country.country_name:"Not Available":"Not Available"}/>
                         </View>
             </ProfileView>
+                </ScrollView>
             </ImageBackground>
         </SafeAreaView>
     )

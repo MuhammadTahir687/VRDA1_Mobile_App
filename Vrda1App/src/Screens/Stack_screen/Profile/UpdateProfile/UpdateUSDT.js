@@ -15,7 +15,9 @@ const UpdateUSDT = ({navigation,route}) => {
     var title=route.params.title;
     var firstname=route.params.firstname;
     var lastname =route.params.lastname;
-    const [usdtAddress,setUsdtAddress]=useState("");
+    var usdtAdd=route.params.apiData;
+
+    const [usdtAddress,setUsdtAddress]=useState(usdtAdd.usdt);
     const [errors,setErrors]=useState("");
     const [fileName,setFileName]=useState("");
     const [isloading,setLoading]=useState(false);

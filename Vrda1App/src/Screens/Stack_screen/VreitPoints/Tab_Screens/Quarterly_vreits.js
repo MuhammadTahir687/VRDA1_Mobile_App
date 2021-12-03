@@ -61,7 +61,7 @@ const Quarterly_vreits = ({ navigation }) => {
             quarterly_code: item.quarterly_code,
             vreit_points: item.quarter_vreits,
             quarter_date: item.date,
-            vreit_price: items.token_price,
+            vreit_price: apiData.current_vreit_price,
             user_id: apiData.user_id,
         };
         setLoading(true)
@@ -70,13 +70,12 @@ const Quarterly_vreits = ({ navigation }) => {
             if (response.data.status == true) {
                 setLoading(false);
                 Toast.show(response.data.message, Toast.LONG);
-                setRefreshing(true);
+                await onRefresh();
             }else {
                 Toast.show(response.data.message, Toast.LONG);
                 setLoading(false);
             }
         }else {
-            alert(JSON.stringify(response))
             Toast.show("Network Error: There is something wrong!", Toast.LONG);
             setLoading(false);
         }
@@ -101,12 +100,12 @@ const Quarterly_vreits = ({ navigation }) => {
     const renderItem2 = ({ item, index }) => {
         let res = item
         return (
-            <View style={{ borderWidth: 1, borderColor: Colors.primary, borderRadius: 5, marginHorizontal: 10, paddingHorizontal: 8, paddingVertical: 5 }}>
+            <View style={{ borderWidth: 1, borderColor: Colors.primary, borderRadius: 5, marginHorizontal: 10, paddingHorizontal: 8, paddingTop: 5 ,marginBottom:5}}>
                 <View style={{ flexDirection: "row" }}>
-                    <Text style={{ fontWeight: "bold" }}>{indexss + 1} : Invoice : </Text>
+                    <Text style={{ fontWeight: "bold" }}>{index + 1} : Invoice : </Text>
                     <Text style={{ color: "#7f7878" }}>( ${parseFloat(res.purchase_price).toFixed(5)} )</Text>
                 </View>
-                <TouchableOpacity style={{ flex: 1, flexDirection: "row", marginTop: 10, }} onPress={() => { setVisible(true), setItems(res), setIndex(indexss) }}>
+                <TouchableOpacity style={{ flex: 1, flexDirection: "row", marginTop: 10, }} onPress={() => { setVisible(true), setItems(res), setIndex(index) }}>
                     <Ionicons name="newspaper-outline" color={Colors.white} size={18} style={{ backgroundColor: Colors.primary, borderTopLeftRadius: 50, borderBottomLeftRadius: 50, padding: 10, alignItems: 'center' }} />
                     <Text style={{ flex: 1, backgroundColor: "#454343", borderTopRightRadius: 50, borderBottomRightRadius: 50, borderWidth: 0, borderColor: Colors.white, paddingHorizontal: 5, paddingVertical: 10, textAlign: "center", color: Colors.white }}>Invoice</Text>
                 </TouchableOpacity>
@@ -115,7 +114,7 @@ const Quarterly_vreits = ({ navigation }) => {
                         <FlatList data={item.quarters} renderItem={({ item }) => (
                             <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: 'space-between', backgroundColor: item.shifted == 1 ? "#bfbfbf" : "transparent", padding: 5, borderRadius: 4 }}>
                                 <View style={{ flex: 1 }}>
-                                    <Image source={require('../../../../Assets/TeamSale.png')} style={{ width: 40, height: 40, resizeMode: 'contain' }} />
+                                    <Image source={require('../../../../Assets/vector.png')} style={{ width: 40, height: 40, resizeMode: 'contain' }} />
                                 </View>
                                 <View style={{ flex: 2 }}>
                                     <Text style={{ fontWeight: 'bold' }}>Quater Date:</Text>
@@ -168,18 +167,15 @@ const Quarterly_vreits = ({ navigation }) => {
             </View>
             <Dialogs visible={visible} onPress={() => { setVisible(false) }} title={"Description"}>
                 <View style={{ flexDirection: "row", justifyContent: "space-between", marginHorizontal: 12, alignItems: "center", marginTop: 10 }}>
-                    <TouchableOpacity style={{ backgroundColor: Colors.primary, borderRadius: 25, flexDirection: "row", padding: 7, justifyContent: "center", width: 70, }}>
-                        <EvilIcons color={Colors.white} size={22} name={"user"} />
-                        {/*<Text style={{color:Colors.white,fontSize:12}}>user {res.user_id} </Text>*/}
-                    </TouchableOpacity>
-                    <AntDesign color={Colors.primary} size={20} name={"closecircle"} onPress={() => { setVisible(false) }} />
                 </View>
                 <View>
-                    <DoubleText text1={"Start At"} text2={items.start_at ? items.start_at : null} />
+                    <DoubleText text1={"Start At"} text2={items.start_at ? items.start_at.slice(0,10) : null} />
+                    <DoubleText text1={""} text2={items.start_at ? items.start_at.slice(11,19) : null} />
                     <DoubleText text1={"Assigned Vreits"} text2={items.assigned_vreits ? items.assigned_vreits : null} />
                     <DoubleText text1={"Bonus Vreits"} text2={items.bonus_vreits ? items.bonus_vreits : null} />
                     <DoubleText text1={"Shifted Vreits"} text2={items.shifted_vreits ? items.shifted_vreits : null} />
-                    <DoubleText text1={"Expiry At"} text2={items.expiry_date ? items.expiry_date : null} />
+                    <DoubleText text1={"Expiry At"} text2={items.expiry_date ? items.expiry_date.slice(0,10) : null} />
+                    <DoubleText text1={""} text2={items.expiry_date ? items.expiry_date.slice(11,19) : null} />
                 </View>
             </Dialogs>
         </SafeAreaView>

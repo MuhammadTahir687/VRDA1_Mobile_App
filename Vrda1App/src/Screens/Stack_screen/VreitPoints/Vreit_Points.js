@@ -14,10 +14,10 @@ const Vreit_Points=()=>{
     return(
         <SafeAreaView style={{flex:1}}>
             <Tab.Navigator  initialRouteName="Quarterly" activeColor={Colors.primary}>
-                <Tab.Screen name="Quarterly" component={Quarterly} options={{tabBarLabel: 'Quarterly Vreit', tabBarColor:"rgba(0,0,0,0.07)", tabBarIcon: ({color}) => (<Image source={require("../../../Assets/vector.png")} style={{height:20,width:20}}/>)}}/>
-                <Tab.Screen name="Withdrawal" component={Withdrawal} options={{tabBarLabel: 'Vreit Withdrawal', tabBarColor: 'rgba(0,0,0,0.07)', tabBarIcon: ({color}) => (<Image source={require("../../../Assets/vector.png")} style={{height:20,width:20}}/>)}}/>
-                <Tab.Screen name="Vreit_Logs" component={Vreit_Logs} options={{tabBarLabel: 'Vreit Logs', tabBarColor: 'rgba(0,0,0,0.07)', tabBarIcon: ({color}) => (<Image source={require("../../../Assets/vector.png")} style={{height:20,width:20}}/>)}}/>
-                <Tab.Screen name="Vreit_Transfer" component={Vreit_Transfer} options={{tabBarLabel: 'C2C Transfer', tabBarColor: 'rgba(0,0,0,0.07)', tabBarIcon: ({color}) => (<Image source={require("../../../Assets/vector.png")} style={{height:20,width:20}}/>)}}/>
+                <Tab.Screen name="Quarterly" component={Quarterly}  options={{tabBarLabel: 'Quarterly Vreit', tabBarColor:"rgba(0,0,0,0.07)", tabBarIcon: ({color}) => (<Image source={require("../../../Assets/qarter.png")} style={{height:25,width:25,}}/>)}}/>
+                <Tab.Screen name="Withdrawal" component={Withdrawal} options={{tabBarLabel: 'Vreit Withdrawal', tabBarColor: 'rgba(0,0,0,0.07)', tabBarIcon: ({color}) => (<Image source={require("../../../Assets/withdrawvreit.png")} style={{height:25,width:25}}/>)}}/>
+                <Tab.Screen name="Vreit_Logs" component={Vreit_Logs} options={{tabBarLabel: 'Vreit Logs', tabBarColor: 'rgba(0,0,0,0.07)', tabBarIcon: ({color}) => (<Image source={require("../../../Assets/vreitLogs.png")} style={{height:25,width:25}}/>)}}/>
+                <Tab.Screen name="Vreit_Transfer" component={Vreit_Transfer} options={{tabBarLabel: 'C2C Transfer', tabBarColor: 'rgba(0,0,0,0.07)', tabBarIcon: ({color}) => (<Image source={require("../../../Assets/c2c.png")} style={{height:25,width:25}}/>)}}/>
             </Tab.Navigator>
         </SafeAreaView>
     )

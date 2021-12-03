@@ -38,9 +38,10 @@ const Activity_Feeds=()=>{
     const onRefresh = async () => {
         await getData();
     }
-    const renderItem=({item})=>(
+    const renderItem=({item,index})=>(
         <TouchableOpacity onPress={()=>{setVisible(true),setRes(item)}} style={{ backgroundColor: Colors.secondary, borderColor: Colors.white, borderRadius: 10, borderBottomWidth: 2, paddingVertical: 10,marginHorizontal:10 ,paddingHorizontal:10}}>
             <View style={{ flexDirection: "row" }}>
+                <Text style={{color:Colors.white,fontSize: 16,}}>{index+1}. </Text>
                 <Text style={{ fontSize: 16, color: Colors.white }}>{item.heading?item.heading:"Not Available"}</Text>
             </View>
             <Text style={{ fontSize: 13, color: Colors.lightgray, flex: 1, }}>Activity Date: {item.date?item.date:"Data Not Available"}</Text>

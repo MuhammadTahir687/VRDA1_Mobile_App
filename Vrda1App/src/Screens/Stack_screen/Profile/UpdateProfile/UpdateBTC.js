@@ -15,8 +15,9 @@ const UpdateBTC = ({navigation,route}) => {
     var title=route.params.title;
     var lastname =route.params.lastname;
     var firstname=route.params.firstname;
+    var btcAdd=route.params.apiData;
 
-    const [btcAddress,setBtcaddress]=useState("");
+    const [btcAddress,setBtcaddress]=useState(btcAdd.btc);
     const [errors,setErrors]=useState("");
     const [fileName,setFileName]=useState("");
     const [isloading,setLoading]=useState(false);

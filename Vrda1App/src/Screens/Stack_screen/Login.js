@@ -29,7 +29,9 @@ const Login = ({navigation}) => {
         if (response !== "Error") {
             if (response.data.status == true) {
                 let Bearer = response.data.access_token;
+                let details= response.data.user
                 await save_data("ACCOUNT_DATA", Bearer)
+                await save_data("User_DATA", details)
 
                 setLoading(false);
                 navigation.replace("Drawers");
@@ -67,7 +69,7 @@ const Login = ({navigation}) => {
         placeholder={"Password"}
         placeholderTextColor={Colors.white}
         iconName_s="lock"
-        forget={true}
+        // forget={true}
         containerStyle={{ marginTop: 10 }}
         color={Colors.white}
         text_input_container={{ flexDirection: "row" }}
@@ -77,11 +79,11 @@ const Login = ({navigation}) => {
         onPress_icon={() => { setSecure(!secure) }}
         secureTextEntry={secure}
         onChangeText={(text) => { setErrors(""), setPassword(text) }}
-        ForgetPassword={() => { alert("adadadada") }}
+        // ForgetPassword={() => { alert("adadadada") }}
         error={errors === "Please Enter Your Password" ? "Please Enter Your Password" : null ||errors === "Password must should contain 6 digits"?"Password must should contain 6 digits":null}
       />
       </ScrollView>
-      <Btn text={"Login"} onPress={() =>{login()}}  containerStyle={{ backgroundColor: Colors.white, padding: 15, borderRadius: 25, marginTop: 15,marginHorizontal:50 }}/>
+      <Btn text={"Login"} onPress={() =>{login()}}  containerStyle={{ backgroundColor: Colors.white, padding: 15, borderRadius: 25, marginTop: 30,marginHorizontal:50 }}/>
       </View>
     </ImageBackground>
   );

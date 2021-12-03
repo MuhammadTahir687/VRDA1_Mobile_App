@@ -48,14 +48,14 @@ const BTCDetail = ({navigation,route}) => {
         <SafeAreaView style={{flex:1}}>
             <ImageBackground source={require("../../../../Assets/splash.png")} style={{flex:1}}>
                 <Loader animating={isloading}/>
-                <ProfileView source={{uri: data.picture}} screen_title={name} username={title+" "} firstname={firstname+" "} lastname={lastname} onPress={()=>navigation.goBack()} onPressForUpdate={()=>{navigation.navigate("UpdateBTC",{title:title,firstname:firstname,lastname:lastname,data:data})}}>
+                <ProfileView source={{uri: data.picture}} screen_title={name} username={title+" "} firstname={firstname+" "} lastname={lastname} update={"BTC Detail"} onPress={()=>navigation.goBack()} onPressForUpdate={()=>{navigation.navigate("UpdateBTC",{title:title,firstname:firstname,lastname:lastname,data:data,apiData:apiData})}}>
                 <Text style={{fontSize:16,fontWeight:"bold", color:Colors.primary,paddingHorizontal:10,bottom:10}}>{name}:</Text>
                 <DoubleText text1={"BTC Address"} text2={apiData?apiData.btc:"Not Available"}/>
                     {apiData ?
                         <DoubleText text1={"Qr Code"} sourceimg={{uri: "https://staging.vrda1.net/" + apiData.btc_img}}/>
                         :<DoubleText text1={"Qr Code"} text2={"Not Available"}/>
                     }
-                    <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center',marginBottom:10 }} onPress={() => { copyToClipboard() }}>
+                    <TouchableOpacity disabled={apiData.btc !== "" ? false : true} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center',marginBottom:10 }} onPress={() => { copyToClipboard() }}>
                     <Entypo color={Colors.primary}  size={20} name={"copy"}/>
                     <Text style={{ color: Colors.primary, }}> Tap to Copy!</Text>
                 </TouchableOpacity>

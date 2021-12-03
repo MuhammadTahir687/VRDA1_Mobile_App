@@ -56,12 +56,15 @@ const Commission_Logs=()=>{
         }
     }
 
-    const renderItem=({item})=>(
+    const renderItem=({item,index})=>(
         <TouchableOpacity
             activeOpacity={0.8}
             onPress={()=>{setVisible(true),setIds(item)}}
             style={{backgroundColor: Colors.secondary, borderColor: Colors.white, borderRadius: 10, borderBottomWidth: 2, padding: 10,marginHorizontal:5,marginVertical:2}}>
-            <Text style={{ fontSize: 14, color: Colors.white }}>Transactions ({item.transactions})</Text>
+            <View style={{flexDirection:"row"}}>
+                <Text style={{ fontSize: 14, color: Colors.white }}>{index+1}. </Text>
+                <Text style={{ fontSize: 14, color: Colors.white }}>Transactions ({item.transactions})</Text>
+            </View>
             {/*<Text style={{ fontSize: 14, color: Colors.white }}>Total ({item.id})</Text>*/}
             {/*<Text style={{ fontSize: 14, color: Colors.white }}>Status ({item.id}%)</Text>*/}
             <Text style={{ fontSize: 13, color: Colors.lightgray, flex: 1, }}>Closing Date: {item.closing_date}</Text>
@@ -74,8 +77,8 @@ const Commission_Logs=()=>{
             {showTime &&
             <CountDown
                 until={time}
-                onFinish={() => alert('finished')}
-                onPress={() => alert('hello')}
+                // onFinish={() => alert('finished')}
+                // onPress={() => alert('hello')}
                 size={22}
             />
             }
@@ -86,18 +89,12 @@ const Commission_Logs=()=>{
                 contentContainerStyle={{ marginVertical: 20,paddingBottom:20, }}
             />
             <Dialogs visible={visible} onPress={()=>{setVisible(false)}} title={"Description"}>
-                <View style={{flexDirection:"row",justifyContent:"space-between",marginHorizontal:12}}>
-                    <TouchableOpacity style={{backgroundColor: Colors.primary,borderRadius: 25,flexDirection:"row",padding:7,justifyContent:"center",width:70, }}>
-                        <EvilIcons color={Colors.white}  size={22} name={"user"}/>
-                        <Text style={{color:Colors.white,fontSize:12}}>user {ids.transactions?ids.transactions:null}</Text>
-                    </TouchableOpacity>
-                    <AntDesign color={Colors.primary}  size={20} name={"closecircle"} onPress={()=>{setVisible(false)}}/>
-                </View>
-                <DoubleText text1={"Transactions"} text2={ids.transactions?ids.transactions:null} textstyle={{textAlign:"center"}}/>
-                <DoubleText text1={"Total"} text2={ids.total?ids.total:null} textstyle={{textAlign:"center"}}/>
-                <DoubleText text1={"70%"} text2={ids.percent_70?parseFloat(ids.percent_70).toFixed(2):null} textstyle={{textAlign:"center"}}/>
-                <DoubleText text1={"30%"} text2={ids.percent_30?parseFloat(ids.percent_30).toFixed(2):null} textstyle={{textAlign:"center"}}/>
-                <DoubleText text1={"Closing Date"} text2={ids.closing_date?ids.closing_date:null}/>
+                <DoubleText text1={"Transactions"} text2={ids.transactions?ids.transactions:null}/>
+                <DoubleText text1={"Total"} text2={ids.total?parseFloat(ids.total).toFixed(2):null}/>
+                <DoubleText text1={"70%"} text2={ids.percent_70?parseFloat(ids.percent_70).toFixed(2):null}/>
+                <DoubleText text1={"30%"} text2={ids.percent_30?parseFloat(ids.percent_30).toFixed(2):null}/>
+                <DoubleText text1={"Closing Date"} text2={ids.closing_date?ids.closing_date.slice(0,10):null}/>
+                <DoubleText text1={""} text2={ids.closing_date?ids.closing_date.slice(11,19):null}/>
                 {/*    <View style={{flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start',margin:3,paddingHorizontal:17.5}}>*/}
                 {/*        <Text style={{ width: '50%',fontWeight:"bold"}}>Status</Text>*/}
                 {/*        <Progress.Bar width={deviceWidth / 3.6} progress={0.1} color={Colors.primary} backgroundColor={Colors.secondary} borderColor={Colors.secondary} marginVertical={5}/>*/}

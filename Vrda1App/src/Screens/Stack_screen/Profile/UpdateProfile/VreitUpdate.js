@@ -15,8 +15,9 @@ const UpdateVreit = ({navigation,route}) => {
     var title=route.params.title;
     var lastname =route.params.lastname;
     var firstname=route.params.firstname;
+    var vreitAdd=route.params.apiData;
 
-    const [vreitAddress,setVreitaddress]=useState("");
+    const [vreitAddress,setVreitaddress]=useState(vreitAdd.vreit);
     const [errors,setErrors]=useState("");
     const [fileName,setFileName]=useState("");
     const [isloading,setLoading]=useState(false);

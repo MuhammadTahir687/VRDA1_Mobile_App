@@ -45,15 +45,27 @@ export const ShopValidation = (fileName,imageSourceData) => {
     }
 }
 export const processWithdrawValidation = (amount,selectedValue,detail) => {
+    if (selectedValue==="bank"){
+        var value=500
+    }else {
+        var value=200
+    }
     if (amount === ''){
         return {
             valid: false,
             errors: amount === '' ? "Please Enter Amount" : null
         }
-    }else if (amount < 500) {
+    }else if (amount < value) {
         return {
             valid: false,
-            errors: amount < 500 ? "Minimum Amount is 500" : null
+            errors: amount < value ? `Minimum Amount is ${value}` : null
+        }
+
+    }
+    else if (amount < selectedValue ==="usdt"?200:"") {
+        return {
+            valid: false,
+            errors: amount < selectedValue ==="usdt"?200:"" ? "Minimum Amount is 200" : null
         }
     }else if (amount > 5000) {
         return {
@@ -80,7 +92,7 @@ export const processWithdrawValidation = (amount,selectedValue,detail) => {
         return { valid: true, errors: null }
     }
 }
-export const processTransferValidation = (amount,selectedValue,detail) => {
+export const processTransferValidation = (amount,selectedValue,detail,value) => {
     if (selectedValue === "") {
         return {
             valid: false,
@@ -105,6 +117,11 @@ export const processTransferValidation = (amount,selectedValue,detail) => {
         return {
             valid: false,
             errors: amount < 100 ? "Minimum Amount is 100" : null
+        }
+    }else if (amount > value) {
+        return {
+            valid: false,
+            errors: amount > value ? "Amount is exceeded" : null
         }
     }else if (detail === '') {
         return {
@@ -157,7 +174,7 @@ export const UpdateBtcvalid = (fileName,imageSourceData,btcAddress) => {
         return { valid: true, errors: null }
     }
 }
-export const UpdateBankValidation = (fullName,bankname,branchname,accountNumber,phonenumber,completeAdd,country,fileName,imageSourceData) => {
+export const UpdateBankValidation = (fullName,bankname,branchname,accountNumber,phonenumber,completeAdd,country) => {
     if (fullName === "") {
         return {
             valid: false,
@@ -198,26 +215,17 @@ export const UpdateBankValidation = (fullName,bankname,branchname,accountNumber,
             valid: false,
             errors: country === "" ? "Country is Required" : null
         }
-    }else if (fileName === ''){
-        return {
-            valid: false,
-            errors: fileName === '' ? "Please Add Image First" : null
-        }
-    }else if (imageSourceData === null) {
-        return {
-            valid: false,
-            errors: imageSourceData === null ? "Please Add Image First" : null
-        }
     }
     else{
         return { valid: true, errors: null }
     }
 }
 export const UpdateProfileValidation = (address,city,identity,passport,kinname,kinrelation) => {
+
     if (address === "") {
         return {
             valid: false,
-            errors: fullName === "" ? "Address is Required" : null
+            errors: address === "" ? "Address is Required" : null
         }
     }else if (address.length < 3) {
         return {

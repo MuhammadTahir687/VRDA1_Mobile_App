@@ -11,7 +11,7 @@ import {processVreitTransferValidae} from "../../../../utilis/validation";
 import {Text, View, SafeAreaView, ScrollView, RefreshControl} from "react-native";
 import {getVreitTransferC2C, sendVreitC2Csubmit} from "../../../../utilis/Api/Api_controller";
 
-const Vreit_Transfer = () => {
+const Vreit_Transfer = ({navigation}) => {
     const [child,setChild]=useState([]);
     const [parent,setParent]=useState([]);
     const [detail,setDetail]=useState("");
@@ -22,7 +22,7 @@ const Vreit_Transfer = () => {
     const [isloading,setLoading]=useState(false);
     const [refreshing,setRefreshing]=useState(false)
     const [vreitTransfer,setVreitTransfer]=useState("");
-    const [selectedValue, setSelectedValue] = useState("");
+    const [selectedValue, setSelectedValue] = useState();
     const [selectedValue1, setSelectedValue1] = useState("");
     const buttons = [{name: 'Transfer Point', id: 0}, {name: 'Process Transfer', id: 1},]
 
@@ -140,13 +140,16 @@ const Vreit_Transfer = () => {
                             value={detail}
                             onChangeText={(text) => { setErrors(""), setDetail(text) }}
                         />
+                        <View style={{flexDirection:"row"}}>
                         <CheckBox
                             style={{margin:10}}
                             textStyle={{fontWeight:"bold"}}
                             size={20}
                             selected={checked}
                             onPress={() => setChecked(!checked)}
-                            text={" I accept terms & condition"}/>
+                            text={" I accept "}/>
+                        <Text onPress={()=>{setSelectedValue("");navigation.navigate("TermsAndCondition")}} style={{right:10,color:"#53a0b7",fontWeight:"bold",textDecorationLine:"underline",fontSize:14,alignSelf:"center"}}>Terms & Conditions</Text>
+                        </View>
                         <Btn disabled={checked == true ? false : true} onPress={()=>Submit()} text_style={{color:Colors.white}} text={"Process Transfer"} containerStyle={{width:160,borderRadius:20,padding:10,backgroundColor:checked ===true?Colors.primary:Colors.secondary,alignSelf:"center",bottom:20,marginTop:30,}}/>
                     </View>
                 }

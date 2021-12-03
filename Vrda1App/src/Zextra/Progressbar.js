@@ -24,7 +24,7 @@ const   PBar = ({heading,Require,value,Remaining,progressValue,text,textStyle}) 
                         <Text style={{fontSize: 10,padding:4,backgroundColor:"rgba(46,236,2,0.89)",borderRadius:3,color:Colors.white,fontWeight:"bold"}}>Completed</Text>
                         : <Text style={{fontSize: 10}}>Remaining Points {Remaining}</Text>
                     }
-                    <Text style={{fontSize: 10}}>Require {Require} </Text>
+                    <Text style={{fontSize: 10}}>Required {Require} </Text>
                 </View>
 
             </View>

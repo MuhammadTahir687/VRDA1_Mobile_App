@@ -278,6 +278,7 @@ const UpdateProfile = ({navigation,route}) => {
                         containerStyle={{flex:2,borderWidth:0.3,borderRadius:5}}
                         onChangeText={(text) => { setErrors(""), setEmail(text) }}
                     />
+
                     </View>
                 </View>
                     <View style={{flexDirection:"row",justifyContent:"space-between"}}>
@@ -313,8 +314,8 @@ const UpdateProfile = ({navigation,route}) => {
                     value={address}
                     containerStyle={{flex:1,borderWidth:0.3,borderRadius:5}}
                     onChangeText={(text) => { setErrors(""), setAddress(text) }}
-                    error={errors === "Address is Required" ? "Address is Required" : errors === "Address length at least 3" ? "Address length at least 3" : null}
                 />
+                        {errors ? <Text style={{color:"red",fontSize:11}}>{errors === "Address is Required" ? "Address is Required" : errors === "Address length at least 3" ? "Address length at least 3" : null}</Text>:null}
                     </View>
                     <View style={{flexDirection:"row", justifyContent:"space-between"}}>
                         <View style={{flex:2,margin:2}}>
@@ -326,8 +327,8 @@ const UpdateProfile = ({navigation,route}) => {
                             value={city}
                             containerStyle={{flex:2,borderWidth:0.3,borderRadius:5}}
                             onChangeText={(text) => { setErrors(""), setCity(text) }}
-                            error={errors === "City is Required" ? "City is Required" :errors === "City length at least 3" ? "City length at least 3" : null}
                         />
+                            {errors ? <Text style={{color:"red",fontSize:11}}>{errors === "City is Required" ? "City is Required" :errors === "City length at least 3" ? "City length at least 3" : null}</Text>:null}
                         </View>
                         <View style={{flex:2,margin:2}}>
                             <Text style={{fontWeight:"bold",fontSize:13,paddingLeft:2}}>Country*</Text>
@@ -337,7 +338,7 @@ const UpdateProfile = ({navigation,route}) => {
                             color={Colors.primary}
                             value={data.country}
                             editable={false}
-                            containerStyle={{flex:2,backgroundColor:"rgba(0,0,0,0.13)",borderRadius:5}}
+                            containerStyle={{backgroundColor:"rgba(0,0,0,0.13)",borderRadius:5}}
                         />
                         </View>
                     </View>
@@ -351,8 +352,8 @@ const UpdateProfile = ({navigation,route}) => {
                         value={identity}
                         containerStyle={{flex:2,borderWidth:0.3,borderRadius:5}}
                         onChangeText={(text) => { setErrors(""), setIdentity(text) }}
-                        error={errors === "Identity is Required" ? "Identity is Required" :errors === "Identity length at least 3" ? "Identity length at least 3" : null}
                     />
+                        {errors ? <Text style={{color:"red",fontSize:11}}>{errors === "Identity is Required" ? "Identity is Required" :errors === "Identity length at least 3" ? "Identity length at least 3" : null}</Text>:null}
                     </View>
                     <View style={{flex:2,margin:2}}>
                         <Text style={{fontWeight:"bold",fontSize:13,paddingLeft:2}}>Passport*</Text>
@@ -363,8 +364,9 @@ const UpdateProfile = ({navigation,route}) => {
                         value={passport}
                         containerStyle={{flex:2,borderWidth:0.3,borderRadius:5}}
                         onChangeText={(text) => { setErrors(""), setPassport(text) }}
-                        error={errors === "Passport is Required" ? "Passport is Required" :errors === "Passport length at least 3" ? "Passport length at least 3" : null}
                     />
+                        {errors ? <Text style={{color:"red",fontSize:11}}>{errors === "Passport is Required" ? "Passport is Required" :errors === "Passport length at least 3" ? "Passport length at least 3" : null}</Text>:null}
+
                     </View>
                 </View>
                     <View style={{flexDirection:"row", justifyContent:"space-between"}}>
@@ -377,8 +379,9 @@ const UpdateProfile = ({navigation,route}) => {
                             value={kinname}
                             containerStyle={{flex:2,borderWidth:0.3,borderRadius:5}}
                             onChangeText={(text) => { setErrors(""), setKinname(text) }}
-                            error={errors === "Kin Name is Required" ? "Kin Name is Required" :errors === "Kin Name length at least 3" ? "Kin Name length at least 3" : null}
                         />
+                            {errors ? <Text style={{color:"red",fontSize:11}}>{errors === "Kin Name is Required" ? "Kin Name is Required" :errors === "Kin Name length at least 3" ? "Kin Name length at least 3" : null}</Text>:null}
+
                         </View>
                         <View style={{flex:2,margin:2}}>
                             <Text style={{fontWeight:"bold",fontSize:13,paddingLeft:2}}>Kin Relation*</Text>
@@ -389,8 +392,10 @@ const UpdateProfile = ({navigation,route}) => {
                             value={kinrelation}
                             containerStyle={{flex:2,borderWidth:0.3,borderRadius:5}}
                             onChangeText={(text) => { setErrors(""), setKinrelation(text) }}
-                            error={errors === "Kin Relation is Required" ? "Kin Relation is Required" :errors === "Kin Relation length at least 3" ? "Kin Relation length at least 3" : null}
+
                         />
+                            {errors ? <Text style={{color:"red",fontSize:11}}>{errors === "Kin Relation is Required" ? "Kin Relation is Required" :errors === "Kin Relation length at least 3" ? "Kin Relation length at least 3" : null}</Text>:null}
+
                         </View>
                     </View>
                 </View>

@@ -51,14 +51,19 @@ const TeamSale = () => {
         return [weekStart, weekEnd];
     }
 
-    const renderItem=({item})=>(
+    const renderItem=({item,index})=>(
         <TouchableOpacity
             activeOpacity={0.8}
             onPress={()=>{setVisible(true),setIds(item)}}
-            style={{backgroundColor: Colors.secondary, borderColor: Colors.white, borderRadius: 10, borderBottomWidth: 2, padding: 10,marginHorizontal:5,marginVertical:2}}>
+            style={{transform: [{ scaleY: -1 }],backgroundColor: Colors.secondary, borderColor: Colors.white, borderRadius: 10, borderBottomWidth: 2, padding: 10,marginHorizontal:5,marginVertical:2}}>
            {/* <Text style={{ fontSize: 14, color: Colors.white }}>User ({item.used_by.name})</Text>*/}
-            <Text style={{ fontSize: 14, color: Colors.white }}>Package Name ({item.package_name?item.package_name:null})</Text>
-            <Text style={{ fontSize: 13, color: Colors.lightgray, flex: 1, }}>Closing Date: {item.used_at?item.used_at:null}</Text>
+            <View style={{flexDirection:"row"}}>
+                <Text style={{ fontSize: 14, color: Colors.white }}>{index+1}. </Text>
+                <View>
+                    <Text style={{ fontSize: 14, color: Colors.white }}>Package Name ({item.package_name?item.package_name:null})</Text>
+                    <Text style={{ fontSize: 13, color: Colors.lightgray, flex: 1, }}>Closing Date: {item.used_at?item.used_at:null}</Text>
+                </View>
+            </View>
         </TouchableOpacity>
     )
     return(
@@ -83,25 +88,16 @@ const TeamSale = () => {
             <FlatList
                 data={data}
                 renderItem={renderItem}
-                style={{ flex: 1, }}
+                keyExtractor={(item, index) => item.id+''+index}
+                style={{ flex: 1,transform: [{ scaleY: -1 }]  }}
                 contentContainerStyle={{paddingBottom:20, }}
             />
             <Dialogs visible={visible} onPress={()=>{setVisible(false)}} title={"Description"}>
-                <View style={{flexDirection:"row",justifyContent:"space-between",marginHorizontal:12,alignItems:"center",marginTop:10}}>
-                    <TouchableOpacity style={{backgroundColor: Colors.primary,borderRadius: 25,flexDirection:"row",padding:7,justifyContent:"center",width:70, }}>
-                        <EvilIcons color={Colors.white} size={22} name={"user"}/>
-                        {/*<Text style={{color:Colors.white,fontSize:12}}>user {res.user_id} </Text>*/}
-                    </TouchableOpacity>
-                    <AntDesign color={Colors.primary}  size={20} name={"closecircle"} onPress={()=>{setVisible(false)}}/>
-                </View>
-                <View>
-                    <DoubleText text1={"User"} text2={ids.usedBy?ids.usedBy:null}/>
-                    <DoubleText text1={"Package Name"} text2={ids.package_name?ids.package_name:null}/>
-                    <DoubleText text1={"Side"} text2={ids.position}/>
-                    <DoubleText text1={"Business Volume"} text2={ids.package_business_volume?ids.package_business_volume:null}/>
-                    {/*<DoubleText text1={"User"} text2={ids.used_by.name}/>*/}
-                    <DoubleText text1={"Date"} text2={ids.used_at?ids.used_at:null}/>
-                </View>
+                <DoubleText text1={"User"} text2={ids.usedBy?ids.usedBy:null}/>
+                <DoubleText text1={"Package Name"} text2={ids.package_name?ids.package_name:null}/>
+                <DoubleText text1={"Side"} text2={ids.position}/>
+                <DoubleText text1={"Business Volume"} text2={ids.package_business_volume?ids.package_business_volume:null}/>
+                <DoubleText text1={"Date"} text2={ids.used_at?ids.used_at:null}/>
             </Dialogs>
         </SafeAreaView>
     )

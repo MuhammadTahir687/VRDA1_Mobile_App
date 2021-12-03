@@ -17,8 +17,9 @@ import Dropdown from "../../../utilis/Picker/Picker";
 import Clipboard from "@react-native-community/clipboard";
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import {BuyValidation, ShopValidation} from "../../../utilis/validation";
+import CheckBox from "../../../utilis/Checkbox";
 
-const Shop = () => {
+const Shop = ({navigation}) => {
     const refRBSheet = useRef();
     const [data,setData]=useState([]);
     const [iban,setIban]=useState("");
@@ -26,24 +27,25 @@ const Shop = () => {
     const [index, setIndex] = useState(0);
     const [errors, setErrors] = useState("");
     const [detail, setDetail] = useState("");
+    const [imageUri,setImageUri]=useState("");
     const [isloading,setLoading]=useState("");
     const [bankName,setBankName]=useState("");
+    const [vreitMsg,setVreitMsg]=useState("");
+    const [fileName,setFileName]=useState("");
+    const [checked,setChecked]=useState(false);
     const [packageID,setPackageID]=useState("");
     const [swiftCode,setSwiftCode]=useState("");
+    const [walletmsg,setwalletmsg]=useState("");
     const [cifNumber,setCifNumber]=useState("");
     const [branchName,setBranchName]=useState("");
     const [branchCode,setBranchCode]=useState("");
     const [accountName,setAccountName]=useState("");
-    const [accountNumber,setAccountNumber]=useState("");
-    const [selectedValue, setSelectedValue] = useState("Bank");
-    const [imageUri,setImageUri]=useState("");
     const [usdtAddress,setUsdtAddress]=useState("");
-    const [walletmsg,setwalletmsg]=useState("");
-    const [vreitMsg,setVreitMsg]=useState("");
-    const [imageSourceData, setImageSourceData] = useState(null);
-    const [fileName,setFileName]=useState("");
     const [walletAmount,setwalletAmount]=useState("");
     const [packagePrice,setPackagePrice]=useState("");
+    const [accountNumber,setAccountNumber]=useState("");
+    const [selectedValue, setSelectedValue] = useState("");
+    const [imageSourceData, setImageSourceData] = useState(null);
 
 
     const buttons = [{ name: 'Package Detail', id: 0 }, { name: 'Proceed Order', id: 1 }] //false
@@ -104,6 +106,7 @@ const Shop = () => {
                    setLoading(false);
                }
             } else {
+
                 setLoading(false);
             }
         }else {
@@ -159,8 +162,15 @@ const Shop = () => {
                     await setFileName("")
                     await setLoading(false);
                     await refRBSheet.current.close();
-                }else {
-                    Toast.show("Invalid Email or Password !", Toast.LONG);
+                }else if (response.data.status == false) {
+                    Toast.show(response.data.message, Toast.LONG);
+                    await setDetail("");
+                    await setImageSourceData(null);
+                    await setFileName("")
+                    setLoading(false);
+                }
+                else {
+                    Toast.show("Something Went Wrong", Toast.LONG);
                     setLoading(false);
                 }
             }else {
@@ -276,7 +286,7 @@ const Shop = () => {
                                     <DoubleText text1={"CIF Number"} text2={cifNumber ? cifNumber:"Not Available"} textstyle={{ textAlign: "center" }} containerstyle={{ backgroundColor: "rgba(152,148,148,0.63)", padding: 6 }} />
                                     <DoubleText text1={"Branch Name"} text2={branchName ? branchName:"Not Available"} textstyle={{ textAlign: "center" }} containerstyle={{ padding: 6 }} />
                                     <DoubleText text1={"Branch Code"} text2={branchCode ? branchCode:"Not Available"} textstyle={{ textAlign: "center" }} containerstyle={{ backgroundColor: "rgba(152,148,148,0.63)", padding: 6 }} />
-                                    <Btn onPress={selectPhoto_gallery.bind(this)} image={require("../../../Assets/picture.png")} img_style={{height:20,width:20,marginHorizontal:5}} containerStyle={{flexDirection:"row", flex: 1, backgroundColor: Colors.primary, marginVertical: 8, padding: 10, borderRadius: 5,marginHorizontal:20,justifyContent:"center",justifyItems:"center" }} text={"Choose File"} text_style={{ color: Colors.white,textAlign:"center" }} />
+                                    <Btn onPress={selectPhoto_gallery.bind(this)} image={require("../../../Assets/picture.png")} img_style={{height:20,width:20,marginHorizontal:5}} containerStyle={{flexDirection:"row", flex: 1, backgroundColor: Colors.primary, marginTop: 10, padding: 10, borderRadius: 5,marginHorizontal:20,justifyContent:"center",justifyItems:"center" }} text={"Choose File"} text_style={{ color: Colors.white,textAlign:"center" }} />
                                         {errors ==="Please Add Image First"?
                                           <Text style={{textAlign:"center",fontSize:11,fontWeight:"bold",color:"red"}}>{!fileName?"Please Add Image First":null}</Text>
                                           :<Text style={{textAlign:"center",fontSize:11,fontWeight:"bold"}}>{fileName?fileName:null}</Text>
@@ -287,12 +297,22 @@ const Shop = () => {
                                             placeholderTextColor={Colors.lightgray}
                                             value={detail}
                                             color={Colors.primary}
-                                            containerStyle={{ margin: 15 }}
-                                            styleBorder={{borderWidth:1,borderColor:Colors.primary}}
+                                            containerStyle={{ margin: 15, }}
+                                            styleBorder={{borderWidth:1,borderColor:Colors.primary,borderRadius:5}}
                                             onChangeText={(text) => { setDetail(text),setErrors("") }}
                                             error={errors === "Please Enter Notes Details" ? "Please Enter Notes Details" : null }
                                         />
-                                    <Btn onPress={()=>Submit()} text_style={{ color: Colors.white }} text={"Submit"} containerStyle={{ width: 100, borderRadius: 5, padding: 10, backgroundColor: Colors.primary, alignSelf: "center", bottom: 20, marginTop: 30, }} />
+                                        <View style={{flexDirection:"row"}}>
+                                        <CheckBox
+                                            style={{marginHorizontal:15}}
+                                            textStyle={{fontWeight:"bold"}}
+                                            size={20}
+                                            selected={checked}
+                                            onPress={() => setChecked(!checked)}
+                                            text={" I accept"}/>
+                                            <Text onPress={()=>{refRBSheet.current.close();setSelectedValue("");navigation.navigate("TermsAndCondition")}} style={{right:15,color:"#53a0b7",fontWeight:"bold",textDecorationLine:"underline",fontSize:14,alignSelf:"center"}}>Terms & Conditions</Text>
+                                        </View>
+                                    <Btn disabled={checked == true ? false : true} onPress={()=>Submit()} text_style={{ color: Colors.white }} text={"Submit"} containerStyle={{ width: 100, borderRadius: 5, padding: 10, backgroundColor:checked ===true?Colors.primary:Colors.secondary, alignSelf: "center", bottom: 20, marginTop: 30, }} />
                                     </View>
                                     :selectedValue == "usdt"?
                                         <View>
@@ -312,13 +332,23 @@ const Shop = () => {
                                                 <Text style={{color:Colors.primary,fontSize:11}}>* Sending coins or tokens other than USDT to this address may result in the loss of your deposit.</Text>
                                                 <Text style={{color:Colors.primary,fontSize:11}}>* Package will be update or upgrade after confirmation.</Text>
                                             </View>
-                                            <Btn onPress={selectPhoto_gallery.bind(this)} containerStyle={{ flex: 1, backgroundColor: Colors.primary, marginVertical:8, padding: 10, borderRadius: 5,marginHorizontal:20 }} text={"Choose File"} text_style={{ color: Colors.white }} />
+                                            <Btn onPress={selectPhoto_gallery.bind(this)} containerStyle={{ flex: 1, backgroundColor: Colors.primary, marginTop:8, padding: 10, borderRadius: 5,marginHorizontal:20 }} text={"Choose File"} text_style={{ color: Colors.white }} />
                                             {errors ==="Please Add Image First"?
                                                 <Text style={{textAlign:"center",fontSize:11,fontWeight:"bold",color:"red"}}>{!fileName?"Please Add Image First":null}</Text>
                                                 :<Text style={{textAlign:"center",fontSize:11,fontWeight:"bold"}}>{fileName?fileName:null}</Text>
                                             }
                                             <Notes/>
-                                            <Btn onPress={()=>Submit()} text_style={{ color: Colors.white }} text={"Submit"} containerStyle={{ width: 100, borderRadius: 5, padding: 10, backgroundColor: Colors.primary, alignSelf: "center", marginTop: 12, }} />
+                                            <View style={{flexDirection:"row"}}>
+                                                <CheckBox
+                                                    style={{marginHorizontal:15}}
+                                                    textStyle={{fontWeight:"bold"}}
+                                                    size={20}
+                                                    selected={checked}
+                                                    onPress={() => setChecked(!checked)}
+                                                    text={" I accept"}/>
+                                                <Text onPress={()=>{refRBSheet.current.close();setSelectedValue("");navigation.navigate("TermsAndCondition")}} style={{right:15,color:"#53a0b7",fontWeight:"bold",textDecorationLine:"underline",fontSize:14,alignSelf:"center"}}>Terms & Conditions</Text>
+                                            </View>
+                                            <Btn disabled={checked == true ? false : true} onPress={()=>Submit()} text_style={{ color: Colors.white }} text={"Submit"} containerStyle={{ width: 100, borderRadius: 5, padding: 10, backgroundColor:checked ===true?Colors.primary:Colors.secondary, alignSelf: "center", marginTop: 12, }} />
                                             <Text></Text>
                                         </View>
                                         :selectedValue == "wallet"?

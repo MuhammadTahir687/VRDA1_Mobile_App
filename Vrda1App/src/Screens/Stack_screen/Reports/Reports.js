@@ -16,7 +16,7 @@ const Tab = createMaterialBottomTabNavigator();
 const Commission_Reports=()=>{
     return(
         <SafeAreaView style={{flex:1}}>
-            <Tab.Navigator  initialRouteName="MyPurchase" activeColor={Colors.primary} inactiveColor={Colors.lightgray} barStyle={{ backgroundColor:'rgba(0,0,0,0.02)',paddingTop:10 }} lazy={true} optimizationsEnabled={true}>
+            <Tab.Navigator initialRouteName="MyPurchase" activeColor={Colors.primary} inactiveColor={Colors.lightgray} barStyle={{ backgroundColor:'rgba(0,0,0,0.02)',paddingTop:10 }} lazy={true} optimizationsEnabled={true}>
                 <Tab.Screen name="MyPurchase" component={MyPurchase} options={{tabBarLabel: '', tabBarIcon: ({color}) => (<Image source={require("../../../Assets/MyPurchase.png")} style={{height:27,width:27}}/>)}}/>
                 <Tab.Screen name="OwnershipPurchase" component={OwnershipPurchase} options={{tabBarLabel: '',tabBarIcon: ({color}) => (<Image source={require("../../../Assets/OwnershipPurchase.png")} style={{height:27,width:27}}/>)}}/>
                 <Tab.Screen name="TeamSale" component={TeamSale} options={{tabBarLabel: '', tabBarIcon: ({color}) => (<Image source={require("../../../Assets/TeamSale.png")} style={{height:27,width:27}}/>)}}/>

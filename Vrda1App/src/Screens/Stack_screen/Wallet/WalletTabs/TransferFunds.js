@@ -11,7 +11,7 @@ import Loader from "../../../../utilis/Loader";
 import Dropdown from "../../../../utilis/Picker/Picker";
 import {processTransferValidation} from "../../../../utilis/validation";
 
-const TransferFunds = () => {
+const TransferFunds = ({navigation}) => {
     const [detail,setDetail]=useState("");
     const [isloading,setLoading]=useState(false);
     const [errors,setErrors]=useState("");
@@ -22,7 +22,7 @@ const TransferFunds = () => {
     const [checked,setChecked]=useState(false);
     const [available,setAvailable]=useState("");
     const [selectedValue, setSelectedValue] = useState("Please Select");
-    const buttons = [{name: 'Wallet', id: 0}, {name: 'Process Withdraw', id: 1},]
+    const buttons = [{name: 'Wallet', id: 0}, {name: 'Process Transfer', id: 1},]
 
     useEffect(async ()=>{ await getData(); },[]);
 
@@ -48,7 +48,7 @@ const TransferFunds = () => {
         await getData();
     }
     const Submit = async () => {
-        let validate = processTransferValidation(amounts,selectedValue,detail)
+        let validate = processTransferValidation(amounts,selectedValue,detail,available.available)
         if (validate.valid === false) {
             setErrors(validate.errors)
         } else {
@@ -63,6 +63,8 @@ const TransferFunds = () => {
                     await setLoading(false);
                     await setDetail("");
                     await setAmounts("");
+                    await onRefresh();
+
                 }else {
                     Toast.show(response.data.data, Toast.LONG);
                     setLoading(false);
@@ -112,29 +114,32 @@ const TransferFunds = () => {
                     }
                     <FormInput
                         placeholder={"In Amount 100 ..."}
-                        placeholderTextColor={Colors.secondary}
+                        placeholderTextColor={"rgba(178,176,176,0.72)"}
                         value={amounts}
                         keyboardType={'phone-pad'}
                         color={Colors.primary}
                         containerStyle={{marginTop:5}}
                         onChangeText={(text) => { setErrors(""); setAmounts(text) }}
-                        error={errors === "Please Enter Amount" ? "Please Enter Amount" : errors === "Minimum Amount is 100" ? "Minimum Amount is 100":null}
+                        error={errors === "Please Enter Amount" ? "Please Enter Amount" : errors === "Minimum Amount is 100" ? "Minimum Amount is 100":errors === "Amount is exceeded"?"Amount is exceeded":null}
                     />
                     <Text style={{padding:10,fontWeight:"bold",color:Colors.primary}}>Transfer Details:</Text>
                     <FormInput
                         placeholder={"Transfer Details"}
-                        placeholderTextColor={Colors.secondary}
+                        placeholderTextColor={"rgba(178,176,176,0.72)"}
                         value={detail}
                         onChangeText={(text) =>  {setErrors(""); setDetail(text)} }
                         error={errors === "Please Enter Details" ? "Please Enter Details" : null }
                     />
-                    <CheckBox
-                        style={{margin:10}}
-                        textStyle={{fontWeight:"bold"}}
-                        size={20}
-                        selected={checked}
-                        onPress={() => setChecked(!checked)}
-                        text={"Terms of condition"}/>
+                    <View style={{flexDirection:"row"}}>
+                        <CheckBox
+                            style={{margin:10}}
+                            textStyle={{fontWeight:"bold"}}
+                            size={20}
+                            selected={checked}
+                            onPress={() => setChecked(!checked)}
+                            text={"I accept"}/>
+                        <Text onPress={()=>{setSelectedValue("");navigation.navigate("TermsAndCondition")}} style={{right:10,color:"#53a0b7",fontWeight:"bold",textDecorationLine:"underline",fontSize:12,alignSelf:"center"}}>Terms & Conditions</Text>
+                    </View>
                     <Btn disabled={checked == true ? false : true} onPress={()=>{Submit()}} text_style={{color:Colors.white}} text={"Process Transfer"} containerStyle={{width:160,borderRadius:20,padding:10,backgroundColor:checked ===true?Colors.primary:Colors.secondary,alignSelf:"center",bottom:20,marginTop:40,}}/>
                 </View>
             }

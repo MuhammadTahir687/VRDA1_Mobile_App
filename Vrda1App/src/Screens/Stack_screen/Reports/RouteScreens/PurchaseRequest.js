@@ -41,15 +41,20 @@ const PurchaseRequest = () => {
         await getData();
     }
 
-    const renderItem=({item})=>(
+    const renderItem=({item,index})=>(
         <TouchableOpacity
             activeOpacity={0.8}
             onPress={()=>{setVisible(true),setIds(item)}}
             style={{backgroundColor: Colors.secondary, borderColor: Colors.white, borderRadius: 10, borderBottomWidth: 2, padding: 10,marginHorizontal:5,marginVertical:2}}>
             {/*<Text>dddd</Text>*/}
-            <Text style={{ fontSize: 14, color: Colors.white }}>Request Type ({item.submission_type?item.submission_type:null})</Text>
-            {/*<Text style={{ fontSize: 14, color: Colors.white }}>Package Name ({item.package.title})</Text>*/}
-            <Text style={{ fontSize: 13, color: Colors.lightgray, flex: 1, }}>Closing Date: {item.created_at?item.created_at:null}</Text>
+            <View style={{flexDirection:"row"}}>
+                <Text style={{ fontSize: 14, color: Colors.white }}>{index+1}. </Text>
+                <View>
+                    <Text style={{ fontSize: 14, color: Colors.white }}>Request Type ({item.submission_type?item.submission_type:null})</Text>
+                    {/*<Text style={{ fontSize: 14, color: Colors.white }}>Package Name ({item.package.title})</Text>*/}
+                    <Text style={{ fontSize: 13, color: Colors.lightgray, flex: 1, }}>Closing Date: {item.created_at?item.created_at:null}</Text>
+                </View>
+            </View>
         </TouchableOpacity>
     )
     return(
@@ -69,22 +74,15 @@ const PurchaseRequest = () => {
                 }
             />
             <Dialogs visible={visible} onPress={()=>{setVisible(false)}} title={"Description"}>
-                <View style={{flexDirection:"row",justifyContent:"space-between",marginHorizontal:12,alignItems:"center",marginTop:10}}>
-                    <TouchableOpacity style={{backgroundColor: Colors.primary,borderRadius: 25,flexDirection:"row",padding:7,justifyContent:"center",width:70, }}>
-                        <EvilIcons color={Colors.white} size={22} name={"user"}/>
-                        {/*<Text style={{color:Colors.white,fontSize:12}}>user {res.user_id} </Text>*/}
-                    </TouchableOpacity>
-                    <AntDesign color={Colors.primary}  size={20} name={"closecircle"} onPress={()=>{setVisible(false)}}/>
-                </View>
-                <View>
-                    <DoubleText text1={"Request Type"} text2={ids.submission_type?ids.submission_type:"Not Available"}/>
-                    {/*<DoubleText text1={"Package Name"} text2={ids.package.title?ids.package.title:"Not Available"}/>*/}
-                    <DoubleText text1={"User Notes"} text2={ids.user_details?ids.user_details:"Not Available"}/>
-                    <DoubleText text1={"Admin Notes"} text2={ids.admin_feedback?ids.admin_feedback:"Not Available"}/>
-                    <DoubleText text1={"Status"} text2={ids.status?ids.status:"Not Available"}/>
-                    <DoubleText text1={"Created Date"} text2={ids.created_at?ids.created_at:"Not Available"}/>
-                    <DoubleText text1={"Action Date"} text2={ids.updated_at?ids.updated_at:"Not Available"}/>
-                </View>
+                <DoubleText text1={"Request Type"} text2={ids.submission_type?ids.submission_type:"Not Available"}/>
+                {/*<DoubleText text1={"Package Name"} text2={ids.package.title?ids.package.title:"Not Available"}/>*/}
+                <DoubleText text1={"User Notes"} text2={ids.user_details?ids.user_details:"Not Available"}/>
+                <DoubleText text1={"Admin Notes"} text2={ids.admin_feedback?ids.admin_feedback:"Not Available"}/>
+                <DoubleText text1={"Status"} text2={ids.status?ids.status:"Not Available"}/>
+                <DoubleText text1={"Created Date"} text2={ids.created_at?ids.created_at.slice(0,10):"Not Available"}/>
+                <DoubleText text1={""} text2={ids.created_at?ids.created_at.slice(11,19):""}/>
+                <DoubleText text1={"Action Date"} text2={ids.updated_at?ids.updated_at.slice(0,10):"Not Available"}/>
+                <DoubleText text1={""} text2={ids.updated_at?ids.updated_at.slice(11,19):""}/>
             </Dialogs>
         </SafeAreaView>
     )

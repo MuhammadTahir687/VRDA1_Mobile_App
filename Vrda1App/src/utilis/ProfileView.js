@@ -5,7 +5,7 @@ import Colors from "../Style_Sheet/Colors";
 import EvilIcons from "react-native-vector-icons/EvilIcons";
 import {source} from "react-native/Libraries/DeprecatedPropTypes/DeprecatedImagePropType";
 
-const ProfileView = ({children,onPress,screen_title,username,firstname,lastname,onPressForUpdate,source}) => {
+const ProfileView = ({children,onPress,screen_title,username,firstname,lastname,onPressForUpdate,source,update}) => {
     return (
         <View style={{flex:1}}>
             <View style={{flexDirection: 'row',justifyContent:"center",alignItems:"center",paddingVertical: 20,margin:35}}>
@@ -23,9 +23,9 @@ const ProfileView = ({children,onPress,screen_title,username,firstname,lastname,
                     <Text style={{textAlign:"center",fontWeight:"bold",fontSize:18}}>{lastname}</Text>
                     </View>
                     {onPressForUpdate &&
-                    <TouchableOpacity onPress={onPressForUpdate} style={{backgroundColor: Colors.secondary,borderRadius: 25,flexDirection:"row",padding:5,justifyContent:"space-evenly",width:120,alignSelf:"center",marginTop:8 }}>
+                    <TouchableOpacity onPress={onPressForUpdate} style={{backgroundColor: Colors.secondary,borderRadius: 25,flexDirection:"row",padding:5,justifyContent:"space-evenly",width:145,alignSelf:"center",marginTop:8 }}>
                         <EvilIcons color={Colors.white}  size={22} name={"user"}/>
-                        <Text style={{color:Colors.white,fontSize:12}}>Update Profile</Text>
+                        <Text style={{color:Colors.white,fontSize:12}}>Update {update}</Text>
                     </TouchableOpacity>
                     }
                 </View>
