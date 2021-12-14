@@ -108,13 +108,13 @@ const WithdrawFunds=({navigation})=>{
             </View>
             {index == 0?
                 <View style={{marginVertical:20,justifyContent:"space-evenly"}}>
-                    <DoubleText text1={"Earning (+)"} text2={apiData.earning?"$"+parseFloat(apiData.earning).toFixed(1):"$0"} textstyle={{textAlign:"center"}} containerstyle={{marginLeft:20,padding:6}}/>
-                    <DoubleText text1={"Transfer (-)"} text2={apiData.sent?"$"+parseFloat(apiData.sent).toFixed(1):"$0"} textstyle={{textAlign:"center"}} containerstyle={{marginLeft:20,backgroundColor:"rgba(152,148,148,0.63)",padding:6}}/>
-                    <DoubleText text1={"Received (+)"} text2={apiData.receieved?"$"+parseFloat(apiData.receieved).toFixed(1):"$0"} textstyle={{textAlign:"center"}} containerstyle={{marginLeft:20,padding:6}}/>
-                    <DoubleText text1={"Pin Purchased (-)"} text2={apiData.spent?"$"+parseFloat(apiData.spent).toFixed(1):"$0"} textstyle={{textAlign:"center"}} containerstyle={{marginLeft:20,backgroundColor:"rgba(152,148,148,0.63)",padding:6}}/>
-                    <DoubleText text1={"Withdraw (-)"} text2={apiData.withdraw?"$"+parseFloat(apiData.withdraw).toFixed(1):"$0"} textstyle={{textAlign:"center"}} containerstyle={{marginLeft:20,padding:6}}/>
-                    <DoubleText text1={"Vreit (+)"} text2={apiData.vreit?"$"+parseFloat(apiData.vreit).toFixed(1):"$0"} textstyle={{textAlign:"center"}} containerstyle={{marginLeft:20,backgroundColor:"rgba(152,148,148,0.63)",padding:6}}/>
-                    <DoubleText text1={"Available (=)"} text2={apiData.available?"$"+parseFloat(apiData.available).toFixed(1):"$0"} textstyle={{textAlign:"center"}} containerstyle={{marginLeft:20,padding:6}}/>
+                    <DoubleText text1={"Earning (+)"} text2={apiData.earning?"$"+parseFloat(apiData.earning).toFixed(2):"$0"} textstyle={{textAlign:"center"}} containerstyle={{marginHorizontal:15,padding:6,backgroundColor:"rgba(152,148,148,0.63)"}}/>
+                    <DoubleText text1={"Transfer (-)"} text2={apiData.sent?"$"+parseFloat(apiData.sent).toFixed(2):"$0"} textstyle={{textAlign:"center"}} containerstyle={{marginHorizontal:15,padding:6}}/>
+                    <DoubleText text1={"Received (+)"} text2={apiData.receieved?"$"+parseFloat(apiData.receieved).toFixed(2):"$0"} textstyle={{textAlign:"center"}} containerstyle={{marginHorizontal:15,padding:6,backgroundColor:"rgba(152,148,148,0.63)"}}/>
+                    <DoubleText text1={"Pin Purchased (-)"} text2={apiData.spent?"$"+parseFloat(apiData.spent).toFixed(2):"$0"} textstyle={{textAlign:"center"}} containerstyle={{marginHorizontal:15,padding:6}}/>
+                    <DoubleText text1={"Withdraw (-)"} text2={apiData.withdraw?"$"+parseFloat(apiData.withdraw).toFixed(2):"$0"} textstyle={{textAlign:"center"}} containerstyle={{marginHorizontal:15,padding:6,backgroundColor:"rgba(152,148,148,0.63)"}}/>
+                    <DoubleText text1={"Vreit (+)"} text2={apiData.vreit?"$"+parseFloat(apiData.vreit).toFixed(2):"$0"} textstyle={{textAlign:"center"}} containerstyle={{marginHorizontal:15,padding:6}}/>
+                    <DoubleText text1={"Available (=)"} text2={apiData.available?"$"+parseFloat(apiData.available).toFixed(2):"$0"} textstyle1={{color:Colors.white}} textstyle={{textAlign:"center",color:Colors.white}} containerstyle={{marginHorizontal:15,padding:6,backgroundColor:"rgb(51,51,51)",}}/>
                 </View>
                 :
                 <View style={{margin:20}}>

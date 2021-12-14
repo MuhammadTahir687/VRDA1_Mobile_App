@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import {FlatList, RefreshControl, SafeAreaView, Text, TouchableOpacity, View} from "react-native";
 import Loader from "../../../../utilis/Loader";
 import Colors from "../../../../Style_Sheet/Colors";
-import EvilIcons from "react-native-vector-icons/EvilIcons";
 import DoubleText from "../../../../utilis/DoubleText";
 import Dialogs from "../../../../utilis/Dialog";
 import {getMyPurchase} from "../../../../utilis/Api/Api_controller";

@@ -169,12 +169,13 @@ const Quarterly_vreits = ({ navigation }) => {
                 <View style={{ flexDirection: "row", justifyContent: "space-between", marginHorizontal: 12, alignItems: "center", marginTop: 10 }}>
                 </View>
                 <View>
-                    <DoubleText text1={"Start At"} text2={items.start_at ? items.start_at.slice(0,10) : null} />
+                    <DoubleText text1={"Assigned Vreits"} text2={items.assigned_vreits ? items.assigned_vreits : "0"} />
+                    <DoubleText text1={"Bonus Vreits"} text2={items.bonus_vreits ? items.bonus_vreits : "0"} />
+                    <DoubleText text1={"Shifted Vreits"} text2={items.shifted_vreits ? items.shifted_vreits : "0"} />
+                    <DoubleText text1={"Pin Number"} text2={items.purchase_code ? items.purchase_code : "Not Available"} />
+                    <DoubleText text1={"Start At"} text2={items.start_at ? items.start_at.slice(0,10) : "Not Available"} />
                     <DoubleText text1={""} text2={items.start_at ? items.start_at.slice(11,19) : null} />
-                    <DoubleText text1={"Assigned Vreits"} text2={items.assigned_vreits ? items.assigned_vreits : null} />
-                    <DoubleText text1={"Bonus Vreits"} text2={items.bonus_vreits ? items.bonus_vreits : null} />
-                    <DoubleText text1={"Shifted Vreits"} text2={items.shifted_vreits ? items.shifted_vreits : null} />
-                    <DoubleText text1={"Expiry At"} text2={items.expiry_date ? items.expiry_date.slice(0,10) : null} />
+                    <DoubleText text1={"Expiry At"} text2={items.expiry_date ? items.expiry_date.slice(0,10) : "Not Available"} />
                     <DoubleText text1={""} text2={items.expiry_date ? items.expiry_date.slice(11,19) : null} />
                 </View>
             </Dialogs>

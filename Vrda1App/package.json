@@ -26,6 +26,7 @@
     "@react-navigation/stack": "^6.0.7",
     "axios": "^0.21.4",
     "i": "^0.3.7",
+    "linkify-it": "^3.0.3",
     "moment": "^2.29.1",
     "native-base": "^3.2.1",
     "npm": "^7.24.1",

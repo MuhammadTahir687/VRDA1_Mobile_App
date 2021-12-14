@@ -95,13 +95,13 @@ const TransferFunds = ({navigation}) => {
             </View>
             {index == 0?
                 <View style={{marginVertical:20,justifyContent:"space-evenly"}}>
-                    <DoubleText text1={"Earning (+)"} text2={available.earning?"$"+parseFloat(available.earning).toFixed(1):"$0"} textstyle={{textAlign:"center"}} containerstyle={{marginHorizontal:15,padding:6,backgroundColor:"rgba(152,148,148,0.63)"}}/>
-                    <DoubleText text1={"Transfer (-)"} text2={available.sent?"$"+parseFloat(available.sent).toFixed(1):"$0"} textstyle={{textAlign:"center"}} containerstyle={{marginHorizontal:15,padding:6}}/>
-                    <DoubleText text1={"Received (+)"} text2={available.receieved?"$"+parseFloat(available.receieved).toFixed(1):"$0"} textstyle={{textAlign:"center"}} containerstyle={{marginHorizontal:15,padding:6,backgroundColor:"rgba(152,148,148,0.63)"}}/>
-                    <DoubleText text1={"Pin Purchased (-)"} text2={available.spent?"$"+parseFloat(available.spent).toFixed(1):"$0"} textstyle={{textAlign:"center"}} containerstyle={{marginHorizontal:15,padding:6}}/>
-                    <DoubleText text1={"Withdraw (-)"} text2={available.withdraw?"$"+parseFloat(available.withdraw).toFixed(1):"$0"} textstyle={{textAlign:"center"}} containerstyle={{marginHorizontal:15,padding:6,backgroundColor:"rgba(152,148,148,0.63)",}}/>
-                    <DoubleText text1={"Vreit (+)"} text2={available.vreit?"$"+parseFloat(available.vreit).toFixed(1):"$0"} textstyle={{textAlign:"center"}} containerstyle={{marginHorizontal:15,padding:6}}/>
-                    <DoubleText text1={"Available (=)"} text2={available.available?"$"+parseFloat(available.available).toFixed(1):"$0"} textstyle={{textAlign:"center",color:Colors.white}} textstyle1={{color:Colors.white}} containerstyle={{marginHorizontal:15,padding:6,backgroundColor:"rgb(51,51,51)",}}/>
+                    <DoubleText text1={"Earning (+)"} text2={available.earning?"$"+parseFloat(available.earning).toFixed(2):"$0"} textstyle={{textAlign:"center"}} containerstyle={{marginHorizontal:15,padding:6,backgroundColor:"rgba(152,148,148,0.63)"}}/>
+                    <DoubleText text1={"Transfer (-)"} text2={available.sent?"$"+parseFloat(available.sent).toFixed(2):"$0"} textstyle={{textAlign:"center"}} containerstyle={{marginHorizontal:15,padding:6}}/>
+                    <DoubleText text1={"Received (+)"} text2={available.receieved?"$"+parseFloat(available.receieved).toFixed(2):"$0"} textstyle={{textAlign:"center"}} containerstyle={{marginHorizontal:15,padding:6,backgroundColor:"rgba(152,148,148,0.63)"}}/>
+                    <DoubleText text1={"Pin Purchased (-)"} text2={available.spent?"$"+parseFloat(available.spent).toFixed(2):"$0"} textstyle={{textAlign:"center"}} containerstyle={{marginHorizontal:15,padding:6}}/>
+                    <DoubleText text1={"Withdraw (-)"} text2={available.withdraw?"$"+parseFloat(available.withdraw).toFixed(2):"$0"} textstyle={{textAlign:"center"}} containerstyle={{marginHorizontal:15,padding:6,backgroundColor:"rgba(152,148,148,0.63)",}}/>
+                    <DoubleText text1={"Vreit (+)"} text2={available.vreit?"$"+parseFloat(available.vreit).toFixed(2):"$0"} textstyle={{textAlign:"center"}} containerstyle={{marginHorizontal:15,padding:6}}/>
+                    <DoubleText text1={"Available (=)"} text2={available.available?"$"+parseFloat(available.available).toFixed(2):"$0"} textstyle={{textAlign:"center",color:Colors.white}} textstyle1={{color:Colors.white}} containerstyle={{marginHorizontal:15,padding:6,backgroundColor:"rgb(51,51,51)",}}/>
                 </View>
                 :
                 <View style={{margin:20}}>

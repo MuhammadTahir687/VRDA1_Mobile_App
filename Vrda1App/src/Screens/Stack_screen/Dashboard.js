@@ -9,17 +9,7 @@ import React, {useEffect, useState} from 'react';
 import {getDashboard} from "../../utilis/Api/Api_controller";
 import Timeline from 'react-native-timeline-flatlist';
 import Hyperlink from 'react-native-hyperlink'
-import {
-    SafeAreaView,
-    ScrollView,
-    Text,
-    ImageBackground,
-    View,
-    FlatList,
-    Dimensions,
-    Platform,
-    RefreshControl,
-} from 'react-native';
+import {SafeAreaView,ScrollView,Text,ImageBackground,View,FlatList,Dimensions,Platform,RefreshControl} from 'react-native';
 import Dialogs from "../../utilis/Dialog";
 import AsyncStorage from "@react-native-community/async-storage";
 
@@ -51,19 +41,14 @@ const Dashboard = ({navigation}) => {
     const [currentRank,setCurrentRank]=useState("");
     const [nextRank,setNextRank]=useState("");
     const [refreshing,setRefreshing]=useState(false);
-
-
     // const date = () => { var a = new Date().getDate()-1; var b = new Date().getMonth()+1; var c = new Date().getFullYear(); setCurrentDate(c+'-'+b+'-'+a) }
-
-    const Data = [ {price: leftBV, name: 'LEFT BV'}, {price: rightBV, name: 'Right BV'}, {price: leftCF, name: 'Left CF'},
+    const Data = [
+        {price: leftBV, name: 'LEFT BV'}, {price: rightBV, name: 'Right BV'}, {price: leftCF, name: 'Left CF'},
         {price: rightCF, name: 'Right CF'}, {price: VREITPoint, name: 'Vreit Point'}, {price: VREITBonus, name: 'Vreit Bonus'},
         {price: weeklyReserve, name: 'Weekly Reserve'}, {price: weeklyEarned, name: 'Weekly Earned'}, {price: totalEarned, name: 'Total Earned'},
     ]
     // const EVENTS = event.map(item =>({ start:item.event_start,end:item.event_end,title:item.event_title,summary:item.description,color:"#585555"}))
-    useEffect(async ()=>{
-        await getallData();
-    // await date();
-    },[]);
+    useEffect(async ()=>{ await getallData(); /*/ await date();/*/ },[]);
     const getallData=async ()=>{
         setLoading(true)
         let response = await getDashboard()
@@ -152,12 +137,11 @@ const Dashboard = ({navigation}) => {
                         />
                         <Dialogs visible={visible} onPress={() => { setVisible(false) }} title={"Description"}>
                             <Hyperlink linkDefault={ true } linkStyle={ { color: '#2980b9', fontSize: 16,textDecorationLine:"underline" } }>
-                            <Text style={{paddingHorizontal:15}}>{items.replace(/&(nbsp|amp|quot|lt|gt);/g," ")}</Text>
+                                <Text style={{paddingHorizontal:15}}>{items.replace(/&(nbsp|amp|quot|lt|gt);/g," ")}</Text>
                             </Hyperlink>
                         </Dialogs>
                     </View>
                 </ScrollView>
-
             </View>
         </SafeAreaView>
     )

@@ -69,6 +69,10 @@ const Vreit_Transfer = ({navigation}) => {
                     setLoading(false);
                     await setDetail("");
                     await setAmount("");
+                    await onRefresh();
+                }else if (response.data.status == false) {
+                    Toast.show(response.data.message, Toast.LONG);
+                    setLoading(false);
                 }else {
                     Toast.show(response.data, Toast.LONG);
                     setLoading(false);
@@ -93,13 +97,13 @@ const Vreit_Transfer = ({navigation}) => {
                 </View>
                 {index == 0?
                     <View style={{marginVertical:20,justifyContent:"space-evenly"}}>
-                        <DoubleText text1={"Shifted (+)"} text2={vreitTransfer.shifted?parseFloat(vreitTransfer.shifted).toFixed(1):"0"} textstyle={{textAlign:"center"}} containerstyle={{marginHorizontal:15,padding:6,backgroundColor:"rgba(152,148,148,0.63)"}}/>
-                        <DoubleText text1={"Swapped (-)"} text2={vreitTransfer.swapped?parseFloat(vreitTransfer.swapped).toFixed(1):"0"} textstyle={{textAlign:"center"}} containerstyle={{marginHorizontal:15,padding:6}}/>
-                        <DoubleText text1={"Vreit Wallet (-)"} text2={vreitTransfer.vreit?parseFloat(vreitTransfer.vreit).toFixed(1):"0"} textstyle={{textAlign:"center"}} containerstyle={{marginHorizontal:15,padding:6,backgroundColor:"rgba(152,148,148,0.63)"}}/>
-                        <DoubleText text1={"Purchased (-)"} text2={vreitTransfer.purchased?parseFloat(vreitTransfer.purchased).toFixed(1):"0"} textstyle={{textAlign:"center"}} containerstyle={{marginHorizontal:15,padding:6}}/>
-                        <DoubleText text1={"Transferred (-)"} text2={vreitTransfer.transfer?parseFloat(vreitTransfer.transfer).toFixed(1):"0"} textstyle={{textAlign:"center"}} containerstyle={{marginHorizontal:15,padding:6,backgroundColor:"rgba(152,148,148,0.63)",}}/>
-                        <DoubleText text1={"Received (+)"} text2={vreitTransfer.receive?parseFloat(vreitTransfer.receive).toFixed(1):"0"} textstyle={{textAlign:"center"}} containerstyle={{marginHorizontal:15,padding:6}}/>
-                        <DoubleText text1={"Available (=)"} text2={vreitTransfer.available?parseFloat(vreitTransfer.available).toFixed(1):"$0"} textstyle={{textAlign:"center",color:Colors.white}} textstyle1={{color:Colors.white}} containerstyle={{marginHorizontal:15,padding:6,backgroundColor:"rgb(51,51,51)",}}/>
+                        <DoubleText text1={"Shifted (+)"} text2={vreitTransfer.shifted?parseFloat(vreitTransfer.shifted).toFixed(2):"0"} containerstyle={{marginHorizontal:15,padding:6,backgroundColor:"rgba(152,148,148,0.63)"}}/>
+                        <DoubleText text1={"Swapped (-)"} text2={vreitTransfer.swapped?parseFloat(vreitTransfer.swapped).toFixed(2):"0"} containerstyle={{marginHorizontal:15,padding:6}}/>
+                        <DoubleText text1={"Vreit Wallet (-)"} text2={vreitTransfer.vreit?parseFloat(vreitTransfer.vreit).toFixed(2):"0"} containerstyle={{marginHorizontal:15,padding:6,backgroundColor:"rgba(152,148,148,0.63)"}}/>
+                        <DoubleText text1={"Purchased (-)"} text2={vreitTransfer.purchased?parseFloat(vreitTransfer.purchased).toFixed(2):"0"} containerstyle={{marginHorizontal:15,padding:6}}/>
+                        <DoubleText text1={"Transferred (-)"} text2={vreitTransfer.transfer?parseFloat(vreitTransfer.transfer).toFixed(2):"0"} containerstyle={{marginHorizontal:15,padding:6,backgroundColor:"rgba(152,148,148,0.63)",}}/>
+                        <DoubleText text1={"Received (+)"} text2={vreitTransfer.receive?parseFloat(vreitTransfer.receive).toFixed(2):"0"} containerstyle={{marginHorizontal:15,padding:6}}/>
+                        <DoubleText text1={"Available (=)"} text2={vreitTransfer.available?parseFloat(vreitTransfer.available).toFixed(2):"$0"} textstyle={{color:Colors.white}} textstyle1={{color:Colors.white}} containerstyle={{marginHorizontal:15,padding:6,backgroundColor:"rgb(51,51,51)",}}/>
                     </View>
                     :
                     <View style={{marginHorizontal:20,marginVertical:5}}>

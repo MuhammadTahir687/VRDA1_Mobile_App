@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
-import {View, Text, FlatList, SafeAreaView, TouchableOpacity, ScrollView, Image,Platform} from "react-native";
+import {View, Text, FlatList, SafeAreaView, TouchableOpacity, ScrollView, Image,Platform,RefreshControl} from "react-native";
 import Colors from "../../../Style_Sheet/Colors";
 import LinearGradient from 'react-native-linear-gradient';
 import RBSheet from "react-native-raw-bottom-sheet";
@@ -21,6 +21,7 @@ import CheckBox from "../../../utilis/Checkbox";
 
 const Shop = ({navigation}) => {
     const refRBSheet = useRef();
+    const [msg,setMsg]=useState("");
     const [data,setData]=useState([]);
     const [iban,setIban]=useState("");
     const [ids, setIds] = useState({});
@@ -41,17 +42,14 @@ const Shop = ({navigation}) => {
     const [branchCode,setBranchCode]=useState("");
     const [accountName,setAccountName]=useState("");
     const [usdtAddress,setUsdtAddress]=useState("");
+    const [refreshing,setRefreshing]=useState(false);
     const [walletAmount,setwalletAmount]=useState("");
     const [packagePrice,setPackagePrice]=useState("");
     const [accountNumber,setAccountNumber]=useState("");
     const [selectedValue, setSelectedValue] = useState("");
     const [imageSourceData, setImageSourceData] = useState(null);
-
-
     const buttons = [{ name: 'Package Detail', id: 0 }, { name: 'Proceed Order', id: 1 }] //false
-
     useEffect(async ()=>{await getShopData();},[]);
-
     const picker=[
       { label: 'Bank', value: 'bank', color:Colors.primary },
         { label: 'USDT', value: 'usdt',color:Colors.primary },
@@ -64,7 +62,9 @@ const Shop = ({navigation}) => {
         let response = await getShop()
         if (response !== "Error") {
             if (response.data.status == true) {
-                setData(response.data.data);
+                setData(response.data.packages);
+                setRefreshing(!refreshing)
+                setMsg(response.data.message)
                 setLoading(false);
             }else {
                 Toast.show("Something Went Wrong !", Toast.LONG);
@@ -147,7 +147,7 @@ const Shop = ({navigation}) => {
         } else {
             setErrors("")
             const body = new FormData();
-            body.append('package_id', ids.id,);
+            body.append('package_id', ids.package_id,);
             body.append("proceed_with", selectedValue);
             body.append("payment_details", detail);
             body.append("picture", { uri: imageSourceData.uri, name: "photo.jpg", type: `image/jpg`, });
@@ -207,14 +207,14 @@ const Shop = ({navigation}) => {
     }
     const renderItem = ({ item, index }) => (
         <View style={{ flex: 1 }}>
-            <TouchableOpacity onPress={() => { refRBSheet.current.open(); setIds(item);setPackageID(item.id) }} style={{ flex: 1, marginHorizontal: 5 }}>
+            <TouchableOpacity onPress={() => {onRefresh(); refRBSheet.current.open(); setIds(item);setPackageID(item.package_id) }} style={{ flex: 1, marginHorizontal: 5 }}>
                 <LinearGradient colors={['#333232', '#a9a6a6']} style={{ paddingHorizontal: 15, borderRadius: 10, margin: 4, flex: 1 }}>
                     <View style={{ padding: 10 }}>
-                        <Text style={{ fontWeight: "bold", color: Colors.white, fontSize: 18 }}>{item.title}</Text>
-                        <Text style={{ color: Colors.white }}>{item.price}</Text>
+                        <Text style={{ fontWeight: "bold", color: Colors.white, fontSize: 18 }}>{item.package_name}</Text>
+                        <Text style={{ color: Colors.white }}>${item.package_price?item.package_price:"0"}</Text>
                         <Text style={{ textAlign: "center", marginVertical: 40, padding: 7, borderRadius: 5, borderWidth: 1, borderColor: Colors.white, color: Colors.white, fontSize: 12 }}>Subscription $50</Text>
                         <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-                            <Text style={{ paddingVertical: 5, paddingHorizontal: 10, backgroundColor: Colors.primary, borderRadius: 6, fontSize: 10, color: Colors.white }}>{item.extra_tokens}%</Text>
+                            <Text style={{ paddingVertical: 5, paddingHorizontal: 10, backgroundColor: Colors.primary, borderRadius: 6, fontSize: 10, color: Colors.white }}>{item.extra_tokens?item.extra_tokens:"0"}%</Text>
                             <Text style={{ color: Colors.white, fontSize: 11 }}>  VREIT Bonus Point</Text>
                         </View>
                     </View>
@@ -226,8 +226,12 @@ const Shop = ({navigation}) => {
         Clipboard.setString(usdtAddress);
         Toast.show("Text Copied !", Toast.LONG);
     };
+    const onRefresh = async () => {
+        await getShopData();
+    }
     return (
         <SafeAreaView style={{ flex: 1 }}>
+            <Loader animating={isloading}/>
             <Text style={{ textAlign: "center", fontSize: 18, fontWeight: "bold", color: Colors.secondary }}>Buy Package</Text>
             <FlatList
                 ItemSeparatorComponent={Platform.OS !== 'android' && (({ highlighted }) => (<View style={[highlighted && { marginLeft: 0 }]} />))}
@@ -236,6 +240,11 @@ const Shop = ({navigation}) => {
                 keyExtractor={(item) => item.id}
                 numColumns={2}
                 style={{ flex: 1 }}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={false}
+                        onRefresh={onRefresh} />
+                }
             />
             <RBSheet
                 ref={refRBSheet}
@@ -247,7 +256,7 @@ const Shop = ({navigation}) => {
                 customStyles={{ wrapper: { backgroundColor: "rgba(0,0,0,0.47)" }, draggableIcon: { backgroundColor: "#000" }, container: { borderTopLeftRadius: 30, borderTopRightRadius: 30 } }}
             >
                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 30 }}>
-                    <Text style={{ fontWeight: "bold", fontSize: 20, color: Colors.primary }}>{ids.title}</Text>
+                    <Text style={{ fontWeight: "bold", fontSize: 20, color: Colors.primary }}>{ids.package_name}</Text>
                     <AntDesign color={Colors.primary} size={20} name={"closecircle"} onPress={() => { refRBSheet.current.close() }} />
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', margin: 10, }}>
@@ -260,15 +269,19 @@ const Shop = ({navigation}) => {
                 </View>
                 {index == 0 ?
                     <View style={{ justifyContent: "space-evenly" }}>
-                        <DoubleText text1={"Price"} text2={"$"+ids.price} textstyle={{ textAlign: "center" }} containerstyle={{ marginLeft: 20, padding: 6 }} />
-                        <DoubleText text1={"Business Volume"} text2={ids.business_volume+" BV"} textstyle={{ textAlign: "center" }} containerstyle={{ marginLeft: 20, backgroundColor: "rgba(152,148,148,0.63)", padding: 6 }} />
-                        <DoubleText text1={"Escrow Time"} text2={ids.escroll_time+" Days"} textstyle={{ textAlign: "center" }} containerstyle={{ marginLeft: 20, padding: 6 }} />
-                        <DoubleText text1={"Direct Commission"} text2={ids.direct_commission+"%"} textstyle={{ textAlign: "center" }} containerstyle={{ marginLeft: 20, backgroundColor: "rgba(152,148,148,0.63)", padding: 6 }} />
-                        <DoubleText text1={"Binary Commission"} text2={ids.binary_commission+"%"} textstyle={{ textAlign: "center" }} containerstyle={{ marginLeft: 20, padding: 6 }} />
-                        <DoubleText text1={"Maxout Per Week"} text2={"$"+ids.maxout} textstyle={{ textAlign: "center" }} containerstyle={{ marginLeft: 20, backgroundColor: "rgba(152,148,148,0.63)", padding: 6 }} />
-                        <DoubleText text1={"Extra Tokens"} text2={ids.extra_tokens+"%"} textstyle={{ textAlign: "center" }} containerstyle={{ marginLeft: 20, padding: 6 }} />
+                        <DoubleText text1={"Price"} text2={ids.package_price?"$"+ids.package_price:"$0"} textstyle={{ textAlign: "center" }} containerstyle={{ marginLeft: 20, padding: 6 }} />
+                        <DoubleText text1={"Business Volume"} text2={ids.package_bv?ids.package_bv+" BV":"Not Available"} textstyle={{ textAlign: "center" }} containerstyle={{ marginLeft: 20, backgroundColor: "rgba(152,148,148,0.63)", padding: 6 }} />
+                        <DoubleText text1={"Escrow Time"} text2={ids.escroll_time?ids.escroll_time + " Days" : "Not Available"} textstyle={{ textAlign: "center" }} containerstyle={{ marginLeft: 20, padding: 6 }} />
+                        <DoubleText text1={"Direct Commission"} text2={ids.direct_commission ? ids.direct_commission+"%" : "Not Available"} textstyle={{ textAlign: "center" }} containerstyle={{ marginLeft: 20, backgroundColor: "rgba(152,148,148,0.63)", padding: 6 }} />
+                        <DoubleText text1={"Binary Commission"} text2={ids.binary_commission ? ids.binary_commission + "%" : "Not Available"} textstyle={{ textAlign: "center" }} containerstyle={{ marginLeft: 20, padding: 6 }} />
+                        <DoubleText text1={"Maxout Per Week"} text2={ids.package_maxout ? "$" + ids.package_maxout : "Not Available"} textstyle={{ textAlign: "center" }} containerstyle={{ marginLeft: 20, backgroundColor: "rgba(152,148,148,0.63)", padding: 6 }} />
+                        <DoubleText text1={"Extra Tokens"} text2={ids.extra_tokens ? ids.extra_tokens + "%" : "Not Available"} textstyle={{ textAlign: "center" }} containerstyle={{ marginLeft: 20, padding: 6 }} />
                     </View>
-                    : <View style={{ marginHorizontal: 10, flex: 1 }}>
+                    :msg==="Your request is pending"?
+                        <View style={{justifyContent:"center",alignItems:"center",backgroundColor:"red",margin:30,padding:10,borderRadius:8}}>
+                            <Text style={{color:Colors.white,textAlign:"center"}}>Request is pending.</Text>
+                        </View>
+                        :<View style={{ marginHorizontal: 10, flex: 1 }}>
                         <ScrollView showsVerticalScrollIndicator={true}>
                             <TouchableOpacity activeOpacity={1}>
                                 <Text style={{ fontSize: 14, fontWeight: "bold" }}>Proceed With</Text>

@@ -89,11 +89,11 @@ const Commission_Logs=()=>{
                 contentContainerStyle={{ marginVertical: 20,paddingBottom:20, }}
             />
             <Dialogs visible={visible} onPress={()=>{setVisible(false)}} title={"Description"}>
-                <DoubleText text1={"Transactions"} text2={ids.transactions?ids.transactions:null}/>
-                <DoubleText text1={"Total"} text2={ids.total?parseFloat(ids.total).toFixed(2):null}/>
-                <DoubleText text1={"70%"} text2={ids.percent_70?parseFloat(ids.percent_70).toFixed(2):null}/>
-                <DoubleText text1={"30%"} text2={ids.percent_30?parseFloat(ids.percent_30).toFixed(2):null}/>
-                <DoubleText text1={"Closing Date"} text2={ids.closing_date?ids.closing_date.slice(0,10):null}/>
+                <DoubleText text1={"Transactions"} text2={ids.transactions?ids.transactions:"0.00"}/>
+                <DoubleText text1={"Total"} text2={ids.total?parseFloat(ids.total).toFixed(2):"0.00"}/>
+                <DoubleText text1={"70%"} text2={ids.percent_70?parseFloat(ids.percent_70).toFixed(2):"0.00"}/>
+                <DoubleText text1={"30%"} text2={ids.percent_30?parseFloat(ids.percent_30).toFixed(2):"0.00"}/>
+                <DoubleText text1={"Closing Date"} text2={ids.closing_date?ids.closing_date.slice(0,10):"0.00"}/>
                 <DoubleText text1={""} text2={ids.closing_date?ids.closing_date.slice(11,19):null}/>
                 {/*    <View style={{flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start',margin:3,paddingHorizontal:17.5}}>*/}
                 {/*        <Text style={{ width: '50%',fontWeight:"bold"}}>Status</Text>*/}

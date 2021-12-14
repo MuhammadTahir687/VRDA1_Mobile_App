@@ -48,8 +48,8 @@ const Vreit_Logs = () => {
         <TouchableOpacity onPress={()=>{setVisible(true),setIds(item),setValue(0)}} style={{flexDirection:"row",backgroundColor: Colors.secondary, borderColor: Colors.white, borderRadius: 10, borderBottomWidth: 2, padding: 10,marginHorizontal:5,marginVertical:2}}>
             <Text style={{color:Colors.white,fontSize:14,paddingHorizontal:4}}>{item.sr}.</Text>
             <View>
-            <Text style={{ fontSize: 14, color: Colors.white }}>Code ({item.code})</Text>
-            <Text style={{ fontSize: 13, color: Colors.lightgray, flex: 1, }}>Shifted At: {item.shifted_at}</Text>
+                <Text style={{ fontSize: 14, color: Colors.white }}>Code ({item.code})</Text>
+                <Text style={{ fontSize: 13, color: Colors.lightgray, flex: 1, }}>Shifted At: {item.shifted_at}</Text>
             </View>
         </TouchableOpacity>
     )
@@ -60,7 +60,7 @@ const Vreit_Logs = () => {
                 <Text style={{ fontSize: 14, color: Colors.white }}>Code ({item.code})</Text>
                 <Text style={{ fontSize: 13, color: Colors.lightgray, flex: 1, }}>Swapped At: {item.swapped_at}</Text>
             </View>
-        </TouchableOpacity>
+         </TouchableOpacity>
     )
     const renderItemWallet=({item})=>(
         <TouchableOpacity onPress={()=>{setVisible(true),setIds(item),setValue(2)}} style={{flexDirection:"row",backgroundColor: Colors.secondary, borderColor: Colors.white, borderRadius: 10, borderBottomWidth: 2, padding: 10,marginHorizontal:5,marginVertical:2}}>
@@ -130,7 +130,7 @@ const Vreit_Logs = () => {
                         <DoubleText text1={"Code"} text2={ids.code?ids.code:null}/>
                         <DoubleText text1={"Quarter Date"} text2={ids.quarter_date?ids.quarter_date:null}/>
                         <DoubleText text1={"Points"} text2={ids.vreit_points?parseFloat(ids.vreit_points).toFixed(2):null}/>
-                        <DoubleText text1={"Token Price"} text2={ids.vreit_price?"$"+parseFloat(ids.vreit_price).toFixed(2):null}/>
+                        <DoubleText text1={"Token Price"} text2={ids.vreit_price?"$"+parseFloat(ids.vreit_price).toFixed(4):null}/>
                         <DoubleText text1={"Est Amount"} text2={ids.vreit_amount?"$"+parseFloat(ids.vreit_amount).toFixed(2):null}/>
                         <DoubleText text1={"Shifted At"} text2={ids.shifted_at?ids.shifted_at.slice(0,10):null}/>
                         <DoubleText text1={""} text2={ids.shifted_at?ids.shifted_at.slice(11,19):null}/>
@@ -138,7 +138,7 @@ const Vreit_Logs = () => {
                     :value == 1 ?
                         <View>
                             <DoubleText text1={"Code"} text2={ids.code?ids.code:null}/>
-                            <DoubleText text1={"Points"} text2={ids.vreit_points?parseFloat(ids.vreit_points).toFixed(4):null}/>
+                            <DoubleText text1={"Points"} text2={ids.vreit_points?parseFloat(ids.vreit_points).toFixed(2):null}/>
                             <DoubleText text1={"Token Price"} text2={ids.vreit_price?"$"+parseFloat(ids.vreit_price).toFixed(4):null}/>
                             <DoubleText text1={"Est Amount"} text2={ids.vreit_amount?"$"+parseFloat(ids.vreit_amount).toFixed(2):null}/>
                             <DoubleText text1={"Type"} text2={ids.type?ids.type:null}/>
@@ -152,7 +152,7 @@ const Vreit_Logs = () => {
                                 <View>
                                     <DoubleText text1={"Code"} text2={ids.code?ids.code:null}/>
                                     <DoubleText text1={"Package"} text2={ids.package_name?ids.package_name:null}/>
-                                    <DoubleText text1={"Points"} text2={ids.vreit_points?parseFloat(ids.vreit_points).toFixed(4):null}/>
+                                    <DoubleText text1={"Points"} text2={ids.vreit_points?parseFloat(ids.vreit_points).toFixed(2):null}/>
                                     <DoubleText text1={"Token Price"} text2={ids.vreit_price?"$"+parseFloat(ids.vreit_price).toFixed(4):null}/>
                                     <DoubleText text1={"Est Amount"} text2={ids.vreit_amount?"$"+parseFloat(ids.vreit_amount).toFixed(2):null}/>
                                     <DoubleText text1={"Status"} text2={ids.status?ids.status+" ("+ids.purchase_via.slice(4)+")":null}/>
@@ -163,9 +163,9 @@ const Vreit_Logs = () => {
                                     <View>
                                         <DoubleText text1={"Receiver"} text2={ids.c2c_receiver?ids.c2c_receiver:null}/>
                                         <DoubleText text1={"Code"} text2={ids.code?ids.code:null}/>
-                                        <DoubleText text1={"Points"} text2={ids.vreit_points?parseFloat(ids.vreit_points).toFixed(1):null}/>
+                                        <DoubleText text1={"Points"} text2={ids.vreit_points?parseFloat(ids.vreit_points).toFixed(2):null}/>
                                         <DoubleText text1={"Token Price"} text2={ids.vreit_price?"$"+parseFloat(ids.vreit_price).toFixed(4):null}/>
-                                        <DoubleText text1={"Est Amount"} text2={ids.vreit_amount?"$"+parseFloat(ids.vreit_amount).toFixed(4):null}/>
+                                        <DoubleText text1={"Est Amount"} text2={ids.vreit_amount?"$"+parseFloat(ids.vreit_amount).toFixed(2):null}/>
                                         <DoubleText text1={"Status"} text2={ids.status?ids.status+" ("+ids.transfer_via.slice(4)+")":null}/>
                                         <DoubleText text1={"Transfer At"} text2={ids.transfer_at?ids.transfer_at.slice(0,10):null}/>
                                         <DoubleText text1={""} text2={ids.transfer_at?ids.transfer_at.slice(11,19):null}/>
@@ -174,9 +174,9 @@ const Vreit_Logs = () => {
                                         <View>
                                             <DoubleText text1={"Sender"} text2={ids.user_name?ids.user_name:null}/>
                                             <DoubleText text1={"Code"} text2={ids.code?ids.code:null}/>
-                                            <DoubleText text1={"Points"} text2={ids.vreit_points?parseFloat(ids.vreit_points).toFixed(1):null}/>
+                                            <DoubleText text1={"Points"} text2={ids.vreit_points?parseFloat(ids.vreit_points).toFixed(2):null}/>
                                             <DoubleText text1={"Token Price"} text2={ids.vreit_price?"$"+parseFloat(ids.vreit_price).toFixed(4):null}/>
-                                            <DoubleText text1={"Est Amount"} text2={ids.vreit_amount?"$"+parseFloat(ids.vreit_amount).toFixed(4):null}/>
+                                            <DoubleText text1={"Est Amount"} text2={ids.vreit_amount?"$"+parseFloat(ids.vreit_amount).toFixed(2):null}/>
                                             <DoubleText text1={"Received At"} text2={ids.received_at?ids.received_at.slice(0,10):null}/>
                                             <DoubleText text1={""} text2={ids.received_at?ids.received_at.slice(11,19):null}/>
                                         </View>

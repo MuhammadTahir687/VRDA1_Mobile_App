@@ -276,7 +276,13 @@ const UpdateProfile = ({navigation,route}) => {
                         color={Colors.primary}
                         value={email}
                         containerStyle={{flex:2,borderWidth:0.3,borderRadius:5}}
-                        onChangeText={(text) => { setErrors(""), setEmail(text) }}
+                        onChangeText={(text) => { if (text.includes('  ')) {
+                            setEmail(text.trim());
+                            setErrors("")
+                        } else {
+                            setEmail(text);
+                            setErrors("")
+                        }}}
                     />
 
                     </View>
@@ -301,7 +307,13 @@ const UpdateProfile = ({navigation,route}) => {
                             color={Colors.primary}
                             value={phone}
                             containerStyle={{flex:2,borderWidth:0.3,borderRadius:5}}
-                            onChangeText={(text) => { setErrors(""), setPhone(text) }}
+                            onChangeText={(text) => { if (text.includes('  ')) {
+                                setPhone(text.trim());
+                                setErrors("")
+                            } else {
+                                setPhone(text);
+                                setErrors("")
+                            }}}
                         />
                         </View>
                     </View>
@@ -313,7 +325,13 @@ const UpdateProfile = ({navigation,route}) => {
                     color={Colors.primary}
                     value={address}
                     containerStyle={{flex:1,borderWidth:0.3,borderRadius:5}}
-                    onChangeText={(text) => { setErrors(""), setAddress(text) }}
+                    onChangeText={(text) => { if (text.includes('  ')) {
+                        setAddress(text.trim());
+                        setErrors("")
+                    } else {
+                        setAddress(text);
+                        setErrors("")
+                    }}}
                 />
                         {errors ? <Text style={{color:"red",fontSize:11}}>{errors === "Address is Required" ? "Address is Required" : errors === "Address length at least 3" ? "Address length at least 3" : null}</Text>:null}
                     </View>
@@ -326,7 +344,13 @@ const UpdateProfile = ({navigation,route}) => {
                             color={Colors.primary}
                             value={city}
                             containerStyle={{flex:2,borderWidth:0.3,borderRadius:5}}
-                            onChangeText={(text) => { setErrors(""), setCity(text) }}
+                            onChangeText={(text) => { if (text.includes('  ')) {
+                                setCity(text.trim());
+                                setErrors("")
+                            } else {
+                                setCity(text);
+                                setErrors("")
+                            }}}
                         />
                             {errors ? <Text style={{color:"red",fontSize:11}}>{errors === "City is Required" ? "City is Required" :errors === "City length at least 3" ? "City length at least 3" : null}</Text>:null}
                         </View>
@@ -351,7 +375,13 @@ const UpdateProfile = ({navigation,route}) => {
                         color={Colors.primary}
                         value={identity}
                         containerStyle={{flex:2,borderWidth:0.3,borderRadius:5}}
-                        onChangeText={(text) => { setErrors(""), setIdentity(text) }}
+                        onChangeText={(text) => { if (text.includes('  ')) {
+                            setIdentity(text.trim());
+                            setErrors("")
+                        } else {
+                            setIdentity(text);
+                            setErrors("")
+                        }}}
                     />
                         {errors ? <Text style={{color:"red",fontSize:11}}>{errors === "Identity is Required" ? "Identity is Required" :errors === "Identity length at least 3" ? "Identity length at least 3" : null}</Text>:null}
                     </View>
@@ -363,7 +393,13 @@ const UpdateProfile = ({navigation,route}) => {
                         color={Colors.primary}
                         value={passport}
                         containerStyle={{flex:2,borderWidth:0.3,borderRadius:5}}
-                        onChangeText={(text) => { setErrors(""), setPassport(text) }}
+                        onChangeText={(text) => { if (text.includes('  ')) {
+                            setPassport(text.trim());
+                            setErrors("")
+                        } else {
+                            setPassport(text);
+                            setErrors("")
+                        }}}
                     />
                         {errors ? <Text style={{color:"red",fontSize:11}}>{errors === "Passport is Required" ? "Passport is Required" :errors === "Passport length at least 3" ? "Passport length at least 3" : null}</Text>:null}
 
@@ -378,7 +414,13 @@ const UpdateProfile = ({navigation,route}) => {
                             color={Colors.primary}
                             value={kinname}
                             containerStyle={{flex:2,borderWidth:0.3,borderRadius:5}}
-                            onChangeText={(text) => { setErrors(""), setKinname(text) }}
+                            onChangeText={(text) => { if (text.includes('  ')) {
+                                setKinname(text.trim());
+                                setErrors("")
+                            } else {
+                                setKinname(text);
+                                setErrors("")
+                            }}}
                         />
                             {errors ? <Text style={{color:"red",fontSize:11}}>{errors === "Kin Name is Required" ? "Kin Name is Required" :errors === "Kin Name length at least 3" ? "Kin Name length at least 3" : null}</Text>:null}
 
@@ -391,7 +433,13 @@ const UpdateProfile = ({navigation,route}) => {
                             color={Colors.primary}
                             value={kinrelation}
                             containerStyle={{flex:2,borderWidth:0.3,borderRadius:5}}
-                            onChangeText={(text) => { setErrors(""), setKinrelation(text) }}
+                            onChangeText={(text) => { if (text.includes('  ')) {
+                                setKinrelation(text.trim());
+                                setErrors("")
+                            } else {
+                                setKinrelation(text);
+                                setErrors("")
+                            }}}
 
                         />
                             {errors ? <Text style={{color:"red",fontSize:11}}>{errors === "Kin Relation is Required" ? "Kin Relation is Required" :errors === "Kin Relation length at least 3" ? "Kin Relation length at least 3" : null}</Text>:null}
