@@ -11,24 +11,32 @@ import {sendUpdateBank, sendUpdateBTC} from "../../../../utilis/Api/Api_controll
 import Loader from "../../../../utilis/Loader";
 
 const UpdateBank = ({navigation,route}) => {
-    var title=route.params.title;
-    var lastname =route.params.lastname;
-    var firstname=route.params.firstname;
-    var data=route.params.data;
-    var paramData=route.params.apiData;
+    if(!route.params.title){
+        var title="Not Available";
+        var lastname ="Not Available";
+        var firstname="Not Available";
+        var data="Not Available";
+        var paramData="Not Available";
+    }else{
+        var title=route.params.title;
+        var lastname =route.params.lastname;
+        var firstname=route.params.firstname;
+        var data=route.params.data;
+        var paramData=route.params.apiData;
 
-    const [fullName,setFullName]=useState(paramData.full_name);
-    const [iban,setIban]=useState(paramData.iban);
-    const [bankname,setBankname]=useState(paramData.bank_name);
-    const [branchname,setBranchname]=useState(paramData.branch_name);
-    const [swift,setSwift]=useState(paramData.swift_code);
-    const [accountNumber,setAccountNumber]=useState(paramData.bank);
-    const [phonenumber,setPhonenumber]=useState(paramData.phone_number);
-    const [completeAdd,setCompleteAdd]=useState(paramData.billing_address);
-    const [residentialAdd,setResidentialAdd]=useState(paramData.residential_address);
-    const [bankaddress,setBankaddress]=useState(paramData.bank_address);
-    const [city,setCity]=useState(paramData.city);
-    const [country,setCountry]=useState(paramData.bank_country.country_name);
+    }
+    const [fullName,setFullName]=useState(!route.params.apiData?"":paramData.full_name);
+    const [iban,setIban]=useState(!route.params.apiData?"":paramData.iban);
+    const [bankname,setBankname]=useState(!route.params.apiData?"":paramData.bank_name);
+    const [branchname,setBranchname]=useState(!route.params.apiData?"":paramData.branch_name);
+    const [swift,setSwift]=useState(!route.params.apiData?"":paramData.swift_code);
+    const [accountNumber,setAccountNumber]=useState(!route.params.apiData?"":paramData.bank);
+    const [phonenumber,setPhonenumber]=useState(!route.params.apiData?"":paramData.phone_number);
+    const [completeAdd,setCompleteAdd]=useState(!route.params.apiData?"":paramData.billing_address);
+    const [residentialAdd,setResidentialAdd]=useState(!route.params.apiData?"":paramData.residential_address);
+    const [bankaddress,setBankaddress]=useState(!route.params.apiData?"":paramData.bank_address);
+    const [city,setCity]=useState(!route.params.apiData?"":paramData.city);
+    const [country,setCountry]=useState(!route.params.apiData?"":paramData.bank_country.country_name);
     const [errors,setErrors]=useState("");
     const [isloading,setLoading]=useState(false);
     // const [fileName,setFileName]=useState("");

@@ -19,7 +19,7 @@ const BankDetail = ({navigation,route}) => {
     const [country,setCountry]=useState("Not Available");
     const [refreshing,setRefreshing]=useState(false);
 
-    useEffect(async ()=>{ await getData() },[]);
+    useEffect(async ()=>{ await getData()},[]);
 
     const getData=async ()=>{
         setLoading(true)
@@ -53,7 +53,16 @@ const BankDetail = ({navigation,route}) => {
                         refreshing={false}
                         onRefresh={onRefresh} />
                 }>
-                <ProfileView source={{uri: data.picture}} screen_title={name} username={title+" "} firstname={firstname+" "} lastname={lastname} update={"Bank Detail"} onPress={()=>navigation.goBack()} onPressForUpdate={()=>{navigation.navigate("UpdateBank",{title:title,firstname:firstname,lastname:lastname,data:data,apiData:apiData})}}>
+                <ProfileView source={{uri: data.picture}} screen_title={name} username={title+" "} firstname={firstname+" "} lastname={lastname} update={"Bank Detail"} onPress={()=>navigation.goBack()}
+                             onPressForUpdate={() => {
+                        navigation.navigate("UpdateBank", {
+                            title: title,
+                            firstname: firstname,
+                            lastname: lastname,
+                            data: data,
+                            apiData: apiData
+                        })
+                }}>
                         <View>
                         <Text style={{fontSize:16,fontWeight:"bold", color:Colors.primary,paddingHorizontal:10,bottom:10}}>{name}:</Text>
                             <DoubleText text1={"Full Name"} text2={apiData ?apiData.full_name:"Not Available"}/>
