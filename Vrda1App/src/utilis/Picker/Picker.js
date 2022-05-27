@@ -24,7 +24,9 @@ const Dropdown = ({onValueChange,PickerData,onDonePress,onClose,disable,placehol
         // items={[{ label: 'Football', value: 'football' },{ label: 'Baseball', value: 'baseball' },{ label: 'Hockey', value: 'hockey' },]}
 
       disabled={disable}
-      placeholder={placeholder}
+      placeholder={{
+        label:"Select User",
+        value:placeholder}}
       // Icon={() => {
       //     return <Icon
       //         name="chevron-down"
@@ -37,12 +39,15 @@ const Dropdown = ({onValueChange,PickerData,onDonePress,onClose,disable,placehol
           inputAndroid: {
               backgroundColor: 'transparent',
               color: 'black',
-              fontSize: 17,
+              fontSize: 14,
+              paddingLeft:5
           },
           inputIOS: {
               color: 'black',
-              fontSize: 16,
-              // lineHeight: 21,
+              fontSize: 14,
+              // lineHeight: 17,
+              paddingTop:20,
+              paddingLeft:5,
               alignItems: 'center' }, }}
       useNativeAndroidPickerStyle={false}
       // textInputProps={{ underlineColorAndroid: 'red' }}

@@ -13,6 +13,7 @@ import Loader from "../../../../utilis/Loader";
 
 const UpdateProfile = ({navigation,route}) => {
     const data = route.params.data;
+    const user =route.params.user;
     const [city,setCity]=useState(data.city);
     const [errors,setErrors]=useState("");
     const [address,setAddress]=useState(data.address);
@@ -208,7 +209,7 @@ const UpdateProfile = ({navigation,route}) => {
                 <Loader animating={isloading}/>
             <ScrollView style={{flex:1}}>
             <ProfileView source={{uri: data.picture}} screen_title={"Update Profile"} username={data.title+" "} firstname={data.first_name+" "} lastname={data.last_name} onPress={()=>navigation.goBack()}>
-                <Text style={{fontSize:16,fontWeight:"bold", color:Colors.primary,paddingHorizontal:10,bottom:15}}>Update Profile:</Text>
+                <Text style={{fontSize:16,fontWeight:"bold", color:Colors.primary,paddingHorizontal:10,bottom:20}}>Update Profile:</Text>
                 <View style={{marginHorizontal:10}}>
                     <View style={{flexDirection:"row",justifyContent:"space-between",flex:1}}>
                         <View style={{flex:1,margin:2}}>
@@ -251,7 +252,7 @@ const UpdateProfile = ({navigation,route}) => {
                         placeholder={"Username"}
                         placeholderTextColor={Colors.secondary}
                         color={Colors.primary}
-                        value={data.name}
+                        value={user.name}
                         editable={false}
                         containerStyle={{ flex:1,backgroundColor:"rgba(0,0,0,0.13)",borderRadius:5 }}
                     />
@@ -262,7 +263,7 @@ const UpdateProfile = ({navigation,route}) => {
                     <FormInput
                         placeholder={"Email"}
                         placeholderTextColor={Colors.secondary}
-                        value={data.email}
+                        value={user.email}
                         editable={false}
                         containerStyle={{flex:2,backgroundColor:"rgba(0,0,0,0.13)",borderRadius:5}}
                         color={Colors.primary}
@@ -293,7 +294,7 @@ const UpdateProfile = ({navigation,route}) => {
                         <FormInput
                             placeholder={"Phone"}
                             placeholderTextColor={Colors.secondary}
-                            value={data.user_profile.phone_no}
+                            value={data.phone_no}
                             editable={false}
                             containerStyle={{flex:2,backgroundColor:"rgba(0,0,0,0.13)",borderRadius:5}}
                             color={Colors.primary}

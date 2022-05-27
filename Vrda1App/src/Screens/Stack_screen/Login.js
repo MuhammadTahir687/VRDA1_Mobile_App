@@ -32,11 +32,14 @@ const Login = ({navigation}) => {
                 let details= response.data.user
                 await save_data("ACCOUNT_DATA", Bearer)
                 await save_data("User_DATA", details)
-
+                await save_data("Profile",response.data.profile)
                 setLoading(false);
                 navigation.replace("Drawers");
             }else {
                 Toast.show("Invalid Email or Password !", Toast.LONG);
+
+
+                
                 setLoading(false);
             }
         }else {

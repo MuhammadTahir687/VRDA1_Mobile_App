@@ -9,11 +9,11 @@ const getDashboard = async () => {
     return Test
 }
 const getShop = async () => {
-    const Test = await get_request("/api/buy-a-package");
+    const Test = await get_request("/api/buy-packages-list");
     return Test
 }
 const sendShopPayment = async (body) => {
-    const Test = await post_request({ target: "/api/get-payment-form", body: body });
+    const Test = await post_request({ target: "/api/package-payment-form", body: body });
     return Test
 }
 const sendShopSubmit = async (body) => {
@@ -92,6 +92,7 @@ const getUSDTDetail = async () => {
     const Test = await get_request("/api/usdt-profile");
     return Test
 }
+
 const sendUpdateBTC = async (body) => {
     const Test = await post_request({ target: "/api/btc-profile-update", body: body });
     return Test
@@ -157,12 +158,16 @@ const sendVreitShiftedBtn = async (body) => {
     return Test
 }
 const sendProcessTransferBtn = async (body) => {
-    const Test = await post_request({ target: "/api/transfer-funds", body: body });
+    const Test = await post_request({ target: "/api/post-transfer-funds", body: body });
     return Test
 }
 const sendDeletePackageRequest = async (body) => {
     const Test = await post_request({ target: "/api/delete-requests", body: body });
     return Test
 }
+const sendBad_NewEmail = async (body) => {
+    const Test = await post_request({ target: "/api/send-verify-email", body: body });
+    return Test
+}
 
-export {LoginApi,getDashboard,getShop,sendShopPayment,sendShopSubmit,getcommissionlogs,getactivityfeed,getcommissiondirect,getcommissionbinary,getallcommission,getwithdrawfunds,gettransferfunds,sendProcessWithdraw,getMyPurchase,getOwnershipPurchase,getPurchaseRequest,getTransferHistory,getReceiveHistory,getWithdrawHistory,getPersonalDetail,getBankDetail,getBTCDetail,getUSDTDetail,sendUpdateBTC,sendUpdateBank,sendUpdateProfile,sendWithdrawFunds_Charges,getVreitTransferC2C,getVreitLogs,getVreitWithdrawl,sendVreitWithdrawl,getVreitQuaterly,sendVreitC2Csubmit,sendTeamSale,getVREITDetail,sendVreitUpdate,sendUsdtUpdate,sendVreitShiftedBtn,sendProcessTransferBtn,sendDeletePackageRequest}
+export {LoginApi,getDashboard,getShop,sendShopPayment,sendShopSubmit,getcommissionlogs,getactivityfeed,getcommissiondirect,getcommissionbinary,getallcommission,getwithdrawfunds,gettransferfunds,sendProcessWithdraw,getMyPurchase,getOwnershipPurchase,getPurchaseRequest,getTransferHistory,getReceiveHistory,getWithdrawHistory,getPersonalDetail,getBankDetail,getBTCDetail,getUSDTDetail,sendUpdateBTC,sendUpdateBank,sendUpdateProfile,sendWithdrawFunds_Charges,getVreitTransferC2C,getVreitLogs,getVreitWithdrawl,sendVreitWithdrawl,getVreitQuaterly,sendVreitC2Csubmit,sendTeamSale,getVREITDetail,sendVreitUpdate,sendUsdtUpdate,sendVreitShiftedBtn,sendProcessTransferBtn,sendDeletePackageRequest,sendBad_NewEmail}

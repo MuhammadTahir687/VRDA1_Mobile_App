@@ -12,7 +12,8 @@ import Hyperlink from 'react-native-hyperlink'
 import {SafeAreaView,ScrollView,Text,ImageBackground,View,FlatList,Dimensions,Platform,RefreshControl} from 'react-native';
 import Dialogs from "../../utilis/Dialog";
 import AsyncStorage from "@react-native-community/async-storage";
-
+import Bad_Email from "./BadEmail/BadEmail";
+import RNPickerDialog from 'rn-modal-picker';
 const deviceWidth = Dimensions.get('screen').width;
 const deviceHeight = Dimensions.get('screen').height;
 const Dashboard = ({navigation}) => {
@@ -41,6 +42,7 @@ const Dashboard = ({navigation}) => {
     const [currentRank,setCurrentRank]=useState("");
     const [nextRank,setNextRank]=useState("");
     const [refreshing,setRefreshing]=useState(false);
+    const [view,setView]=useState(false)
     // const date = () => { var a = new Date().getDate()-1; var b = new Date().getMonth()+1; var c = new Date().getFullYear(); setCurrentDate(c+'-'+b+'-'+a) }
     const Data = [
         {price: leftBV, name: 'LEFT BV'}, {price: rightBV, name: 'Right BV'}, {price: leftCF, name: 'Left CF'},
@@ -53,7 +55,8 @@ const Dashboard = ({navigation}) => {
         setLoading(true)
         let response = await getDashboard()
         if (response !== "Error") {
-            if (response.data.status === true) {
+            if (response.data.status == true && response.data.email_status==true) {
+                setView(true)
                 var res=response.data.data;
                 var resL=response.data.data.next_achievement.next_left_rank;
                 var resR=response.data.data.next_achievement.next_right_rank;
@@ -64,7 +67,16 @@ const Dashboard = ({navigation}) => {
                 setEvent(res.events);setApiData(res);setCurrentRank(res.next_achievement.current_rank);setNextRank(res.next_achievement.next_rank)
                 setRefreshing(!refreshing)
                 setLoading(false);
-            }else {
+            }
+            else if(response.data.status == true && response.data.email_status==false){
+                setView(false)
+                console.log("response api====",response.data.user)
+                const data=response.data.user;
+                navigation.reset({index: 0,routes: [{ name: "Bad Email",params:{data} }]});
+                setLoading(false)
+                
+            }
+            else  {
                 Toast.show("Something Went Wrong !", Toast.LONG);
                 setLoading(false);
             }
@@ -81,7 +93,7 @@ const Dashboard = ({navigation}) => {
     return (
         <SafeAreaView style={{flex: 1}}>
             <Loader animating={isloading}/>
-            <View style={{backgroundColor: Colors.white, borderTopLeftRadius: 20, borderTopRightRadius: 20}}>
+        {view==true?  <View style={{backgroundColor: Colors.white, borderTopLeftRadius: 20, borderTopRightRadius: 20}}>
                 <ScrollView
                     refreshControl={
                         <RefreshControl
@@ -142,7 +154,7 @@ const Dashboard = ({navigation}) => {
                         </Dialogs>
                     </View>
                 </ScrollView>
-            </View>
+            </View> : <View></View>}
         </SafeAreaView>
     )
 }

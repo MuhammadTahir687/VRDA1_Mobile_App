@@ -6,7 +6,7 @@ import {getactivityfeed, } from "../../../utilis/Api/Api_controller";
 import Toast from "react-native-simple-toast";
 import Loader from "../../../utilis/Loader";
 
-const Activity_Feeds=()=>{
+const Activity_Feeds=({navigation})=>{
 
     const [visible, setVisible] = useState(false);
     const [res,setRes]=useState("");
@@ -17,16 +17,26 @@ const Activity_Feeds=()=>{
     useEffect(async ()=>{
         await getData();
     },[])
-
+    
     const getData=async ()=>{
-        setLoading(true)
+        setLoading(true);
         let response = await getactivityfeed();
         if (response !== "Error") {
-            if (response.data.status === true) {
-                setApiData(response.data.data.data);
-                setRefreshing(!refreshing)
+            if (response.data.status === true && response.data.email_status==true) {
+                console.log("Activity Feed============",response.data)
+                setApiData(response.data.logs);
+                setRefreshing(!refreshing);
                 setLoading(false);
-            }else {
+            }
+            else if(response.data.status == true && response.data.email_status==false){
+               
+                console.log("response api====",response.data.user)
+                const data=response.data.user;
+                navigation.reset({index: 0,routes: [{ name: "Bad Email",params:{data} }]});
+                setLoading(false)
+                
+            }
+            else {
                 Toast.show("Something Went Wrong !", Toast.LONG);
                 setLoading(false);
             }
@@ -44,7 +54,7 @@ const Activity_Feeds=()=>{
                 <Text style={{color:Colors.white,fontSize: 16,}}>{index+1}. </Text>
                 <Text style={{ fontSize: 16, color: Colors.white }}>{item.heading?item.heading:"Not Available"}</Text>
             </View>
-            <Text style={{ fontSize: 13, color: Colors.lightgray, flex: 1, }}>Activity Date: {item.date?item.date:"Data Not Available"}</Text>
+            <Text style={{ fontSize: 13, color: Colors.lightgray, flex: 1}}>Activity Date: {item.date?item.date:"Data Not Available"}</Text>
         </TouchableOpacity>
     )
 
@@ -58,7 +68,7 @@ const Activity_Feeds=()=>{
                 refreshControl={
                     <RefreshControl
                         refreshing={false}
-                        onRefresh={onRefresh} />
+                        onRefresh={onRefresh}/>
                 }
             />
             <Dialogs visible={visible} title={res.heading} description={res.detail} onPress={()=>{setVisible(false)}}/>

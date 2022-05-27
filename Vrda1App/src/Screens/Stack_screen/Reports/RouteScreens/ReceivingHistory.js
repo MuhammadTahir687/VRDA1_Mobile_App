@@ -25,7 +25,7 @@ const ReceivingHistory = () => {
         let response = await getReceiveHistory();
         if (response !== "Error") {
             if (response.data.status === true) {
-                setData(response.data.data);
+                setData(response.data.receiving);
                 setRefreshing(!refreshing)
                 setLoading(false);
             }else {

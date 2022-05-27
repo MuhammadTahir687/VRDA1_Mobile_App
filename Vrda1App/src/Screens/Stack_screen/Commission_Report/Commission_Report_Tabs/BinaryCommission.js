@@ -24,7 +24,7 @@ const BinaryCommission = () => {
         let response = await getcommissionbinary();
         if (response !== "Error") {
             if (response.data.status === true) {
-                setApiData(response.data.data);
+                setApiData(response.data.commissions);
                 setRefreshing(!refreshing)
                 setLoading(false);
             }else {

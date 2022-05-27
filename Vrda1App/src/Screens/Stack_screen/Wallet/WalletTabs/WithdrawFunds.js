@@ -22,8 +22,9 @@ const WithdrawFunds=({navigation})=>{
     const [checked,setChecked]=useState(false);
     const [serviceCharges,setServiceCharges]=useState("5");
     const [selectedValue, setSelectedValue] = useState("");
+    const [view,setView]=useState(false);
     const buttons = [{name: 'Wallet', id: 0}, {name: 'Process Withdraw', id: 1},]
-    const Item = [{ label: 'Bank', value: 'bank' },{ label: 'USDT', value: 'usdt' },{ label: 'BTC', value: 'btc' }]
+    const Item = [{ label: 'Bank', value: 'bank' },{ label: 'USDT', value: 'usdt' }]
 
     useEffect(async ()=>{
         await getData();
@@ -33,11 +34,18 @@ const WithdrawFunds=({navigation})=>{
         setLoading(true)
         let response = await getwithdrawfunds();
         if (response !== "Error") {
-            if (response.data.status === true) {
-            setApiData(response.data.data);
-            setRefreshing(!refreshing)
+            if (response.data.status === true && response.data.email_status==true) {
+                setView(true)
+                setApiData(response.data.wallet);
+                setRefreshing(!refreshing)
                 setLoading(false);
-            }else {
+            }
+            else if(response.data.status == true && response.data.email_status==false){
+                const data=response.data.user;
+                navigation.reset({index: 0,routes: [{ name: "Bad Email",params:{data} }]});
+                setLoading(false)
+            }
+            else {
                 Toast.show("Something Went Wrong !", Toast.LONG);
                 setLoading(false);
             }
@@ -69,35 +77,39 @@ const WithdrawFunds=({navigation})=>{
         } else {
             setErrors("")
             let body = {payment_type: selectedValue, amount: amount,details: detail,user_id:apiData.user_id};
-            setLoading(true)
-            let response = await sendProcessWithdraw(body)
-            if (response !== "Error") {
-                if (response.data.status == true) {
-                    Toast.show(response.data.message, Toast.LONG);
-                    await setLoading(false);
-                    await setDetail("");
-                    await setAmount("");
-                    await setChecked(false);
-                    await onRefresh();
-                }else if(response.data.status == false)      {
-                    Toast.show("Request "+response.data.data, Toast.LONG);
-                    setLoading(false);
-                }
-                else {
-                    Toast.show("Something Went Wrong ", Toast.LONG);
-                    setLoading(false);
-                }
-            }else {
-                Toast.show("Network Error: There is something wrong!", Toast.LONG);
-                setLoading(false);
-            }
+            // await setDetail("");
+            //         await setAmount("");
+            //         await setChecked(false);
+            navigation.navigate('TransactionPassword',{data:body,screen:"withdraw_wallet"})
+            // setLoading(true)
+            // let response = await sendProcessWithdraw(body)
+            // if (response !== "Error") {
+            //     if (response.data.status == true) {
+            //         Toast.show(response.data.message, Toast.LONG);
+            //         await setLoading(false);
+            //         await setDetail("");
+            //         await setAmount("");
+            //         await setChecked(false);
+            //         await onRefresh();
+            //     }else if(response.data.status == false)      {
+            //         Toast.show("Request "+response.data.data, Toast.LONG);
+            //         setLoading(false);
+            //     }
+            //     else {
+            //         Toast.show("Something Went Wrong ", Toast.LONG);
+            //         setLoading(false);
+            //     }
+            // }else {
+            //     Toast.show("Network Error: There is something wrong!", Toast.LONG);
+            //     setLoading(false);
+            // }
         }
     }
 
     return(
         <SafeAreaView style={{flex:1}}>
             <Loader animating={isloading}/>
-            <ScrollView refreshControl={ <RefreshControl refreshing={false} onRefresh={onRefresh} /> } >
+       {view ==false?     <ScrollView refreshControl={ <RefreshControl refreshing={false} onRefresh={onRefresh} /> } >
             <Text style={{textAlign:"center",fontSize:18,fontWeight:"bold",textDecorationLine:"underline",color:Colors.secondary,margin:10}}>Withdraw Funds</Text>
             <View style={{ flexDirection: 'row', alignItems: 'center', margin: 15, }}>
                 {buttons.map((item, indexs) => (
@@ -160,6 +172,7 @@ const WithdrawFunds=({navigation})=>{
                 </View>
             }
             </ScrollView>
+            : <View></View>}
         </SafeAreaView>
     )
 }

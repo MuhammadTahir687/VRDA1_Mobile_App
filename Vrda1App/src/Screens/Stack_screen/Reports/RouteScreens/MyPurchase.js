@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {FlatList, RefreshControl, SafeAreaView, Text, TouchableOpacity, View} from "react-native";
+import {FlatList, RefreshControl, SafeAreaView, Text, ScrollView,TouchableOpacity, View} from "react-native";
 import Loader from "../../../../utilis/Loader";
 import Colors from "../../../../Style_Sheet/Colors";
 import DoubleText from "../../../../utilis/DoubleText";
@@ -7,26 +7,49 @@ import Dialogs from "../../../../utilis/Dialog";
 import {getMyPurchase} from "../../../../utilis/Api/Api_controller";
 import Toast from "react-native-simple-toast";
 
-const MyPurchase = () => {
+const MyPurchase = ({navigation}) => {
     const [isloading,setLoading]=useState(false);
     const [visible,setVisible]=useState(false);
     const [refreshing,setRefreshing]=useState(false);
     const [data,setData]=useState("");
     const [ids,setIds]=useState("");
+    const [btn, setBtn] = useState(0);
+
+    const Button = [{id: 1, title: "Admin"}, {id: 2, title: "Package"}, {id: 3, title: "Wallet"}, {id: 4, title: "Vreit"}]
+
 
     useEffect(async ()=>{
-        await getData();
+        await getData(btn);
     },[])
 
-    const getData=async ()=>{
+    const getData=async (type)=>{
+        var data;
         setLoading(true)
+        type==0 ? data="admin_pins" : type==1 ? data="package_pins" : type==2 ? data="wallet_pins" : type==3 ? data="vreit_pins"  : null;
+
         let response = await getMyPurchase();
         if (response !== "Error") {
-            if (response.data.status === true) {
-                setData(response.data.data);
+            if (response.data.status === true && response.data.email_status==true) {
+                // setData(response.data.admin_pins);
+                // setRefreshing(!refreshing)
+                // setLoading(false);
+
+                if (type == 0){ setData(response.data.admin_pins);
+                }else if (type == 1){ setData(response.data.package_pins);
+                }else if (type == 2){ setData(response.data.wallet_pins);
+                }else if (type == 3){ setData(response.data.vreit_pins);
+                }else { return null;
+                }
                 setRefreshing(!refreshing)
-                setLoading(false);
-            }else {
+                await setLoading(false)
+            }
+            else if(response.data.status == true && response.data.email_status==false){
+                const data=response.data.user;
+                navigation.reset({index: 0,routes: [{ name: "Bad Email",params:{data} }]});
+                setLoading(false)
+                
+            }
+            else {
                 Toast.show("Something Went Wrong !", Toast.LONG);
                 setLoading(false);
             }
@@ -36,7 +59,7 @@ const MyPurchase = () => {
         }
     }
     const onRefresh = async () => {
-        await getData();
+        await getData(btn);
     }
 
     const renderItem=({item,index})=>(
@@ -60,10 +83,23 @@ const MyPurchase = () => {
           {data?null:
               <Loader animating={isloading}/>}
           <Text style={{textAlign:"center",fontWeight:"bold"}}>My Purchase</Text>
+          <View>
+          <ScrollView style={{flexGrow:1}} horizontal={true}>
+                <View style={{flex:0.2,flexDirection: "row",marginVertical:10,}}>
+                    {Button.map((item, index) => (
+                        <TouchableOpacity
+                            key={index} onPress={() => { setBtn(index); getData(index); }}
+                            style={{height: 30, borderWidth: 1, width: 100, alignItems: "center", justifyContent: "center", marginHorizontal: 5, borderRadius:5,backgroundColor:(index==btn)?"black":"white"}}>
+                            <Text style={{color:index === btn?"white":"black"}}>{item.title}</Text>
+                        </TouchableOpacity>
+                    ))}
+                </View>
+            </ScrollView>
+          </View>
+      
           <FlatList
               data={data}
               renderItem={renderItem}
-              style={{ flex: 1, }}
               contentContainerStyle={{ marginVertical: 20,paddingBottom:20, }}
               refreshControl={
                   <RefreshControl

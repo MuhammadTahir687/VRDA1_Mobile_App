@@ -25,7 +25,7 @@ const OwnershipPurchase = () => {
         let response = await getOwnershipPurchase();
         if (response !== "Error") {
             if (response.data.status === true) {
-                setData(response.data.data);
+                setData(response.data.closing);
                 setRefreshing(!refreshing)
                 setLoading(false);
             }else {

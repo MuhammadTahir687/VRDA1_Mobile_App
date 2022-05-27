@@ -9,7 +9,7 @@ import Toast from "react-native-simple-toast";
 import Dialogs from "../../../../utilis/Dialog";
 import Loader from "../../../../utilis/Loader";
 
-const DirectCommission = () => {
+const DirectCommission = ({navigation}) => {
     const [visible, setVisible] = useState(false);
     const [isloading,setLoading]=useState(false);
     const [refreshing,setRefreshing]=useState(false);
@@ -26,11 +26,19 @@ const DirectCommission = () => {
         setLoading(true)
         let response = await getcommissiondirect();
         if (response !== "Error") {
-            if (response.data.status === true) {
-                setApiData(response.data.data);
+            if (response.data.status === true && response.data.email_status==true) {
+                console.log("Binary Comission =========================",response.data.commissions)
+                setApiData(response.data.commissions);
                 setRefreshing(!refreshing)
                 setLoading(false);
-            }else {
+            }
+            else if(response.data.status == true && response.data.email_status==false){
+                const data=response.data.user;
+                navigation.reset({index: 0,routes: [{ name: "Bad Email",params:{data} }]});
+                setLoading(false)
+                
+            }
+            else {
                 Toast.show("Something Went Wrong !", Toast.LONG);
                 setLoading(false);
             }

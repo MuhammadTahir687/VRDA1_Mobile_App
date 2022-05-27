@@ -23,7 +23,7 @@ const TransferHistory = () => {
         let response = await getTransferHistory();
         if (response !== "Error") {
             if (response.data.status === true) {
-                setData(response.data.data);
+                setData(response.data.transfer);
                 setRefreshing(!refreshing)
                 setLoading(false);
             }else {

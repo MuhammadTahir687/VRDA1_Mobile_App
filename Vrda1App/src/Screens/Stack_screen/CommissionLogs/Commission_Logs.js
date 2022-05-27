@@ -11,7 +11,7 @@ import Toast from "react-native-simple-toast";
 import Loader from "../../../utilis/Loader";
 import Dialogs from "../../../utilis/Dialog";
 
-const Commission_Logs=()=>{
+const Commission_Logs=({navigation})=>{
     const [visible, setVisible] = useState(false);
     const [isloading,setLoading]=useState(false);
     const [data,setData]=useState("");
@@ -35,18 +35,28 @@ const Commission_Logs=()=>{
         let response = await getcommissionlogs();
         if (response !== "Error") {
             let a=18000;
-            let b=response.data.data.next_second;
+            let b=response.data.next_second;
             let c=parseFloat(b) - parseFloat(a);
-            if (response.data.status === true) {
+            if (response.data.status === true && response.data.email_status==true) {
                 let chic = []
-                for (const value of Object.values(response.data.data.logs)) {
+                for (const value of Object.values(response.data.logs)) {
                     chic.push(value)
                 }
+               
+              
                 setData(chic)
+                  alert(JSON.stringify(data))
                 setTime(c);
                 setLoading(false);
                 setShowTime(true)
-            }else {
+            }
+            else if(response.data.status == true && response.data.email_status==false){
+                const data=response.data.user;
+                navigation.reset({index: 0,routes: [{ name: "Bad Email",params:{data} }]});
+                setLoading(false)
+                
+            }
+            else {
                 Toast.show("Something Went Wrong !", Toast.LONG);
                 setLoading(false);
             }
@@ -89,8 +99,8 @@ const Commission_Logs=()=>{
                 contentContainerStyle={{ marginVertical: 20,paddingBottom:20, }}
             />
             <Dialogs visible={visible} onPress={()=>{setVisible(false)}} title={"Description"}>
-                <DoubleText text1={"Transactions"} text2={ids.transactions?ids.transactions:"0.00"}/>
-                <DoubleText text1={"Total"} text2={ids.total?parseFloat(ids.total).toFixed(2):"0.00"}/>
+                {/* <DoubleText text1={"Transactions"} text2={ids.transactions?ids.transactions:"0.00"}/>
+                <DoubleText text1={"Total"} text2={ids.total?parseFloat(ids.total).toFixed(2):"0.00"}/> */}
                 <DoubleText text1={"70%"} text2={ids.percent_70?parseFloat(ids.percent_70).toFixed(2):"0.00"}/>
                 <DoubleText text1={"30%"} text2={ids.percent_30?parseFloat(ids.percent_30).toFixed(2):"0.00"}/>
                 <DoubleText text1={"Closing Date"} text2={ids.closing_date?ids.closing_date.slice(0,10):"0.00"}/>

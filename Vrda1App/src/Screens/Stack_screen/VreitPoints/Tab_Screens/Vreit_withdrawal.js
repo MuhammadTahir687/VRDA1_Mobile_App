@@ -25,6 +25,7 @@ const Vreit_withdrawal = () => {
         let response = await getVreitWithdrawl();
         if (response !== "Error") {
             if (response.data.status === true) {
+                console.log("vret amount",response.data.data.vreit_amount)
                 setApiData(response.data.data);
                 setUserDetail(response.data.data.user)
                 setRefreshing(!refreshing)

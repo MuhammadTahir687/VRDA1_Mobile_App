@@ -10,7 +10,8 @@ import Toast from "react-native-simple-toast";
 import Loader from "../../../../utilis/Loader";
 import Dropdown from "../../../../utilis/Picker/Picker";
 import {processTransferValidation} from "../../../../utilis/validation";
-
+import RNPickerDialog from 'rn-modal-picker';
+import styles from '../../../../Style_Sheet/style';
 const TransferFunds = ({navigation}) => {
     const [detail,setDetail]=useState("");
     const [isloading,setLoading]=useState(false);
@@ -22,7 +23,11 @@ const TransferFunds = ({navigation}) => {
     const [checked,setChecked]=useState(false);
     const [available,setAvailable]=useState("");
     const [selectedValue, setSelectedValue] = useState("Please Select");
+    const [selectedid,setSelectedid]=useState("")
+    const [placeHolderText,setplaceHolderText]=useState('Select User');
+    const [selectedText,setselectedText]=useState("");
     const buttons = [{name: 'Wallet', id: 0}, {name: 'Process Transfer', id: 1},]
+
 
     useEffect(async ()=>{ await getData(); },[]);
 
@@ -31,11 +36,13 @@ const TransferFunds = ({navigation}) => {
         let response = await gettransferfunds();
         if (response !== "Error") {
             if (response.data.status === true) {
-                setApiData(response.data.data.childs);
-                setAvailable(response.data.data.available)
+                setApiData(response.data.users.childs);
+                setAvailable(response.data.wallet)
                 setRefreshing(!refreshing)
                 setLoading(false);
-            }else {
+            }
+            
+            else {
                 Toast.show("Something Went Wrong !", Toast.LONG);
                 setLoading(false);
             }
@@ -48,31 +55,33 @@ const TransferFunds = ({navigation}) => {
         await getData();
     }
     const Submit = async () => {
-        let validate = processTransferValidation(amounts,selectedValue,detail,available.available)
+        let validate = processTransferValidation(amounts,selectedid,detail,available.available)
         if (validate.valid === false) {
             setErrors(validate.errors)
         } else {
             setErrors("")
-            var id = selectedValue.toString()
-            let body ={details: detail, amount: amounts, user_id: id}
-            setLoading(true)
-            let response = await sendProcessTransferBtn(body)
-            if (response !== "Error") {
-                if (response.data.status == true) {
-                    Toast.show(response.data.message, Toast.LONG);
-                    await setLoading(false);
-                    await setDetail("");
-                    await setAmounts("");
-                    await onRefresh();
+            var id = selectedid.toString()
+            let body ={details: detail, amount: amounts, user_id: id.toString()}
+            navigation.navigate('TransactionPassword',{data:body,screen:"transfer_wallet"})
 
-                }else {
-                    Toast.show(response.data.data, Toast.LONG);
-                    setLoading(false);
-                }
-            }else {
-                Toast.show("Network Error: There is something wrong!", Toast.LONG);
-                setLoading(false);
-            }
+            // setLoading(true)
+            // let response = await sendProcessTransferBtn(body)
+            // if (response !== "Error") {
+            //     if (response.data.status == true) {
+            //         Toast.show(response.data.message, Toast.LONG);
+            //         await setLoading(false);
+            //         await setDetail("");
+            //         await setAmounts("");
+            //         await onRefresh();
+
+            //     }else {
+            //         Toast.show(response.data.data, Toast.LONG);
+            //         setLoading(false);
+            //     }
+            // }else {
+            //     Toast.show("Network Error: There is something wrong!", Toast.LONG);
+            //     setLoading(false);
+            // }
         }
     }
     return(
@@ -107,7 +116,27 @@ const TransferFunds = ({navigation}) => {
                 <View style={{margin:20}}>
                     <Text style={{fontWeight:"bold"}}>Proceed With</Text>
                     <View style={{borderBottomWidth:1,borderColor:Colors.secondary}}>
-                        <Dropdown onValueChange={(text)=>{setSelectedValue(text)}} PickerData={apiData.map(obj => ({key: obj.id, label: obj.name, value: obj.id, color: "rgba(77,38,22,1)",}))}/>
+                            <RNPickerDialog
+                                data={apiData}
+                                pickerTitle={'Sort by'}
+                                // labelText={'Select User'}
+                                showSearchBar={true}
+                                showPickerTitle={true}
+                                listTextStyle={styles.listTextStyle}
+                                pickerStyle={styles.pickerStyle}
+                                selectedText={selectedText}
+                                placeHolderText={placeHolderText}
+                                searchBarPlaceHolder={'Search.....'}
+                                searchBarPlaceHolderColor={'#9d9d9d'}
+                                selectedTextStyle={styles.selectedTextStyle}
+                                placeHolderTextColor={'gray'}
+                                dropDownIconStyle={styles.dropDownIconStyle}
+                                searchBarStyle={styles.searchBarStyle}
+                                //dropDownIcon={require('../assets/pin.png')}
+                                selectedValue={(index, item) => {setselectedText(item.name),setSelectedid(item.id)}}
+                            />
+
+                        {/* <Dropdown onValueChange={(text)=>{setSelectedValue(text)}} PickerData={apiData.map(obj => ({key: obj.id, label: obj.name, value: obj.id, color: "rgba(77,38,22,1)",}))}/> */}
                     </View>
                     {errors === "Please Select Value" &&
                     <Text style={{ color: "red",fontSize:12 }}>{errors === "Please Select Value" ? "Please Select Value" : null}</Text>
