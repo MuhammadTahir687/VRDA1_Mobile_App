@@ -29,7 +29,8 @@ const BTCDetail = ({navigation,route}) => {
         let response = await getBTCDetail();
         if (response !== "Error") {
             if (response.data.status === true) {
-                setApiData(response.data.data);
+                console.log("BTC===========",response.data.btc_bank)
+                setApiData(response.data.btc_bank);
                 setLoading(false);
             }else {
                 Toast.show("Something Went Wrong !", Toast.LONG);

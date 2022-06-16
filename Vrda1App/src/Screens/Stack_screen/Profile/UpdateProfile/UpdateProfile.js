@@ -172,7 +172,7 @@ const UpdateProfile = ({navigation,route}) => {
             setErrors("")
             setLoading(true)
             const body = new FormData();
-            body.append('country_id', data.user_profile.country_id);
+            body.append('country_id', data.country);
             body.append('address', address);
             body.append('city', city);
             body.append('email_alter', email);

@@ -28,7 +28,7 @@ const USDTDetail = ({route,navigation}) => {
         let response = await getUSDTDetail();
         if (response !== "Error") {
             if (response.data.status === true) {
-                setApiData(response.data.data.bank);
+                setApiData(response.data.usdt);
                 setLoading(false);
             }else {
                 Toast.show("Something Went Wrong !", Toast.LONG);

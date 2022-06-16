@@ -307,7 +307,7 @@
 		};
 		1445722B9F83AA3EE28B7C69 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 12;
 			files = (
 			);
 			inputFileListPaths = (
@@ -320,7 +320,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BookingApp/Pods-BookingApp-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
 		};
 		3C16C6A1309DB0DC5B027E11 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;

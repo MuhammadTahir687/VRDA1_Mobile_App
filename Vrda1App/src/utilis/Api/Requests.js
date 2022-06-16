@@ -1,5 +1,8 @@
 import {get_data} from "../AsyncStorage/Controller";
 import axios from "axios";
+
+// https://staging.vrda1.net
+// http://127.0.0.1:8888/vrda1
 const post_request = async ({ target, body }) => {
     try {
         let ACCOUNT_DATA = await get_data("ACCOUNT_DATA")

@@ -16,6 +16,7 @@ import UpdateBank from "../Screens/Stack_screen/Profile/UpdateProfile/UpdateBank
 import VreitUpdate from "../Screens/Stack_screen/Profile/UpdateProfile/VreitUpdate";
 import VreitDetail from "../Screens/Stack_screen/Profile/DetailProfile/VreitDetails";
 import UpdateProfile from "../Screens/Stack_screen/Profile/UpdateProfile/UpdateProfile";
+import ChangePassword from "../Screens/Stack_screen/Profile/ChangePassword";
 
 
 const config=()=>{
@@ -49,6 +50,8 @@ const Stacks = ({navigation }) => {
         <Stack.Screen name="VreitDetail" component={VreitDetail} options={{ headerShown: false }} />
         <Stack.Screen name="UpdateVreit" component={VreitUpdate} options={{ headerShown: false }} />
         <Stack.Screen name="UpdateProfile" component={UpdateProfile} options={{ headerShown: false }} />
+        <Stack.Screen name="ChangePassword" component={ChangePassword} options={{headerShown:false}}/>
+
       </Stack.Navigator>
     </NavigationContainer>
   );

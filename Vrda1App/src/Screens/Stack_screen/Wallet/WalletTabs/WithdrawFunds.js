@@ -10,8 +10,10 @@ import Toast from "react-native-simple-toast";
 import Loader from "../../../../utilis/Loader";
 import Dropdown from "../../../../utilis/Picker/Picker";
 import {processWithdrawValidation} from "../../../../utilis/validation";
+import { useNavigation } from "@react-navigation/native";
 
-const WithdrawFunds=({navigation})=>{
+const WithdrawFunds=()=>{
+    const navigation=useNavigation();
     const [detail,setDetail]=useState("");
     const [isloading,setLoading]=useState(false);
     const [errors,setErrors]=useState("");
@@ -34,13 +36,14 @@ const WithdrawFunds=({navigation})=>{
         setLoading(true)
         let response = await getwithdrawfunds();
         if (response !== "Error") {
-            if (response.data.status === true && response.data.email_status==true) {
+            if (response.data.status == true && response.data.email_status == true) {
                 setView(true)
                 setApiData(response.data.wallet);
                 setRefreshing(!refreshing)
                 setLoading(false);
             }
             else if(response.data.status == true && response.data.email_status==false){
+                setView(false)
                 const data=response.data.user;
                 navigation.reset({index: 0,routes: [{ name: "Bad Email",params:{data} }]});
                 setLoading(false)
@@ -109,7 +112,7 @@ const WithdrawFunds=({navigation})=>{
     return(
         <SafeAreaView style={{flex:1}}>
             <Loader animating={isloading}/>
-       {view ==false?     <ScrollView refreshControl={ <RefreshControl refreshing={false} onRefresh={onRefresh} /> } >
+       {view ==true?     <ScrollView refreshControl={ <RefreshControl refreshing={false} onRefresh={onRefresh} /> } >
             <Text style={{textAlign:"center",fontSize:18,fontWeight:"bold",textDecorationLine:"underline",color:Colors.secondary,margin:10}}>Withdraw Funds</Text>
             <View style={{ flexDirection: 'row', alignItems: 'center', margin: 15, }}>
                 {buttons.map((item, indexs) => (

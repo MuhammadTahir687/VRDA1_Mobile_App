@@ -27,7 +27,7 @@ const VreitDetail = ({route,navigation}) => {
         let response = await getVREITDetail();
         if (response !== "Error") {
             if (response.data.status == true) {
-                setApiData(response.data.data.vreit);
+                setApiData(response.data.vreit);
                 setLoading(false);
             }else {
                 Toast.show("Something Went Wrong !", Toast.LONG);

@@ -49,11 +49,12 @@ const Profile = ({navigation}) => {
             <ProfileView source={{uri: apiprofile.picture?apiprofile.picture:null}} screen_title={"Profile"} username={apiprofile.title+". "} firstname={apiprofile.first_name+" "} lastname={apiprofile.last_name} onPress={()=>navigation.goBack()}>
                 <View style={{marginHorizontal:"5%",marginTop:20}}>
                     <ProfileBtn title={"Personal Detail"} onPress={()=>{navigation.navigate("Detail",{tittle:"Personal Detail",data:apiprofile,user:apiuser})}}/>
-                    <ProfileBtn title={"Personal Info"} onPress={()=>{navigation.navigate("Detail",{tittle:"Personal Info",data:apiprofile})}}/>
+                    <ProfileBtn title={"Personal Info"} onPress={()=>{navigation.navigate("Detail",{tittle:"Personal Info",data:apiprofile,user:apiuser})}}/>
                     <ProfileBtn title={"Bank Detail"} onPress={()=>{navigation.navigate("BankDetail",{tittle:"Bank Detail",title:apiprofile.title,firstname:apiprofile.first_name,lastname:apiprofile.last_name,data:apiprofile})}}/>
                     <ProfileBtn title={"BTC"} onPress={()=>{navigation.navigate("BTCDetail",{tittle:"BTC Detail",title:apiprofile.title,firstname:apiprofile.first_name,lastname:apiprofile.last_name,data:apiprofile})}}/>
                     <ProfileBtn title={"USDT"} onPress={()=>{navigation.navigate("USDTDetail",{tittle:"USDT Detail",title:apiprofile.title,firstname:apiprofile.first_name,lastname:apiprofile.last_name,data:apiprofile})}}/>
                     <ProfileBtn title={"Vreit"} onPress={()=>{navigation.navigate("VreitDetail",{tittle:"Vreit Detail",title:apiprofile.title,firstname:apiprofile.first_name,lastname:apiprofile.last_name,data:apiprofile})}}/>
+                    <ProfileBtn title={"Change Password"} onPress={()=>{navigation.navigate("ChangePassword",{tittle:"Change Password",title:apiprofile.title,firstname:apiprofile.first_name,lastname:apiprofile.last_name,data:apiprofile,user:apiuser})}}/>
                     <Text></Text>
                 </View>
             </ProfileView>

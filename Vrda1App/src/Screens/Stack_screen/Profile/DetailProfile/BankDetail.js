@@ -27,8 +27,8 @@ const BankDetail = ({navigation,route}) => {
         if (response !== "Error") {
             if (response.data.status === true) {
                  setLoading(false);
-                 setApiData(response.data.data.bank);
-                 setCountry(response.data.data.bank.bank_country);
+                 setApiData(response.data.bank);
+                 setCountry(response.data.bank.bank_country);
                 setRefreshing(!refreshing)
                 setLoading(false);
             }else {

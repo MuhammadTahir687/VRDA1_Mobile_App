@@ -5,7 +5,8 @@ import Quarterly from "./Tab_Screens/Quarterly_vreits";
 import Withdrawal from "./Tab_Screens/Vreit_withdrawal";
 import Vreit_Logs from "./Tab_Screens/Vreit_logs";
 import Vreit_Transfer from "./Tab_Screens/Vreit_Transfer_C2C";
-import Colors from "../../../Style_Sheet/Colors";
+import Colors from '../../../Style_Sheet/Colors';
+import BuyVreit from './Tab_Screens/BuyVreit';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -13,7 +14,8 @@ const Vreit_Points=()=>{
 
     return(
         <SafeAreaView style={{flex:1}}>
-            <Tab.Navigator  initialRouteName="Quarterly" activeColor={Colors.primary}>
+            <Tab.Navigator  initialRouteName="Buy Vreit" activeColor={Colors.primary}>
+            <Tab.Screen name="Buy Vreit" component={BuyVreit}  options={{tabBarLabel: 'Buy Vreit', tabBarColor:"rgba(0,0,0,0.07)", tabBarIcon: ({color}) => (<Image source={require("../../../Assets/qarter.png")} style={{height:25,width:25,}}/>)}}/>
                 <Tab.Screen name="Quarterly" component={Quarterly}  options={{tabBarLabel: 'Quarterly Vreit', tabBarColor:"rgba(0,0,0,0.07)", tabBarIcon: ({color}) => (<Image source={require("../../../Assets/qarter.png")} style={{height:25,width:25,}}/>)}}/>
                 <Tab.Screen name="Withdrawal" component={Withdrawal} options={{tabBarLabel: 'Vreit Withdrawal', tabBarColor: 'rgba(0,0,0,0.07)', tabBarIcon: ({color}) => (<Image source={require("../../../Assets/withdrawvreit.png")} style={{height:25,width:25}}/>)}}/>
                 <Tab.Screen name="Vreit_Logs" component={Vreit_Logs} options={{tabBarLabel: 'Vreit Logs', tabBarColor: 'rgba(0,0,0,0.07)', tabBarIcon: ({color}) => (<Image source={require("../../../Assets/vreitLogs.png")} style={{height:25,width:25}}/>)}}/>

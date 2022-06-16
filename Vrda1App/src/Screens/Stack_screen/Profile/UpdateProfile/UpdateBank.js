@@ -23,6 +23,7 @@ const UpdateBank = ({navigation,route}) => {
         var firstname=route.params.firstname;
         var data=route.params.data;
         var paramData=route.params.apiData;
+       
 
     }
     const [fullName,setFullName]=useState(!route.params.apiData?"":paramData.full_name);
@@ -36,7 +37,7 @@ const UpdateBank = ({navigation,route}) => {
     const [residentialAdd,setResidentialAdd]=useState(!route.params.apiData?"":paramData.residential_address);
     const [bankaddress,setBankaddress]=useState(!route.params.apiData?"":paramData.bank_address);
     const [city,setCity]=useState(!route.params.apiData?"":paramData.city);
-    const [country,setCountry]=useState(!route.params.apiData?"":paramData.bank_country.country_name);
+    const [country,setCountry]=useState(route.params.apiData.bank_country == null?"":paramData.bank_country.country_name);
     const [errors,setErrors]=useState("");
     const [isloading,setLoading]=useState(false);
     // const [fileName,setFileName]=useState("");

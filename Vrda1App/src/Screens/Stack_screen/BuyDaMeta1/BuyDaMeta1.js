@@ -23,7 +23,7 @@ const BuyDaMeta1 = ({ navigation }) => {
     const [checked1, setChecked1] = useState(false);
     const [serviceCharges, setServiceCharges] = useState("5");
     const [selectedValue, setSelectedValue] = useState("");
-    const [view, setView] = useState(false);
+    const [view, setview] = useState(false);
     const [currentvrietrate,setCurrentvreitrate]=useState(0.15);
     const [currentdametarate,setCurrentdametarate]=useState(0.3102);
     const [coinconvert,setCoinconvert]=useState(0)
@@ -39,13 +39,14 @@ const BuyDaMeta1 = ({ navigation }) => {
         setLoading(true)
         let response = await getwithdrawfunds();
         if (response !== "Error") {
-            if (response.data.status === true && response.data.email_status == true) {
-                setView(true)
-                // setApiData(response.data.data);
+            if (response.data.status == true && response.data.email_status == true) {
+                setview(true)
+                setApiData(response.data.wallet);
                 setRefreshing(!refreshing)
                 setLoading(false);
             }
             else if (response.data.status == true && response.data.email_status == false) {
+                setview(false)
                 const data = response.data.user;
                 navigation.reset({ index: 0, routes: [{ name: "Bad Email", params: { data } }] });
                 setLoading(false)
@@ -110,10 +111,8 @@ const BuyDaMeta1 = ({ navigation }) => {
 
     const conversion=async(text)=>{
         const regex=/[^0-9]/;
-           console.log("0000000000============",regex.test(text))
            if(regex.test(text)==true){
             setErrormsg("Note: Please add value in round figure (e.g: 100, 20)")
-            
            }
            else{
             setAmount(text);
@@ -126,7 +125,7 @@ const BuyDaMeta1 = ({ navigation }) => {
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <Loader animating={isloading} />
-            {view == false ? <ScrollView refreshControl={<RefreshControl refreshing={false} onRefresh={onRefresh} />} >
+            {view == true ? <ScrollView refreshControl={<RefreshControl refreshing={false} onRefresh={onRefresh} />} >
                 {/* <Text style={{textAlign:"center",fontSize:18,fontWeight:"bold",textDecorationLine:"underline",color:Colors.secondary,margin:10}}>Withdraw Funds</Text> */}
                 <View style={{ flexDirection: 'row', alignItems: 'center', margin: 15, }}>
                     {buttons.map((item, indexs) => (

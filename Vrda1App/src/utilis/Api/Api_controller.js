@@ -170,4 +170,9 @@ const sendBad_NewEmail = async (body) => {
     return Test
 }
 
-export {LoginApi,getDashboard,getShop,sendShopPayment,sendShopSubmit,getcommissionlogs,getactivityfeed,getcommissiondirect,getcommissionbinary,getallcommission,getwithdrawfunds,gettransferfunds,sendProcessWithdraw,getMyPurchase,getOwnershipPurchase,getPurchaseRequest,getTransferHistory,getReceiveHistory,getWithdrawHistory,getPersonalDetail,getBankDetail,getBTCDetail,getUSDTDetail,sendUpdateBTC,sendUpdateBank,sendUpdateProfile,sendWithdrawFunds_Charges,getVreitTransferC2C,getVreitLogs,getVreitWithdrawl,sendVreitWithdrawl,getVreitQuaterly,sendVreitC2Csubmit,sendTeamSale,getVREITDetail,sendVreitUpdate,sendUsdtUpdate,sendVreitShiftedBtn,sendProcessTransferBtn,sendDeletePackageRequest,sendBad_NewEmail}
+const ChangePasswordApi = async (body) => {
+    const Test = await post_request({ target: "/api/change-password	", body: body });
+    return Test
+}
+
+export {LoginApi,ChangePasswordApi,getDashboard,getShop,sendShopPayment,sendShopSubmit,getcommissionlogs,getactivityfeed,getcommissiondirect,getcommissionbinary,getallcommission,getwithdrawfunds,gettransferfunds,sendProcessWithdraw,getMyPurchase,getOwnershipPurchase,getPurchaseRequest,getTransferHistory,getReceiveHistory,getWithdrawHistory,getPersonalDetail,getBankDetail,getBTCDetail,getUSDTDetail,sendUpdateBTC,sendUpdateBank,sendUpdateProfile,sendWithdrawFunds_Charges,getVreitTransferC2C,getVreitLogs,getVreitWithdrawl,sendVreitWithdrawl,getVreitQuaterly,sendVreitC2Csubmit,sendTeamSale,getVREITDetail,sendVreitUpdate,sendUsdtUpdate,sendVreitShiftedBtn,sendProcessTransferBtn,sendDeletePackageRequest,sendBad_NewEmail}

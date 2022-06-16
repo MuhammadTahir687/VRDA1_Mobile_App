@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, Text, FlatList, SafeAreaView, TouchableOpacity, ScrollView, Image, Platform, RefreshControl } from "react-native";
+import { View, Text, FlatList,TouchableOpacity, SafeAreaView, ScrollView, Image, Platform, RefreshControl } from "react-native";
 import Colors from "../../../Style_Sheet/Colors";
 import LinearGradient from 'react-native-linear-gradient';
 import RBSheet from "react-native-raw-bottom-sheet";
@@ -19,7 +19,8 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { BuyValidation, ShopValidation } from "../../../utilis/validation";
 import CheckBox from "../../../utilis/Checkbox";
 import styles from '../../../Style_Sheet/style';
-import RNFetchBlob from 'rn-fetch-blob'
+import RNFetchBlob from 'rn-fetch-blob';
+
 
 const Shop = ({ navigation }) => {
     const refRBSheet = useRef();
@@ -300,7 +301,7 @@ const Shop = ({ navigation }) => {
                 closeOnPressMask={true}
                 closeOnPressBack={true}
                 dragFromTopOnly={true}
-                customStyles={{ wrapper: { backgroundColor: "rgba(0,0,0,0.47)" }, draggableIcon: { backgroundColor: "#000" }, container: { borderTopLeftRadius: 30, borderTopRightRadius: 30,overflow:"hidden" } }}
+                customStyles={{ wrapper: { width: "100%", backgroundColor: "rgba(0,0,0,0.47)" }, draggableIcon: { backgroundColor: "#000" }, container: { borderTopLeftRadius: 30, borderTopRightRadius: 30} }}
             >
                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 30 }}>
                     <Text style={{ fontWeight: "bold", fontSize: 20, color: Colors.primary }}>{ids.package_name}</Text>
@@ -308,7 +309,7 @@ const Shop = ({ navigation }) => {
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', margin: 10, }}>
                     {buttons.map((item, indexs) => (
-                        <Btn onPress={() => {
+                        <Btn key={indexs} onPress={() => {
                             setIndex(indexs);
                             // getData(indexs)
                         }} containerStyle={{ backgroundColor: index == indexs ? Colors.primary : Colors.white, paddingVertical: 10, paddingHorizontal: 10, flex: 1, borderRadius: 5, marginLeft: 3, borderWidth: 1, borderColor: Colors.primary }} text={item.name} text_style={{ color: index == indexs ? Colors.white : Colors.primary }} />
@@ -344,7 +345,7 @@ const Shop = ({ navigation }) => {
                                             <DoubleText text1={"IBAN"} text2={iban ? iban : "Not Available"} textstyle={{ textAlign: "center" }} containerstyle={{ backgroundColor: "rgba(152,148,148,0.63)", padding: 6 ,borderRadius:5}} />
                                             <DoubleText text1={"Swift Code"} text2={swiftCode ? swiftCode : "Not Available"} textstyle={{ textAlign: "center" }} containerstyle={{ padding: 6 }} />
                                             {/* <DoubleText text1={"CIF Number"} text2={cifNumber ? cifNumber:"Not Available"} textstyle={{ textAlign: "center" }} containerstyle={{ backgroundColor: "rgba(152,148,148,0.63)", padding: 6 }} /> */}
-                                            <DoubleText text1={"Branch Name"} text2={branchName ? branchName : "Not Available"} textstyle={{ textAlign: "center" }} containerstyle={{ backgroundColor: "rgba(152,148,148,0.63)", padding: 6 ,borderRadius:5}} />
+                                            <DoubleText text1={"Bank Address"} text2={branchName ? branchName : "Not Available"} textstyle={{ textAlign: "center" }} containerstyle={{ backgroundColor: "rgba(152,148,148,0.63)", padding: 6 ,borderRadius:5}} />
                                             {/* <DoubleText text1={"Branch Code"} text2={branchCode ? branchCode:"Not Available"} textstyle={{ textAlign: "center" }} containerstyle={{ backgroundColor: "rgba(152,148,148,0.63)", padding: 6 }} /> */}
 
                                            {invoice ==null && <TouchableOpacity onPress={() => { Invoice() }} style={styles.rbsheetbtn}>

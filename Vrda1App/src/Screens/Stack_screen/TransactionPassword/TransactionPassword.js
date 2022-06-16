@@ -10,10 +10,10 @@ import Loader from "../../../utilis/Loader";
 
 
 const TransactionPassword = ({navigation,route}) => {
-    // var data=route.params.data;
-    // var screen=route.params.screen;
+    var data=route.params.data;
+    var screen=route.params.screen;
 
-    // console.log("Screen Name =======",data)
+    console.log("Screen Name =======",data)
 
     const [view, setView] = useState(false);
     const [isloading,setLoading]=useState(false);
@@ -29,7 +29,7 @@ const TransactionPassword = ({navigation,route}) => {
                 if (response.data.status == true) {
                     Toast.show(response.data.message, Toast.LONG);
                     await setLoading(false);
-                  
+                    
                 }else if(response.data.status == false)      {
                     Toast.show("Request "+response.data.data, Toast.LONG);
                     setLoading(false);

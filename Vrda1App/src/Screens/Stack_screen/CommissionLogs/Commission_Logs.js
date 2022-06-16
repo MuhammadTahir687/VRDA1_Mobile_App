@@ -42,10 +42,7 @@ const Commission_Logs=({navigation})=>{
                 for (const value of Object.values(response.data.logs)) {
                     chic.push(value)
                 }
-               
-              
                 setData(chic)
-                  alert(JSON.stringify(data))
                 setTime(c);
                 setLoading(false);
                 setShowTime(true)
@@ -54,7 +51,6 @@ const Commission_Logs=({navigation})=>{
                 const data=response.data.user;
                 navigation.reset({index: 0,routes: [{ name: "Bad Email",params:{data} }]});
                 setLoading(false)
-                
             }
             else {
                 Toast.show("Something Went Wrong !", Toast.LONG);
@@ -75,9 +71,9 @@ const Commission_Logs=({navigation})=>{
                 <Text style={{ fontSize: 14, color: Colors.white }}>{index+1}. </Text>
                 <Text style={{ fontSize: 14, color: Colors.white }}>Transactions ({item.transactions})</Text>
             </View>
-            {/*<Text style={{ fontSize: 14, color: Colors.white }}>Total ({item.id})</Text>*/}
+            {/* <Text style={{ fontSize: 14, color: Colors.white }}>Total ({item.interval})</Text> */}
             {/*<Text style={{ fontSize: 14, color: Colors.white }}>Status ({item.id}%)</Text>*/}
-            <Text style={{ fontSize: 13, color: Colors.lightgray, flex: 1, }}>Closing Date: {item.closing_date}</Text>
+            <Text style={{ fontSize: 13, color: Colors.lightgray, flex: 1, }}> Closing Date: {item.closing_date}</Text>
         </TouchableOpacity>
     )
     return(
@@ -103,6 +99,7 @@ const Commission_Logs=({navigation})=>{
                 <DoubleText text1={"Total"} text2={ids.total?parseFloat(ids.total).toFixed(2):"0.00"}/> */}
                 <DoubleText text1={"70%"} text2={ids.percent_70?parseFloat(ids.percent_70).toFixed(2):"0.00"}/>
                 <DoubleText text1={"30%"} text2={ids.percent_30?parseFloat(ids.percent_30).toFixed(2):"0.00"}/>
+                <DoubleText text1={"Interval"} text2={ids.interval?parseFloat(ids.interval).toFixed(2):"0.00"}/>
                 <DoubleText text1={"Closing Date"} text2={ids.closing_date?ids.closing_date.slice(0,10):"0.00"}/>
                 <DoubleText text1={""} text2={ids.closing_date?ids.closing_date.slice(11,19):null}/>
                 {/*    <View style={{flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start',margin:3,paddingHorizontal:17.5}}>*/}

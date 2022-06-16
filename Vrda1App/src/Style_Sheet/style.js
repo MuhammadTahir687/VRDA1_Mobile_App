@@ -14,6 +14,9 @@ export default StyleSheet.create({
     bademailinput2:{borderWidth:1,borderRadius:5,overflow:"hidden",marginTop:10,paddingVertical:(Platform.OS=="android"?10:15),paddingHorizontal:(Platform.OS=="android"?5:5)},
     bademailbtn1:{backgroundColor:"gray",alignSelf:"flex-start",padding:10,borderRadius:5,overflow:"hidden",marginVertical:15},
     errorcolor:{color:"red",marginVertical:5},
+    pinputcontainer:{flex:1,flexDirection:"row",alignItems:"center",color:"black",marginLeft:10,height:40,borderBottomWidth:2,borderBottomColor:"black",marginHorizontal:10},
+    pinput:{ width:"90%",color:"black"},
+    cpbutton:{flex:1,backgroundColor:"black",borderRadius:50,flexDirection:"row",paddingHorizontal:10,paddingVertical:5,justifyContent:"center",marginHorizontal:"20%",marginVertical:10},
     container5: {
         flex: 1,
         alignItems: 'center',

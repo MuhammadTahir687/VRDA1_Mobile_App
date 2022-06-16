@@ -395,3 +395,38 @@ export const UpdateUsdtvalid = (fileName,imageSourceData,btcAddress) => {
         return { valid: true, errors: null }
     }
 }
+export const ChangePasswordValidation=(password,confirmpassword,oldpassword)=>{
+    if (password === '') {
+        return {
+            valid: false,
+            errors: password === '' ? "Please Enter Your Password" : null
+        }
+    }
+    else if (oldpassword === '') {
+        return {
+            valid: false,
+            errors: password === '' ? "Please Enter Your Old Password" : null
+        }
+    }
+    else if (confirmpassword === '') {
+        return {
+            valid: false,
+            errors: password === '' ? "Please Enter Your Confirm Password" : null
+        }
+    }
+    else if (password.length < 6) {
+        return {
+            valid: false,
+            errors: password.length < 6 ? "Password must should contain 6 digits" : null
+        }
+    }
+    else if (password !== confirmpassword) {
+        return {
+            valid: false,
+            errors: password !== confirmpassword ? "Password not match" : null
+        }
+    }
+    else {
+        return { valid: true, errors: null }
+    }
+}
