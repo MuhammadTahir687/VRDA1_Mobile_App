@@ -52,6 +52,8 @@ const UpdateProfile = ({navigation,route}) => {
                     var name = (response.assets[0].fileName).slice(25);
                     setFileName(name);
                     setImageSourceData(source);
+                    console.log("Profile source======",source)
+                    console.log("Profile name =======",name)
                     setLoading(false);
                     Toast.show("Succeed", Toast.LONG);
                 } else {
@@ -60,6 +62,8 @@ const UpdateProfile = ({navigation,route}) => {
             }
         });
     };
+
+    
     const selectIdentity_gallery = () => {
         const options = {
             mediaType: 'photo',
@@ -208,7 +212,7 @@ const UpdateProfile = ({navigation,route}) => {
             <ImageBackground source={require("../../../../Assets/splash.png")} style={{flex:1}}>
                 <Loader animating={isloading}/>
             <ScrollView style={{flex:1}}>
-            <ProfileView source={{uri: data.picture}} screen_title={"Update Profile"} username={data.title+" "} firstname={data.first_name+" "} lastname={data.last_name} onPress={()=>navigation.goBack()}>
+            <ProfileView source={data.picture} screen_title={"Update Profile"} username={data.title+" "} firstname={data.first_name+" "} lastname={data.last_name} onPress={()=>navigation.goBack()}>
                 <Text style={{fontSize:16,fontWeight:"bold", color:Colors.primary,paddingHorizontal:10,bottom:20}}>Update Profile:</Text>
                 <View style={{marginHorizontal:10}}>
                     <View style={{flexDirection:"row",justifyContent:"space-between",flex:1}}>
@@ -451,7 +455,7 @@ const UpdateProfile = ({navigation,route}) => {
                 <Text></Text>
             </ProfileView>
                 <View style={{flexDirection:"row",justifyContent:"space-between",marginHorizontal:"8%",marginTop:10,flex:1}}>
-                    <UploadPic onPress={()=>{selectPhoto_gallery()}} source={{uri: data.picture}} name={"Picture"}/>
+                    <UploadPic onPress={()=>{selectPhoto_gallery()}} source={data.picture} name={"Picture"}/>
                     <UploadPic onPress={()=>{selectIdentity_gallery()}} source={{uri: "https://staging.vrda1.net/"+ data.identity_pic}} name={"Identity"}/>
                     <UploadPic onPress={()=>{selectPassport_gallery()}} source={{uri: "https://staging.vrda1.net/"+ data.passport_pic}} name={"Passport"}/>
                     <UploadPic onPress={()=>{selectSignature_gallery()}} source={{uri: "https://staging.vrda1.net/"+ data.signature_pic}} name={"Signature"}/>

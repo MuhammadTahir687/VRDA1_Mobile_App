@@ -49,7 +49,7 @@ const BTCDetail = ({navigation,route}) => {
         <SafeAreaView style={{flex:1}}>
             <ImageBackground source={require("../../../../Assets/splash.png")} style={{flex:1}}>
                 <Loader animating={isloading}/>
-                <ProfileView source={{uri: data.picture}} screen_title={name} username={title+" "} firstname={firstname+" "} lastname={lastname} update={"BTC Detail"} onPress={()=>navigation.goBack()} onPressForUpdate={()=>{navigation.navigate("UpdateBTC",{title:title,firstname:firstname,lastname:lastname,data:data,apiData:apiData})}}>
+                <ProfileView source={data.picture} screen_title={name} username={title+" "} firstname={firstname+" "} lastname={lastname} update={"BTC Detail"} onPress={()=>navigation.goBack()} onPressForUpdate={()=>{navigation.navigate("UpdateBTC",{title:title,firstname:firstname,lastname:lastname,data:data,apiData:apiData})}}>
                 <Text style={{fontSize:16,fontWeight:"bold", color:Colors.primary,paddingHorizontal:10,bottom:10}}>{name}:</Text>
                 <DoubleText text1={"BTC Address"} text2={apiData?apiData.btc:"Not Available"}/>
                     {apiData ?

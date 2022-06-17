@@ -28,7 +28,7 @@ const BankDetail = ({navigation,route}) => {
             if (response.data.status === true) {
                  setLoading(false);
                  setApiData(response.data.bank);
-                 setCountry(response.data.bank.bank_country);
+                 setCountry(response.data.bank.country);
                 setRefreshing(!refreshing)
                 setLoading(false);
             }else {
@@ -53,7 +53,7 @@ const BankDetail = ({navigation,route}) => {
                         refreshing={false}
                         onRefresh={onRefresh} />
                 }>
-                <ProfileView source={{uri: data.picture}} screen_title={name} username={title+" "} firstname={firstname+" "} lastname={lastname} update={"Bank Detail"} onPress={()=>navigation.goBack()}
+                <ProfileView source={data.picture} screen_title={name} username={title+" "} firstname={firstname+" "} lastname={lastname} update={"Bank Detail"} onPress={()=>navigation.goBack()}
                              onPressForUpdate={() => {
                         navigation.navigate("UpdateBank", {
                             title: title,
@@ -65,13 +65,13 @@ const BankDetail = ({navigation,route}) => {
                 }}>
                         <View>
                         <Text style={{fontSize:16,fontWeight:"bold", color:Colors.primary,paddingHorizontal:10,bottom:10}}>{name}:</Text>
-                            <DoubleText text1={"Full Name"} text2={apiData ?apiData.full_name:"Not Available"}/>
-                            <DoubleText text1={"Complete Address"} text2={apiData?apiData.billing_address:"Not Available"}/>
-                            <DoubleText text1={"Residential Address"} text2={apiData?apiData.residential_address:"Not Available"}/>
-                            <DoubleText text1={"Bank Name"} text2={apiData?apiData.bank_name:"Not Available"}/>
-                            <DoubleText text1={"Branch Name"} text2={apiData?apiData.branch_name:"Not Available"}/>
-                            <DoubleText text1={"City"} text2={apiData ? apiData.city :"Not Available"}/>
-                            <DoubleText text1={"Country"} text2={apiData?country ? country.country_name:"Not Available":"Not Available"}/>
+                            <DoubleText text1={"Full Name"} text2={apiData.full_name !=null ?apiData.full_name:"Not Available"}/>
+                            <DoubleText text1={"Billing Address"} text2={apiData.billing_address !=null?apiData.billing_address:"Not Available"}/>
+                            <DoubleText text1={"Residential Address "} text2={apiData.residential_address !=null?apiData.residential_address:"Not Available"}/>
+                            <DoubleText text1={"Bank Name"} text2={apiData.bank_name !=null?apiData.bank_name:"Not Available"}/>
+                            <DoubleText text1={"Branch Name"} text2={apiData.branch_name!=null?apiData.branch_name:"Not Available"}/>
+                            <DoubleText text1={"City"} text2={apiData.city!=null ? apiData.city :"Not Available"}/>
+                            <DoubleText text1={"Country"} text2={apiData.country!=null?apiData.country:"Not Available"}/>
                         </View>
             </ProfileView>
                 </ScrollView>

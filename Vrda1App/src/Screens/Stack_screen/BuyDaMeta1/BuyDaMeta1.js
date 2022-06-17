@@ -5,7 +5,7 @@ import Colors from "../../../Style_Sheet/Colors";
 import DoubleText from "../../../utilis/DoubleText";
 import { FormInput } from "../../../utilis/Text_input";
 import CheckBox from "../../../utilis/Checkbox";
-import { getwithdrawfunds, sendProcessWithdraw, sendWithdrawFunds_Charges } from "../../../utilis/Api/Api_controller";
+import { getBuyDaMeta1, sendProcessWithdraw, BuyDaMeta1Post } from "../../../utilis/Api/Api_controller";
 import Toast from "react-native-simple-toast";
 import Loader from "../../../utilis/Loader";
 import Dropdown from "../../../utilis/Picker/Picker";
@@ -28,6 +28,7 @@ const BuyDaMeta1 = ({ navigation }) => {
     const [currentdametarate,setCurrentdametarate]=useState(0.3102);
     const [coinconvert,setCoinconvert]=useState(0)
     const [errormsg,setErrormsg]=useState("");
+    const [transactiontype,setTransactiontype]=useState("");
     const buttons = [{ name: 'Wallet Status', id: 0 }, { name: 'Buy DaMeta1', id: 1 },]
     const Item = [{ label: 'Bank', value: 'bank' }, { label: 'USDT', value: 'usdt' }, { label: 'BTC', value: 'btc' }]
 
@@ -37,11 +38,11 @@ const BuyDaMeta1 = ({ navigation }) => {
 
     const getData = async () => {
         setLoading(true)
-        let response = await getwithdrawfunds();
+        let response = await getBuyDaMeta1();
         if (response !== "Error") {
             if (response.data.status == true && response.data.email_status == true) {
                 setview(true)
-                setApiData(response.data.wallet);
+                setApiData(response.data);
                 setRefreshing(!refreshing)
                 setLoading(false);
             }
@@ -64,7 +65,7 @@ const BuyDaMeta1 = ({ navigation }) => {
     const gettingDetails = async ({ text }) => {
         setLoading(true)
         let body = { payment_type: text, };
-        let response = await sendWithdrawFunds_Charges(body);
+        let response = await BuyDaMeta1Post(body);
         if (response !== "Error") {
             setServiceCharges(response.data.percentage);
             setLoading(false);
@@ -77,15 +78,46 @@ const BuyDaMeta1 = ({ navigation }) => {
     const onRefresh = async () => {
         await getData();
     }
+
     const Submit = async () => {
-        let validate = processWithdrawValidation(amount, selectedValue, detail)
-        if (validate.valid === false) {
-            setErrors(validate.errors)
+         
+        const withdrawal = apiData.remain.withdrawal;
+        const received = apiData.remain.received;
+        const seeded = apiData.remain.seeded;
+        const merge = apiData.remain.merge;
+
+       console.log("WITHDRAWL = ",withdrawal,"recieved =",received,"seeded=",seeded,"merge",merge)
+
+
+        if (parseFloat(withdrawal) > 0 && parseFloat(amount) > parseFloat(withdrawal)) {
+            setTransactiontype("merge")
+            console.log('merge');
+        } else if (parseFloat(received) > 0 && parseFloat(amount) > parseFloat(received)) {
+            setTransactiontype("merge")
+            console.log('merge');
+        } else if (parseFloat(amount) <= parseFloat(withdrawal)) {
+            setTransactiontype("withdrawal")
+            console.log('withdrawal');
+        } else if (parseFloat(amount) <= parseFloat(received)) {
+            setTransactiontype("received")
+            console.log('received');
+            
+        } else if (parseFloat(amount) <= parseFloat(seeded)) {
+            setTransactiontype("seeded")
+            console.log('seeded');
+        }
+        else {
+           
+            console.log('none');
+        }
+
+        if (amount == '') {
+           setErrormsg("Required*")
         } else {
-            setErrors("")
-            let body = { payment_type: selectedValue, amount: amount, details: detail, user_id: apiData.user_id };
+            let body = { vreit_points: amount, details: detail, total_coins: coinconvert, transaction_type: transactiontype,withdrawal:apiData.remain.withdrawal,received:apiData.remain.received,seeded:apiData.remain.seeded,merge:apiData.remain.merge };
+            console.log("body====",body)
             setLoading(true)
-            let response = await sendProcessWithdraw(body)
+            let response = await BuyDaMeta1Post(body)
             if (response !== "Error") {
                 if (response.data.status == true) {
                     Toast.show(response.data.message, Toast.LONG);
@@ -114,6 +146,9 @@ const BuyDaMeta1 = ({ navigation }) => {
            if(regex.test(text)==true){
             setErrormsg("Note: Please add value in round figure (e.g: 100, 20)")
            }
+           else if(text > apiData.available_vreits){
+            setErrormsg("Note: You can not buy coins due to exceeded Available Points.")
+           }
            else{
             setAmount(text);
             const a=text/currentvrietrate*currentdametarate;
@@ -137,9 +172,9 @@ const BuyDaMeta1 = ({ navigation }) => {
                 </View>
                 {index == 0 ?
                     <View style={{ marginVertical: 20, justifyContent: "space-evenly" }}>
-                        <DoubleText text1={"Available Vreit Points"} text2={apiData.earning ? parseFloat(apiData.earning).toFixed(2) : "0"} textstyle={{ textAlign: "center" }} containerstyle={{ marginHorizontal: 15, padding: 6, backgroundColor: "rgba(152,148,148,0.63)" }} />
-                        <DoubleText text1={"Current Vreit Rate"} text2={apiData.sent ? "$" + parseFloat(apiData.sent).toFixed(2) : "$0"} textstyle={{ textAlign: "center" }} containerstyle={{ marginHorizontal: 15, padding: 6 }} />
-                        <DoubleText text1={"DaMeta1 Rate"} text2={apiData.receieved ? "$" + parseFloat(apiData.receieved).toFixed(2) : "$0"} textstyle={{ textAlign: "center" }} containerstyle={{ marginHorizontal: 15, padding: 6, backgroundColor: "rgba(152,148,148,0.63)" }} />
+                        <DoubleText text1={"Available Vreit Points"} text2={apiData.available_vreits ? parseFloat(apiData.available_vreits).toFixed(2) : "0"} textstyle={{ textAlign: "center" }} containerstyle={{ marginHorizontal: 15, padding: 6, backgroundColor: "rgba(152,148,148,0.63)" }} />
+                        <DoubleText text1={"Current Vreit Rate"} text2={apiData.vreit_rate ? "$" + parseFloat(apiData.vreit_rate).toFixed(3) : "$0"} textstyle={{ textAlign: "center" }} containerstyle={{ marginHorizontal: 15, padding: 6 }} />
+                        <DoubleText text1={"DaMeta1 Rate"} text2={apiData.coin_rate ? "$" + parseFloat(apiData.coin_rate).toFixed(2) : "$0"} textstyle={{ textAlign: "center" }} containerstyle={{ marginHorizontal: 15, padding: 6, backgroundColor: "rgba(152,148,148,0.63)" }} />
                     </View>
                     :
                     <View style={{ margin: 20 }}>
@@ -187,7 +222,7 @@ const BuyDaMeta1 = ({ navigation }) => {
                                         text={"I accept"} />
                                     <Text onPress={() => { setSelectedValue(""); navigation.navigate("TermsAndCondition") }} style={{ right: 10, color: "#53a0b7", fontWeight: "bold", textDecorationLine: "underline", fontSize: 12, alignSelf: "center" }}>Terms & Conditions</Text>
                                 </View>
-                                <Btn disabled={checked == true && checked1==true ? false : true} containerStyle={{ flex: 1, backgroundColor: "black", borderRadius: 5, marginHorizontal: 6 }} text_style={{ color: "white", paddingVertical: 10, fontWeight: "bold" }} text={"Buy Coin"} />
+                                <Btn disabled={checked == true && checked1==true ? false : true} onPress={()=>{Submit()}} containerStyle={{ flex: 1, backgroundColor: "black", borderRadius: 5, marginHorizontal: 6 }} text_style={{ color: "white", paddingVertical: 10, fontWeight: "bold" }} text={"Buy Coin"} />
                             </View>
                         </View>
                     </View>

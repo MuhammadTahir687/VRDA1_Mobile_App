@@ -49,7 +49,7 @@ const VreitDetail = ({route,navigation}) => {
         <SafeAreaView style={{flex:1}}>
             <Loader animating={isloading}/>
             <ImageBackground source={require("../../../../Assets/splash.png")} style={{flex:1}}>
-                <ProfileView source={{uri: data.picture}} screen_title={name} username={title+" "} firstname={firstname+" "} lastname={lastname} update={"Vreit Detail"} onPress={()=>navigation.goBack()} onPressForUpdate={()=>{navigation.navigate("UpdateVreit",{data:data,title:title,firstname:firstname,lastname:lastname,apiData:apiData})}}>
+                <ProfileView source={data.picture} screen_title={name} username={title+" "} firstname={firstname+" "} lastname={lastname} update={"Vreit Detail"} onPress={()=>navigation.goBack()} onPressForUpdate={()=>{navigation.navigate("UpdateVreit",{data:data,title:title,firstname:firstname,lastname:lastname,apiData:apiData})}}>
                     <Text style={{fontSize:16,fontWeight:"bold", color:Colors.primary,bottom:15,paddingHorizontal:15}}>{name}:</Text>
                     <DoubleText text1={"Vreit Address"} text2={apiData.vreit?apiData.vreit:"Not Available"}/>
                     {apiData.vreit_img ?

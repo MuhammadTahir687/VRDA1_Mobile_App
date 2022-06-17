@@ -10,7 +10,7 @@ const Detail = ({navigation,route}) => {
     return (
         <SafeAreaView style={{flex:1}}>
             <ImageBackground source={require("../../../../Assets/splash.png")} style={{flex:1}}>
-                <ProfileView source={{uri: data.picture}} screen_title={name} username={data.title+". "} firstname={data.first_name+" "} lastname={data.last_name} update={"Profile Detail"} onPress={()=>navigation.goBack()} onPressForUpdate={()=>{navigation.navigate("UpdateProfile",{data:data,user:user})}}>
+                <ProfileView source={data.picture} screen_title={name} username={data.title+". "} firstname={data.first_name+" "} lastname={data.last_name} update={"Profile Detail"} onPress={()=>navigation.goBack()} onPressForUpdate={()=>{navigation.navigate("UpdateProfile",{data:data,user:user})}}>
                     {name=="Personal Detail"?
                         <View style={{marginBottom:15}}>
                             <Text style={{fontSize:16,fontWeight:"bold", color:Colors.primary,paddingHorizontal:10,bottom:10}}>{name}:</Text>

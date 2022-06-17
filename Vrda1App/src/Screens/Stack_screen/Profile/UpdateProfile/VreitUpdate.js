@@ -82,7 +82,7 @@ const UpdateVreit = ({navigation,route}) => {
             <ImageBackground source={require("../../../../Assets/splash.png")} style={{flex:1}}>
                 <Loader animating={isloading}/>
                 <ScrollView contentContainerStyle={{flexGrow:1}}>
-                    <ProfileView source={{uri: data.picture}} screen_title={"Update Vreit Detail:"} username={title+" "} firstname={firstname+" "} lastname={lastname} onPress={()=>navigation.goBack()} >
+                    <ProfileView source={data.picture} screen_title={"Update Vreit Detail:"} username={title+" "} firstname={firstname+" "} lastname={lastname} onPress={()=>navigation.goBack()} >
                         <Text style={{fontSize:16,fontWeight:"bold", color:Colors.primary,paddingHorizontal:10}}>Update Vreit Detail:</Text>
                         <View style={{marginHorizontal:10,marginBottom:20}}>
                             <FormInput

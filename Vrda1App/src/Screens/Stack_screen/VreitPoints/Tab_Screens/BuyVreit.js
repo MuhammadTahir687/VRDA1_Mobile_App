@@ -10,7 +10,7 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import DoubleText from "../../../../utilis/DoubleText";
 import Dialogs from "../../../../utilis/Dialog";
 import Loader from "../../../../utilis/Loader";
-import { getwithdrawfunds } from "../../../../utilis/Api/Api_controller";
+import { getBuyVreit,BuyVreitPost } from "../../../../utilis/Api/Api_controller";
 import { Btn } from "../../../../utilis/Btn";
 import { FormInput } from "../../../../utilis/Text_input";
 import CheckBox from "../../../../utilis/Checkbox";
@@ -19,6 +19,8 @@ import BuyVreitNotes from '../../../../Zextra/BuyVreitNote';
 import Notes from "../../../../Zextra/Note";
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import Clipboard from "@react-native-community/clipboard";
+import {NetworkInfo} from 'react-native-network-info';
+
 const BuyVreit = ({ navigation }) => {
     const [detail, setDetail] = useState("");
     const [isloading, setLoading] = useState(false);
@@ -36,22 +38,24 @@ const BuyVreit = ({ navigation }) => {
     const [currentdametarate,setCurrentdametarate]=useState(0.3102);
     const [coinconvert,setCoinconvert]=useState(0)
     const [errormsg,setErrormsg]=useState("");
-    const [imageSourceData, setImageSourceData] = useState(null);
+    const [imageSourceData, setImageSourceData] = useState('');
     const [fileName, setFileName] = useState("");
+    const [selectedvalueerror,setSelectedvalueerror]=useState("")
     const buttons = [{ name: 'Wallet Status', id: 0 }, { name: 'Buy Vreits', id: 1 },]
     const Item = [{ label: 'Bank', value: 'bank' }, { label: 'USDT', value: 'usdt' }, { label: 'Wallet', value: 'wallet' }]
 
     useEffect(async () => {
         await getData();
+       
     }, []);
 
     const getData = async () => {
         setLoading(true)
-        let response = await getwithdrawfunds();
+        let response = await getBuyVreit();
         if (response !== "Error") {
             if (response.data.status == true && response.data.email_status == true) {
                 setview(true)
-                setApiData(response.data.wallet);
+                setApiData(response.data);
                 setRefreshing(!refreshing)
                 setLoading(false);
             }
@@ -60,7 +64,6 @@ const BuyVreit = ({ navigation }) => {
                 const data = response.data.user;
                 navigation.reset({ index: 0, routes: [{ name: "Bad Email", params: { data } }] });
                 setLoading(false)
-
             }
             else {
                 Toast.show("Something Went Wrong !", Toast.LONG);
@@ -88,20 +91,26 @@ const BuyVreit = ({ navigation }) => {
         await getData();
     }
     const Submit = async () => {
-        let validate = processWithdrawValidation(amount, selectedValue, detail)
-        if (validate.valid === false) {
-            setErrors(validate.errors)
+
+        if(selectedValue==""){
+            setSelectedvalueerror("Select the Payment Type")
+        }
+       else if (amount == "") {
+            setErrormsg("Enter the Amount*")
         } else {
-            setErrors("")
-            let body = { payment_type: selectedValue, amount: amount, details: detail, user_id: apiData.user_id };
+            setErrormsg("")
+            let body = { payment_type:selectedValue, wallet_amount:amount, receipt_file:imageSourceData, vreit_points:coinconvert };
             setLoading(true)
-            let response = await sendProcessWithdraw(body)
+            console.log("Body=======",imageSourceData)
+            let response = await BuyVreitPost(body)
             if (response !== "Error") {
                 if (response.data.status == true) {
                     Toast.show(response.data.message, Toast.LONG);
                     await setLoading(false);
                     await setDetail("");
                     await setAmount("");
+                    await setCoinconvert(0)
+                    await setSelectedValue("")
                     await setChecked(false);
                     await onRefresh();
                 } else if (response.data.status == false) {
@@ -123,6 +132,11 @@ const BuyVreit = ({ navigation }) => {
         const regex=/[^0-9]/;
            if(regex.test(text)==true){
             setErrormsg("Note: Please add value in round figure (e.g: 100, 20)")
+            setChecked(false)
+           }
+          else if(selectedValue=="wallet" && text > apiData.available_wallet){
+            setErrormsg("Note: You can not buy vreits due to exceeded Wallet Amount.")
+            setChecked(false)
            }
            else{
             setAmount(text);
@@ -145,12 +159,14 @@ const BuyVreit = ({ navigation }) => {
             }
             else {
                 if (response.assets[0].fileSize <= "200000") {
+                    setLoading(true);
                     let source = { uri: response.assets[0].uri };
                     var name = (response.assets[0].fileName).slice(25);
-                    if (selectedValue == "bank" || "usdt") {
-                        setFileName(name);
-                        setImageSourceData(source);
-                    }
+                    setFileName(name);
+                    setImageSourceData(source);
+                    console.log("source=======",source)
+                    console.log("name======",name)
+                    setLoading(false);
                     Toast.show("Succeed", Toast.LONG);
                 } else {
                     Toast.show("File size is exceeded from 8 MB", Toast.LONG);
@@ -158,6 +174,7 @@ const BuyVreit = ({ navigation }) => {
             }
         });
     };
+    
     const copyToClipboard = () => {
         Clipboard.setString("TMc8LNFKvP6spQqTkxsmiu5mqhAMKbEmSk");
         Toast.show("Text Copied !", Toast.LONG);
@@ -178,9 +195,9 @@ const BuyVreit = ({ navigation }) => {
                 </View>
                 {index == 0 ?
                     <View style={{ marginVertical: 20, justifyContent: "space-evenly" }}>
-                        <DoubleText text1={"Available Wallet Points"} text2={apiData.earning ? parseFloat(apiData.earning).toFixed(2) : "0"} textstyle={{ textAlign: "center" }} containerstyle={{ marginHorizontal: 15, padding: 6, backgroundColor: "rgba(152,148,148,0.63)" }} />
-                        <DoubleText text1={"Current Vreit points"} text2={apiData.sent ? "$" + parseFloat(apiData.sent).toFixed(2) : "$0"} textstyle={{ textAlign: "center" }} containerstyle={{ marginHorizontal: 15, padding: 6 }} />
-                        <DoubleText text1={"Current Rate"} text2={apiData.receieved ? "$" + parseFloat(apiData.receieved).toFixed(2) : "$0"} textstyle={{ textAlign: "center" }} containerstyle={{ marginHorizontal: 15, padding: 6, backgroundColor: "rgba(152,148,148,0.63)" }} />
+                        <DoubleText text1={"Available Wallet Points"} text2={apiData.available_wallet ? parseFloat(apiData.available_wallet).toFixed(2) : "0"} textstyle={{ textAlign: "center" }} containerstyle={{ marginHorizontal: 15, padding: 6, backgroundColor: "rgba(152,148,148,0.63)" }} />
+                        <DoubleText text1={"Current Vreit points"} text2={apiData.available_vreits ? "$" + parseFloat(apiData.available_vreits).toFixed(2) : "0"} textstyle={{ textAlign: "center" }} containerstyle={{ marginHorizontal: 15, padding: 6 }} />
+                        <DoubleText text1={"Current Rate"} text2={apiData.vreit_rate ? "$" + parseFloat(apiData.vreit_rate).toFixed(2) : "$0"} textstyle={{ textAlign: "center" }} containerstyle={{ marginHorizontal: 15, padding: 6, backgroundColor: "rgba(152,148,148,0.63)" }} />
                     </View>
                     :
                     <View style={{ margin: 20 }}>
@@ -200,6 +217,7 @@ const BuyVreit = ({ navigation }) => {
                                 containerStyle={{ backgroundColor: "white", marginHorizontal: 10, borderRadius: 5 }}
                                 placeholder="Enter amount to buy vreits"
                                 keyboardType={"numeric"}
+                                value={amount}
                                 onChangeText={(text) => { conversion(text)}}
                             />
                             <Text style={{color:"red",marginHorizontal:10}}>{errormsg}</Text>
@@ -243,6 +261,11 @@ const BuyVreit = ({ navigation }) => {
                                                     <Text style={{ color: Colors.primary, fontSize: 11 }}>* Sending coins or tokens other than USDT to this address may result in the loss of your deposit.</Text>
                                                     <Text style={{ color: Colors.primary, fontSize: 11 }}>* Package will be update or upgrade after confirmation.</Text>
                                                 </View>
+                                                <Btn onPress={selectPhoto_gallery.bind(this)} image={require("../../../../Assets/picture.png")} img_style={{ height: 20, width: 20, marginHorizontal: 5 }} containerStyle={{ flexDirection: "row", flex: 1, backgroundColor: Colors.primary, marginTop: 10, padding: 10, borderRadius: 5, marginHorizontal: 20, justifyContent: "center", justifyItems: "center" }} text={"Choose File"} text_style={{ color: Colors.white, textAlign: "center" }} />
+                                            {errors === "Please Add Image First" ?
+                                                <Text style={{ textAlign: "center", fontSize: 11, fontWeight: "bold", color: "red" }}>{!fileName ? "Please Add Image First" : null}</Text>
+                                                : <Text style={{ textAlign: "center", fontSize: 11, fontWeight: "bold" }}>{fileName ? fileName : null}</Text>
+                                            }
                                                 <Notes />
                                     </View> :
                                     <View>
@@ -255,6 +278,7 @@ const BuyVreit = ({ navigation }) => {
                                 <FormInput
                                     containerStyle={{ marginHorizontal: 10, backgroundColor: "white", margin: 2, borderRadius: 5, marginVertical: 10 }}
                                     placeholder="Enter Description"
+                                    value={detail}
                                     multiline={true}
                                     numberOfLines={3}
                                     onChangeText={(text) => { setDetail(text), setErrors('') }}
@@ -276,7 +300,7 @@ const BuyVreit = ({ navigation }) => {
                                 inst2={"Not illegible for a bonus."}
                                 inst3={"Not encashable through withdrawals."}
                                 />
-                                <Btn disabled={checked == true && checked1==true ? false : true} containerStyle={{ flex: 1, backgroundColor: "black", borderRadius: 5, marginHorizontal: 6 }} text_style={{ color: "white", paddingVertical: 10, fontWeight: "bold" }} text={"Buy VREITs"} />
+                                <Btn disabled={checked == true ? false : true} onPress={()=>{Submit()}} containerStyle={{ flex: 1, backgroundColor: "black", borderRadius: 5, marginHorizontal: 6 }} text_style={{ color: "white", paddingVertical: 10, fontWeight: "bold" }} text={"Buy VREITs"} />
                             </View>
                         </View>
                     </View>

@@ -47,7 +47,7 @@ const USDTDetail = ({route,navigation}) => {
         <SafeAreaView style={{flex:1}}>
             <ImageBackground source={require("../../../../Assets/splash.png")} style={{flex:1}}>
                 <Loader animating={isloading}/>
-            <ProfileView source={{uri: data.picture}} screen_title={name} username={title+" "} firstname={firstname+" "} lastname={lastname} update={"USDT Detail"} onPress={()=>navigation.goBack()} onPressForUpdate={()=>{navigation.navigate("UpdateUSDT",{data:data,title:title,firstname:firstname,lastname:lastname,apiData:apiData})}}>
+            <ProfileView source={data.picture} screen_title={name} username={title+" "} firstname={firstname+" "} lastname={lastname} update={"USDT Detail"} onPress={()=>navigation.goBack()} onPressForUpdate={()=>{navigation.navigate("UpdateUSDT",{data:data,title:title,firstname:firstname,lastname:lastname,apiData:apiData})}}>
                 <View style={{flexDirection:"row",justifyContent:"space-between",alignItems:"center",paddingHorizontal:15}}>
                 <Text style={{fontSize:16,fontWeight:"bold", color:Colors.primary,bottom:15}}>{name}:</Text>
                 <Text style={{width:58,padding:5,backgroundColor:"#2c754a",color:Colors.white,textAlign:"center",borderRadius:6,bottom:15}}>TRC20</Text>

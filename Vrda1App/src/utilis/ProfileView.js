@@ -21,7 +21,11 @@ const ProfileView = ({ children, onPress, screen_title, username, firstname, las
                         <Avatar
                             size="large"
                             rounded
-                            icon={{ name: 'user', type: 'font-awesome' }}
+                            // icon={{ name: 'user', type: 'font-awesome' }}
+                            source={{
+                                uri:
+                                  'https://staging.vrda1.net/'+source,
+                              }}
                             onPress={() => console.log("Works!")}
                             containerStyle={{ backgroundColor: "gray", borderWidth: 5,borderColor:"white" }}
                         />

@@ -275,6 +275,8 @@ PODS:
     - React-Core
   - react-native-netinfo (6.0.4):
     - React-Core
+  - react-native-network-info (5.2.1):
+    - React
   - react-native-safe-area-context (3.3.2):
     - React-Core
   - react-native-simple-toast (1.1.3):
@@ -439,6 +441,7 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
+  - react-native-network-info (from `../node_modules/react-native-network-info`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-simple-toast (from `../node_modules/react-native-simple-toast`)
   - "react-native-viewpager (from `../node_modules/@react-native-community/viewpager`)"
@@ -521,6 +524,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-image-picker"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
+  react-native-network-info:
+    :path: "../node_modules/react-native-network-info"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-simple-toast:
@@ -605,6 +610,7 @@ SPEC CHECKSUMS:
   React-jsinspector: 41e58e5b8e3e0bf061fdf725b03f2144014a8fb0
   react-native-image-picker: 7c37cd600a9b7338ced8609cc3ad108ebe6c444f
   react-native-netinfo: 78bb0c4bf96177a14ea1bba951de9ad27419965b
+  react-native-network-info: d1290ffc0bd0709e11436f5b8d7f605dcc5c4530
   react-native-safe-area-context: 5cf05f49df9d17261e40e518481f2e334c6cd4b5
   react-native-simple-toast: b986e6c1befdc211af3df1bae293278a44e32990
   react-native-viewpager: d054b58bf3d377e6b99558da6766463ff7e9b220

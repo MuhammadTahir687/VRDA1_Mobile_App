@@ -37,7 +37,7 @@ const UpdateBank = ({navigation,route}) => {
     const [residentialAdd,setResidentialAdd]=useState(!route.params.apiData?"":paramData.residential_address);
     const [bankaddress,setBankaddress]=useState(!route.params.apiData?"":paramData.bank_address);
     const [city,setCity]=useState(!route.params.apiData?"":paramData.city);
-    const [country,setCountry]=useState(route.params.apiData.bank_country == null?"":paramData.bank_country.country_name);
+    const [country,setCountry]=useState(!route.params.apiData?"":paramData.country);
     const [errors,setErrors]=useState("");
     const [isloading,setLoading]=useState(false);
     // const [fileName,setFileName]=useState("");
@@ -127,7 +127,7 @@ const UpdateBank = ({navigation,route}) => {
             <ImageBackground source={require("../../../../Assets/splash.png")} style={{flex:1}}>
                 <Loader animating={isloading}/>
             <ScrollView contentContainerStyle={{flexGrow:1}}>
-            <ProfileView source={{uri: data.picture}} screen_title={"Update Bank Detail"} username={title+" "} firstname={firstname+" "} lastname={lastname} onPress={()=>navigation.goBack()} >
+            <ProfileView source={data.picture} screen_title={"Update Bank Detail"} username={title+" "} firstname={firstname+" "} lastname={lastname} onPress={()=>navigation.goBack()} >
                 <Text style={{fontSize:16,fontWeight:"bold", color:Colors.primary,paddingHorizontal:10}}>Update Bank Detail:</Text>
                 <View style={{marginHorizontal:10}}>
                     <FormInput

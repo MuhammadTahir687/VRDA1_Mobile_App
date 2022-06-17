@@ -46,7 +46,7 @@ const Profile = ({navigation}) => {
         <SafeAreaView style={{flex:1}}>
             <ImageBackground source={require("../../../Assets/splash.png")} style={{flex:1}}>
                 <Loader animating={isloading}/>
-            <ProfileView source={{uri: apiprofile.picture?apiprofile.picture:null}} screen_title={"Profile"} username={apiprofile.title+". "} firstname={apiprofile.first_name+" "} lastname={apiprofile.last_name} onPress={()=>navigation.goBack()}>
+            <ProfileView source={apiprofile.picture} screen_title={"Profile"} username={apiprofile.title+". "} firstname={apiprofile.first_name+" "} lastname={apiprofile.last_name} onPress={()=>navigation.goBack()}>
                 <View style={{marginHorizontal:"5%",marginTop:20}}>
                     <ProfileBtn title={"Personal Detail"} onPress={()=>{navigation.navigate("Detail",{tittle:"Personal Detail",data:apiprofile,user:apiuser})}}/>
                     <ProfileBtn title={"Personal Info"} onPress={()=>{navigation.navigate("Detail",{tittle:"Personal Info",data:apiprofile,user:apiuser})}}/>

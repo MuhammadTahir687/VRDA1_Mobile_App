@@ -22,6 +22,7 @@ import Profile from "../Screens/Stack_screen/Profile/Profile";
 import TransactionPassword from "../Screens/Stack_screen/TransactionPassword/TransactionPassword";
 
 const Drawer = createDrawerNavigator();
+
 const config = () => {
     screens: {
         UpdateProfile: "profile"
@@ -35,9 +36,11 @@ const linking = () => {
 const Drawers = () => {
     const navigation = useNavigation();
     const [userDetail, setUserDetail] = useState("")
+    const [picture,setPicture]=useState(null)
     useEffect(async () => {
         let User_DATA = await get_data("User_DATA")
         let Profile = await get_data("Profile");
+        setPicture(Profile.picture);
         setUserDetail(User_DATA)
         console.log("Profile========", Profile)
     }, [])
@@ -61,28 +64,28 @@ const Drawers = () => {
 
                             <ImageBackground source={require("../Assets/Vrda1img2.jpg")} style={{ justifyContent: "space-between", alignItems: "center", padding: 20, marginBottom: 20, backgroundColor: "rgb(0,0,0)", borderBottomWidth: 2, borderColor: Colors.secondary }} imageStyle=
                                 {{ opacity: 0.4 }}>
-                                {Profile.picture == null ?
+                                {picture == null ?
                                     <Avatar
-                                        size="medium"
+                                        size="large"
                                         rounded
                                         icon={{ name: 'user', type: 'font-awesome' }}
                                         onPress={() => console.log("Works!")}
                                         containerStyle={{ backgroundColor: "gray" }}
 
                                     /> :
+                    
                                     <Avatar
-                                        size="medium"
+                                        size="large"
                                         rounded
-                                        icon={{ name: 'user', type: 'font-awesome' }}
                                         source={{
-                                            uri: Profile.picture,
-                                        }}
-                                        onPress={() => console.log("Works!")}
-                                        containerStyle={{ backgroundColor: "gray" }}
+                                            uri:
+                                              'https://staging.vrda1.net/'+picture,
+                                          }}
+                                        containerStyle={{ backgroundColor: "gray", borderWidth: 5,borderColor:"white" }}
 
                                     />
 
-                                }
+                                        }
                                 {/* <Image source={require("../Assets/vector.png")} style={{ width: 70, height: 70, borderRadius: 35, borderWidth: 2, borderColor: Colors.white }} /> */}
                                 <Text style={{ fontSize: 20, fontWeight: "bold", color: Colors.white }}>{userDetail ? userDetail.name : "Not Available"}</Text>
                                 <Text style={{ color: Colors.light }}>{userDetail ? userDetail.email : "Not Available"}</Text>
@@ -133,6 +136,7 @@ const Drawers = () => {
                     drawerLabel: "Terms & Condition", drawerActiveTintColor: Colors.primary, drawerType: "slide", drawerIcon: ({ tintColor }) => (
                         <Image source={require('../Assets/termsandCondition.png')} style={{ height: 20, width: 20 }} />)
                 }} />
+
                 <Drawer.Screen name="Bad Email" component={Bad_Email} options={{ title: "Dashboard", drawerItemStyle: { height: 0 } }} />
                 <Drawer.Screen name="TransactionPassword" component={TransactionPassword} options={{ title: "Transaction Password", drawerItemStyle: { height: 0 }}} />
 
