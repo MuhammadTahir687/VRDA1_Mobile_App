@@ -120,5 +120,6 @@ export default StyleSheet.create({
       tpcontainer:{flex:1},
       inputlabel:{marginHorizontal: 10, fontWeight: "bold", marginVertical: 10},
       TPbutton:{flexDirection:"row",justifyContent:"space-between",marginHorizontal:20},
+      transactioninput:{marginHorizontal:10,borderBottomWidth:1,borderTopLeftRadius:5,borderTopRightRadius:5}
 
 })

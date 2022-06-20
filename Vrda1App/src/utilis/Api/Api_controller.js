@@ -192,5 +192,17 @@ const BuyDaMeta1Post = async (body) => {
     const Test = await post_request({ target: "/api/buy-da-meta1-process", body: body });
     return Test
 }
+const ForgotTransactionPassword = async (body) => {
+    const Test = await post_request({ target: "/api/forget-transaction-password", body: body });
+    return Test
+}
+const SetNewTransactionPassword = async (body) => {
+    const Test = await post_request({ target: "/api/set-new-transaction-password", body: body });
+    return Test
+}
+const LogTransaction = async (body) => {
+    const Test = await post_request({ target: "/api/login-transaction", body: body });
+    return Test
+}
 
-export {LoginApi,BuyDaMeta1Post,getBuyDaMeta1,getBuyVreit,BuyVreitPost,ChangePasswordApi,getDashboard,getShop,sendShopPayment,sendShopSubmit,getcommissionlogs,getactivityfeed,getcommissiondirect,getcommissionbinary,getallcommission,getwithdrawfunds,gettransferfunds,sendProcessWithdraw,getMyPurchase,getOwnershipPurchase,getPurchaseRequest,getTransferHistory,getReceiveHistory,getWithdrawHistory,getPersonalDetail,getBankDetail,getBTCDetail,getUSDTDetail,sendUpdateBTC,sendUpdateBank,sendUpdateProfile,sendWithdrawFunds_Charges,getVreitTransferC2C,getVreitLogs,getVreitWithdrawl,sendVreitWithdrawl,getVreitQuaterly,sendVreitC2Csubmit,sendTeamSale,getVREITDetail,sendVreitUpdate,sendUsdtUpdate,sendVreitShiftedBtn,sendProcessTransferBtn,sendDeletePackageRequest,sendBad_NewEmail}
+export {LoginApi,BuyDaMeta1Post,LogTransaction,SetNewTransactionPassword,ForgotTransactionPassword,getBuyDaMeta1,getBuyVreit,BuyVreitPost,ChangePasswordApi,getDashboard,getShop,sendShopPayment,sendShopSubmit,getcommissionlogs,getactivityfeed,getcommissiondirect,getcommissionbinary,getallcommission,getwithdrawfunds,gettransferfunds,sendProcessWithdraw,getMyPurchase,getOwnershipPurchase,getPurchaseRequest,getTransferHistory,getReceiveHistory,getWithdrawHistory,getPersonalDetail,getBankDetail,getBTCDetail,getUSDTDetail,sendUpdateBTC,sendUpdateBank,sendUpdateProfile,sendWithdrawFunds_Charges,getVreitTransferC2C,getVreitLogs,getVreitWithdrawl,sendVreitWithdrawl,getVreitQuaterly,sendVreitC2Csubmit,sendTeamSale,getVREITDetail,sendVreitUpdate,sendUsdtUpdate,sendVreitShiftedBtn,sendProcessTransferBtn,sendDeletePackageRequest,sendBad_NewEmail}

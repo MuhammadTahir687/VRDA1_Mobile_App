@@ -48,8 +48,12 @@ const WithdrawFunds=()=>{
                 navigation.reset({index: 0,routes: [{ name: "Bad Email",params:{data} }]});
                 setLoading(false)
             }
+            if (response.data.status == true && response.data.transaction_password == false) {
+                navigation.navigate("SetTransactionPassword",{screen:"WithdrawFunds"})
+                setLoading(false)
+            }
             else {
-                Toast.show("Something Went Wrong !", Toast.LONG);
+                // Toast.show("Something Went Wrong !", Toast.LONG);
                 setLoading(false);
             }
         }else {
@@ -83,7 +87,7 @@ const WithdrawFunds=()=>{
             // await setDetail("");
             //         await setAmount("");
             //         await setChecked(false);
-            navigation.navigate('TransactionPassword',{data:body,screen:"withdraw_wallet"})
+            navigation.navigate('TransactionPassword',{data:body,screen:"withdraw_funds"})
             // setLoading(true)
             // let response = await sendProcessWithdraw(body)
             // if (response !== "Error") {

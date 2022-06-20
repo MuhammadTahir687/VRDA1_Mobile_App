@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useEffect,useState} from "react";
 import Drawers from "./Drawer_route";
 import Login from "../Screens/Stack_screen/Login";
 import Splash from "../Screens/Stack_screen/splash";
@@ -31,7 +31,10 @@ const linking=()=>{
 
 const Stack = createStackNavigator();
 
-const Stacks = ({navigation }) => {
+const Stacks = () => {
+
+ 
+
   return (
     <NavigationContainer linking={linking}>
       <Stack.Navigator>
@@ -51,7 +54,6 @@ const Stacks = ({navigation }) => {
         <Stack.Screen name="UpdateVreit" component={VreitUpdate} options={{ headerShown: false }} />
         <Stack.Screen name="UpdateProfile" component={UpdateProfile} options={{ headerShown: false }} />
         <Stack.Screen name="ChangePassword" component={ChangePassword} options={{headerShown:false}}/>
-
       </Stack.Navigator>
     </NavigationContainer>
   );

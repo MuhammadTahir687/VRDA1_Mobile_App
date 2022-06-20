@@ -20,6 +20,8 @@ import BuyDaMeta1 from "../Screens/Stack_screen/BuyDaMeta1/BuyDaMeta1";
 import { Avatar } from "react-native-elements/dist/avatar/Avatar";
 import Profile from "../Screens/Stack_screen/Profile/Profile";
 import TransactionPassword from "../Screens/Stack_screen/TransactionPassword/TransactionPassword";
+import UpdateTransactionPassword from "../Screens/Stack_screen/TransactionPassword/UpdateTransactionPassword";
+import SetTransactionPassword from "../Screens/Stack_screen/TransactionPassword/SetTransactionPassword";
 
 const Drawer = createDrawerNavigator();
 
@@ -37,6 +39,38 @@ const Drawers = () => {
     const navigation = useNavigation();
     const [userDetail, setUserDetail] = useState("")
     const [picture,setPicture]=useState(null)
+    const [linkedURL, setLinkedURL] = useState(null);
+  
+      useEffect(() => {
+          const getUrlAsync = async () => {
+              const initialUrl = await Linking.getInitialURL();
+              console.log("initial url ========",initialUrl)
+              if(initialUrl !=null){
+                const routeName = initialUrl.split('?');
+                if(routeName[1] == "transaction")
+                {
+                    navigation.navigate('UpdateTransactionPassword')
+                }
+              }
+              else{
+              }
+              setLinkedURL(decodeURI(initialUrl));
+          };
+          getUrlAsync();
+      }, []);
+  
+      useEffect(() => {
+          const callback = ({ url }) => { const routeName = url.split('?');setLinkedURL(decodeURI(url)), navigation.navigate('UpdateTransactionPassword'),console.log("url",url)};
+          Linking.addEventListener('url', callback);
+          
+          return () => {
+              Linking.removeAllListeners('url', callback);
+          };
+      }, []);
+
+
+
+
     useEffect(async () => {
         let User_DATA = await get_data("User_DATA")
         let Profile = await get_data("Profile");
@@ -61,7 +95,6 @@ const Drawers = () => {
                 return (
                     <View style={{ flex: 1 }}>
                         <DrawerContentScrollView {...props}>
-
                             <ImageBackground source={require("../Assets/Vrda1img2.jpg")} style={{ justifyContent: "space-between", alignItems: "center", padding: 20, marginBottom: 20, backgroundColor: "rgb(0,0,0)", borderBottomWidth: 2, borderColor: Colors.secondary }} imageStyle=
                                 {{ opacity: 0.4 }}>
                                 {picture == null ?
@@ -73,7 +106,6 @@ const Drawers = () => {
                                         containerStyle={{ backgroundColor: "gray" }}
 
                                     /> :
-                    
                                     <Avatar
                                         size="large"
                                         rounded
@@ -139,6 +171,8 @@ const Drawers = () => {
 
                 <Drawer.Screen name="Bad Email" component={Bad_Email} options={{ title: "Dashboard", drawerItemStyle: { height: 0 } }} />
                 <Drawer.Screen name="TransactionPassword" component={TransactionPassword} options={{ title: "Transaction Password", drawerItemStyle: { height: 0 }}} />
+                <Drawer.Screen name="UpdateTransactionPassword" component={UpdateTransactionPassword} options={{ title: "Update Transaction Password", drawerItemStyle: { height: 0 }}} />
+                <Drawer.Screen name="SetTransactionPassword" component={SetTransactionPassword} options={{ title: "Set Transaction Password", drawerItemStyle: { height: 0 }}} />
 
             </Drawer.Navigator>
         </SafeAreaView>

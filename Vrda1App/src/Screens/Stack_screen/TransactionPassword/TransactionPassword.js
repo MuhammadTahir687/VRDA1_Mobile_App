@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, SafeAreaView, ScrollView } from 'react-native';
+import React, { useState, useEffect } from "react";
+import { View, Text, TextInput, SafeAreaView, ScrollView, Linking } from 'react-native';
 import { TouchableOpacity } from "react-native-gesture-handler";
 import styles from '../../../Style_Sheet/style';
 import { FormInput } from "../../../utilis/Text_input";
@@ -7,70 +7,178 @@ import Notes from "../../../Zextra/Note";
 import TPNotes from "../../../Zextra/TPNote";
 import TNPNotes from "../../../Zextra/TNPNotes";
 import Loader from "../../../utilis/Loader";
+import { ForgotTransactionPassword,BuyDaMeta1Post,BuyVreitPost,LogTransaction,sendProcessWithdraw,sendProcessTransferBtn } from '../../../utilis/Api/Api_controller';
+import { get_data } from "../../../utilis/AsyncStorage/Controller";
+import Toast from "react-native-simple-toast";
+
+const TransactionPassword = ({ navigation, route }) => {
+    var data = route.params.data;
+    var screen = route.params.screen;
+
+    console.log("Data =======", data)
+
+    const [view, setview] = useState(false);
+    const [isloading, setLoading] = useState(false);
+    const [showbtn, setShowbtn] = useState(false);
+    const [linkedURL, setLinkedURL] = useState(null);
+    const [password,setPassword]=useState("");
+    const[newpassworderror,setNewpassworderror]=useState("");
+
+    useEffect(() => {
+        const getUrlAsync = async () => {
+            const initialUrl = await Linking.getInitialURL();
+            console.log("initial url ========",initialUrl)
+            if(initialUrl !=null){
+              const routeName = initialUrl.split('?');
+              if(routeName[1] == "transaction")
+              {
+                  navigation.navigate('UpdateTransactionPassword')
+              }
+            }
+            else{
+            }
+            setLinkedURL(decodeURI(initialUrl));
+        };
+        getUrlAsync();
+    }, []);
+
+    useEffect(() => {
+        const callback = ({ url }) => { const routeName = url.split('?');setLinkedURL(decodeURI(url)), navigation.navigate('UpdateTransactionPassword'),console.log("url",url)};
+        Linking.addEventListener('url', callback);
+        
+        return () => {
+            Linking.removeAllListeners('url', callback);
+        };
+    }, []);
 
 
-const TransactionPassword = ({navigation,route}) => {
-    var data=route.params.data;
-    var screen=route.params.screen;
 
-    console.log("Screen Name =======",data)
+    const Proceed = async () => {
 
-    const [view, setView] = useState(false);
-    const [isloading,setLoading]=useState(false);
-    const [showbtn,setShowbtn]=useState(false)
-
-    const Proceed=async ()=>{
-
-        if(screen =="withdraw_wallet"){
-           alert(JSON.stringify(data))
-           setLoading(false)
-            let response = await sendProcessWithdraw(data)
+        if (password === "") {
+            setNewpassworderror("Enter Password")
+        }
+        else {
+            let body = { transaction_password: password }
+            let response = await LogTransaction(body)
             if (response !== "Error") {
                 if (response.data.status == true) {
-                    Toast.show(response.data.message, Toast.LONG);
-                    await setLoading(false);
-                    
-                }else if(response.data.status == false)      {
-                    Toast.show("Request "+response.data.data, Toast.LONG);
+
+                    // API Condition Handling Start
+                    setLoading(true)
+                    if (screen == 'dameta1') {
+                        var resp = await BuyDaMeta1Post(data)
+                    }
+                    if (screen == 'BuyVreit') {
+                        const body = new FormData();
+                        body.append("payment_type", data.payment_type);
+                        body.append("wallet_amount", data.wallet_amount);
+                        { data.imageSourceData && body.append("receipt_file", { uri: data.receipt_file, name: "photo.jpg", type: `image/jpg`, }) }
+                        body.append("vreit_points", data.vreit_points);
+                        console.log("Body ==========", body)
+                        var resp = await BuyVreitPost(body)
+                    }
+                    if(screen == "withdraw_funds"){
+                        var resp = await sendProcessWithdraw(data)
+                    }
+                    if(screen == "transfer_funds"){
+                        var resp = await sendProcessTransferBtn(data)
+                    }
+
+                    if (resp !== "Error") {
+                        if (resp.data.status == true) {
+                            console.log(resp.data)
+                            Toast.show(resp.data.message, Toast.LONG);
+
+
+                            setPassword("")
+                            await setLoading(false);
+
+                        } else if (resp.data.status == false) {
+                            Toast.show("Request " + response.data, Toast.LONG);
+                            setLoading(false);
+                        }
+                        else {
+                            Toast.show("Something Went Wrong ", Toast.LONG);
+                            setLoading(false);
+                        }
+                    } else {
+                        Toast.show("Network Error: There is something wrong!", Toast.LONG);
+                        setLoading(false);
+                    }
+
+                    // API Condition Handling end
+
+                } else if (response.data.status == false) {
+                    Toast.show("Request " + response.data.data, Toast.LONG);
                     setLoading(false);
                 }
                 else {
                     Toast.show("Something Went Wrong ", Toast.LONG);
                     setLoading(false);
                 }
-            }else {
+            } else {
                 Toast.show("Network Error: There is something wrong!", Toast.LONG);
                 setLoading(false);
             }
         }
-        else {
-          alert("Nothing")
+
+    }
+
+    const Forgot_Transaction_Password = async () => {
+        let User_DATA = await get_data("User_DATA")
+        const body = { email: User_DATA.email };
+
+        setLoading(true)
+        let response = await ForgotTransactionPassword(body)
+        if (response !== "Error") {
+            if (response.data.status == true) {
+                Toast.show(response.data.message, Toast.LONG);
+                await setLoading(false);
+
+            } else if (response.data.status == false) {
+                Toast.show("Request " + response.data.data, Toast.LONG);
+                setLoading(false);
+            }
+            else {
+                Toast.show("Something Went Wrong ", Toast.LONG);
+                setLoading(false);
+            }
+        } else {
+            Toast.show("Network Error: There is something wrong!", Toast.LONG);
+            setLoading(false);
         }
-         
     }
     return (
         <SafeAreaView style={{ flex: 1 }}>
-             <Loader animating={isloading}/>
-            {view == true ? <View style={styles.tpcontainer}  >
+            <Loader animating={isloading} />
+            <View style={styles.tpcontainer}  >
 
                 <View style={{ marginVertical: 20, marginHorizontal: 10 }}>
                     <Text style={styles.inputlabel}>Password:</Text>
-                    <FormInput
-                        containerStyle={{ backgroundColor: "white", marginHorizontal: 10, borderRadius: 5 }}
-                        placeholder="Enter Password"
-                        onChangeText={(text) => {  }}
+                    <TextInput
+                        placeholder="Password"
+                        style={styles.transactioninput}
+                        secureTextEntry={true}
+                        value={password}
+                        onChangeText={(text)=>{setPassword(text),setNewpassworderror("")}}
                     />
+               {newpassworderror !="" && <Text style={{color:"red",marginHorizontal:10}}>{newpassworderror}</Text>}
+
                     <View style={{ marginVertical: 20, marginHorizontal: 7 }}>
-                        <TPNotes 
-                        inst1={"Buying Vreit is used for purchasing packages or C2C transfer only"}
-                        inst2={"Buying Vreit can’t be withdraw by bank or usdt."}
+                      
+                     { screen == "BuyVreit" ? <TPNotes
+                            inst1={"Buying Vreit is used for purchasing packages or C2C transfer only"}
+                            inst2={"Buying Vreit can’t be withdraw by bank or usdt."}
                         />
+                        :
+                        <TPNotes/>}
                     </View>
                     <View style={styles.TPbutton}>
-                        <TouchableOpacity onPress={()=>Proceed()} style={{ backgroundColor: "gray", padding: 10, borderRadius: 5 }}>
-                            <Text style={{color:"white"}}>Proceed</Text>
+                        <TouchableOpacity onPress={() => Proceed()} style={{ backgroundColor: "gray", padding: 10, borderRadius: 5 }}>
+                            <Text style={{ color: "white" }}>Proceed</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={()=>{setView(false)}} style={{ borderColor: "gray", padding: 10, borderRadius: 5, overflow: "hidden", borderWidth: 1 }}>
+                        <TouchableOpacity onPress={() => { Forgot_Transaction_Password() }} style={{ borderColor: "gray", padding: 10, borderRadius: 5, overflow: "hidden", borderWidth: 1 }}>
                             <Text>Forgot Password</Text>
                         </TouchableOpacity>
                     </View>
@@ -78,34 +186,6 @@ const TransactionPassword = ({navigation,route}) => {
                 </View>
             </View>
 
-                : <View style={styles.tpcontainer}>
-                    <View style={{ marginVertical: 20, marginHorizontal: 10 }}>
-                    <View style={{ marginVertical: 20, marginHorizontal: 7 }}>
-                            <TNPNotes/>
-                        </View>
-                        <Text style={styles.inputlabel}>New Password:</Text>
-                        <FormInput
-                            containerStyle={{ backgroundColor: "white", marginHorizontal: 10, borderRadius: 5 }}
-                            placeholder="Enter New Password"
-                            value=""
-                            onChangeText={(text) => {  }}
-                        />
-                        <Text style={styles.inputlabel}>Confirm Password:</Text>
-                        <FormInput
-                            containerStyle={{ backgroundColor: "white", marginHorizontal: 10, borderRadius: 5 }}
-                            placeholder="Enter Confirm Password"
-                            value=""
-                            onChangeText={(text) => {  }}
-                        />
-                        
-                        <View style={styles.TPbutton,{marginTop:10}}>
-                            <TouchableOpacity style={{ alignSelf:"flex-start",backgroundColor: "gray", padding: 10, borderRadius: 5, overflow: "hidden",marginHorizontal:10 }}>
-                                <Text style={{color:"white"}}>Set Password</Text>
-                            </TouchableOpacity>
-                        </View>
-
-                    </View>
-                </View>}
 
 
         </SafeAreaView>

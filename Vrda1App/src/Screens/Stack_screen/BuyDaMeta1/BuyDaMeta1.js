@@ -5,11 +5,12 @@ import Colors from "../../../Style_Sheet/Colors";
 import DoubleText from "../../../utilis/DoubleText";
 import { FormInput } from "../../../utilis/Text_input";
 import CheckBox from "../../../utilis/Checkbox";
-import { getBuyDaMeta1, sendProcessWithdraw, BuyDaMeta1Post } from "../../../utilis/Api/Api_controller";
+import { getBuyDaMeta1, BuyDaMeta1Post } from "../../../utilis/Api/Api_controller";
 import Toast from "react-native-simple-toast";
 import Loader from "../../../utilis/Loader";
 import Dropdown from "../../../utilis/Picker/Picker";
 import { processWithdrawValidation } from "../../../utilis/validation";
+
 
 const BuyDaMeta1 = ({ navigation }) => {
     const [detail, setDetail] = useState("");
@@ -53,6 +54,10 @@ const BuyDaMeta1 = ({ navigation }) => {
                 setLoading(false)
 
             }
+            if (response.data.status == true && response.data.transaction_password == false) {
+                navigation.navigate("SetTransactionPassword",{screen:"Buy DaMeta1"})
+                setLoading(false)
+            }
             else {
                 Toast.show("Something Went Wrong !", Toast.LONG);
                 setLoading(false);
@@ -88,7 +93,6 @@ const BuyDaMeta1 = ({ navigation }) => {
 
        console.log("WITHDRAWL = ",withdrawal,"recieved =",received,"seeded=",seeded,"merge",merge)
 
-
         if (parseFloat(withdrawal) > 0 && parseFloat(amount) > parseFloat(withdrawal)) {
             setTransactiontype("merge")
             console.log('merge');
@@ -100,44 +104,42 @@ const BuyDaMeta1 = ({ navigation }) => {
             console.log('withdrawal');
         } else if (parseFloat(amount) <= parseFloat(received)) {
             setTransactiontype("received")
-            console.log('received');
-            
+            console.log('received');       
         } else if (parseFloat(amount) <= parseFloat(seeded)) {
             setTransactiontype("seeded")
             console.log('seeded');
         }
         else {
-           
             console.log('none');
         }
-
         if (amount == '') {
            setErrormsg("Required*")
         } else {
             let body = { vreit_points: amount, details: detail, total_coins: coinconvert, transaction_type: transactiontype,withdrawal:apiData.remain.withdrawal,received:apiData.remain.received,seeded:apiData.remain.seeded,merge:apiData.remain.merge };
-            console.log("body====",body)
-            setLoading(true)
-            let response = await BuyDaMeta1Post(body)
-            if (response !== "Error") {
-                if (response.data.status == true) {
-                    Toast.show(response.data.message, Toast.LONG);
-                    await setLoading(false);
-                    await setDetail("");
-                    await setAmount("");
-                    await setChecked(false);
-                    await onRefresh();
-                } else if (response.data.status == false) {
-                    Toast.show("Request " + response.data.data, Toast.LONG);
-                    setLoading(false);
-                }
-                else {
-                    Toast.show("Something Went Wrong ", Toast.LONG);
-                    setLoading(false);
-                }
-            } else {
-                Toast.show("Network Error: There is something wrong!", Toast.LONG);
-                setLoading(false);
-            }
+            navigation.navigate('TransactionPassword',{data:body,screen:"dameta1"})
+            // console.log("body====",body)
+            // setLoading(true)
+            // let response = await BuyDaMeta1Post(body)
+            // if (response !== "Error") {
+            //     if (response.data.status == true) {
+            //         Toast.show(response.data.message, Toast.LONG);
+            //         await setLoading(false);
+            //         await setDetail("");
+            //         await setAmount("");
+            //         await setChecked(false);
+            //         await onRefresh();
+            //     } else if (response.data.status == false) {
+            //         Toast.show("Request " + response.data.data, Toast.LONG);
+            //         setLoading(false);
+            //     }
+            //     else {
+            //         Toast.show("Something Went Wrong ", Toast.LONG);
+            //         setLoading(false);
+            //     }
+            // } else {
+            //     Toast.show("Network Error: There is something wrong!", Toast.LONG);
+            //     setLoading(false);
+            // }
         }
     }
 

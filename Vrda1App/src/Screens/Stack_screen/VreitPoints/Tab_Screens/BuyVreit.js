@@ -65,8 +65,12 @@ const BuyVreit = ({ navigation }) => {
                 navigation.reset({ index: 0, routes: [{ name: "Bad Email", params: { data } }] });
                 setLoading(false)
             }
+            if (response.data.status == true && response.data.transaction_password == false) {
+                navigation.navigate("SetTransactionPassword",{screen:"Buy Vreit"})
+                setLoading(false)
+            }
             else {
-                Toast.show("Something Went Wrong !", Toast.LONG);
+                // Toast.show("Something Went Wrong !", Toast.LONG);
                 setLoading(false);
             }
         } else {
@@ -99,32 +103,37 @@ const BuyVreit = ({ navigation }) => {
             setErrormsg("Enter the Amount*")
         } else {
             setErrormsg("")
-            let body = { payment_type:selectedValue, wallet_amount:amount, receipt_file:imageSourceData, vreit_points:coinconvert };
-            setLoading(true)
-            console.log("Body=======",imageSourceData)
-            let response = await BuyVreitPost(body)
-            if (response !== "Error") {
-                if (response.data.status == true) {
-                    Toast.show(response.data.message, Toast.LONG);
-                    await setLoading(false);
-                    await setDetail("");
-                    await setAmount("");
-                    await setCoinconvert(0)
-                    await setSelectedValue("")
-                    await setChecked(false);
-                    await onRefresh();
-                } else if (response.data.status == false) {
-                    Toast.show("Request " + response.data.data, Toast.LONG);
-                    setLoading(false);
-                }
-                else {
-                    Toast.show("Something Went Wrong ", Toast.LONG);
-                    setLoading(false);
-                }
-            } else {
-                Toast.show("Network Error: There is something wrong!", Toast.LONG);
-                setLoading(false);
-            }
+            // const body = new FormData();
+            // body.append("payment_type",selectedValue);
+            // body.append("wallet_amount",amount);
+            // {imageSourceData && body.append("receipt_file", { uri: imageSourceData.uri, name: "photo.jpg", type: `image/jpg`, })}
+            // body.append("vreit_points",coinconvert);
+            let body = { payment_type:selectedValue, wallet_amount:amount, receipt_file:imageSourceData.uri, vreit_points:coinconvert };
+            navigation.navigate('TransactionPassword',{data:body,screen:"BuyVreit"})
+            // setLoading(true)
+            // console.log("Body=======",body)
+            // let response = await BuyVreitPost(body)
+            // if (response !== "Error") {
+            //     if (response.data.status == true) {
+            //         Toast.show(response.data.message, Toast.LONG);
+            //         await setLoading(false);
+            //         await setDetail("");
+            //         await setAmount("");
+            //         await setCoinconvert(0);
+            //         await setChecked(false);
+            //         await onRefresh();
+            //     } else if (response.data.status == false) {
+            //         Toast.show("Request " + response.data.data, Toast.LONG);
+            //         setLoading(false);
+            //     }
+            //     else {
+            //         Toast.show("Something Went Wrong ", Toast.LONG);
+            //         setLoading(false);
+            //     }
+            // } else {
+            //     Toast.show("Network Error: There is something wrong!", Toast.LONG);
+            //     setLoading(false);
+            // }
         }
     }
 

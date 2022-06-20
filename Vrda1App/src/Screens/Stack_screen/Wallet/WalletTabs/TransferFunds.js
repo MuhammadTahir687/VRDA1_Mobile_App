@@ -62,7 +62,7 @@ const TransferFunds = ({navigation}) => {
             setErrors("")
             var id = selectedid.toString()
             let body ={details: detail, amount: amounts, user_id: id.toString()}
-            navigation.navigate('TransactionPassword',{data:body,screen:"transfer_wallet"})
+            navigation.navigate('TransactionPassword',{data:body,screen:"transfer_funds"})
 
             // setLoading(true)
             // let response = await sendProcessTransferBtn(body)

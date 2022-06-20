@@ -38,7 +38,7 @@ const ChangePassword = ({ navigation, route }) => {
             setNewpassworderror("Enter New Password")
         }
         else if (confirmpassword === '') {
-          setConfirmpassworderror("Enter New Password")
+          setConfirmpassworderror("Enter Confirm Password")
         }
         else if (newpassword.length < 8) {
             setNewpassworderror("Password must be atleast 8 alphabets")

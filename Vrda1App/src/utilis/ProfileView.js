@@ -28,12 +28,8 @@ const ProfileView = ({ children, onPress, screen_title, username, firstname, las
                               }}
                             onPress={() => console.log("Works!")}
                             containerStyle={{ backgroundColor: "gray", borderWidth: 5,borderColor:"white" }}
-                        />
-                        
-                      
-                   
+                        />  
                     </View>
-
                     <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center",paddingTop:10,marginTop:0 }}>
                         <Text style={{ textAlign: "center", fontWeight: "bold", fontSize: 18 }}>{username}</Text>
                         <Text style={{ textAlign: "center", fontWeight: "bold", fontSize: 18 }}>{firstname}</Text>
