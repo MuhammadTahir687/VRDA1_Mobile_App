@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, Text, FlatList,TouchableOpacity, SafeAreaView, ScrollView, Image, Platform, RefreshControl } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, SafeAreaView, ScrollView, Image, Platform, RefreshControl } from "react-native";
 import Colors from "../../../Style_Sheet/Colors";
 import LinearGradient from 'react-native-linear-gradient';
 import RBSheet from "react-native-raw-bottom-sheet";
@@ -20,14 +20,18 @@ import { BuyValidation, ShopValidation } from "../../../utilis/validation";
 import CheckBox from "../../../utilis/Checkbox";
 import styles from '../../../Style_Sheet/style';
 import RNFetchBlob from 'rn-fetch-blob';
+import Ionicons from "react-native-vector-icons/Ionicons";
+import { useIsFocused } from '@react-navigation/native';
 
-
-const Shop = ({ navigation }) => {
+const ShopDetail = ({ navigation,route }) => {
+    const ID=route.params.data;
+    const PackageID=route.params.PackageID;
+    console.log("Package ID=========",PackageID)
     const refRBSheet = useRef();
     const [msg, setMsg] = useState("");
     const [data, setData] = useState([]);
     const [iban, setIban] = useState("");
-    const [ids, setIds] = useState({});
+    const [ids, setIds] = useState('');
     const [index, setIndex] = useState(0);
     const [errors, setErrors] = useState("");
     const [detail, setDetail] = useState("");
@@ -37,7 +41,7 @@ const Shop = ({ navigation }) => {
     const [vreitMsg, setVreitMsg] = useState("");
     const [fileName, setFileName] = useState("");
     const [checked, setChecked] = useState(false);
-    const [packageID, setPackageID] = useState("");
+    const [packageID, setPackageID] = useState('')
     const [swiftCode, setSwiftCode] = useState("");
     const [walletmsg, setwalletmsg] = useState("");
     const [cifNumber, setCifNumber] = useState("");
@@ -51,11 +55,19 @@ const Shop = ({ navigation }) => {
     const [accountNumber, setAccountNumber] = useState("");
     const [selectedValue, setSelectedValue] = useState("");
     const [imageSourceData, setImageSourceData] = useState(null);
-    const [purchasingvia,setPurchasingvia]=useState('');
+    const [purchasingvia, setPurchasingvia] = useState('');
     const [view, setView] = useState(false)
     const [invoice, setInvoice] = useState("");
     const buttons = [{ name: 'Package Detail', id: 0 }, { name: 'Proceed Order', id: 1 }] //false
-    useEffect(async () => { await getShopData(); }, []);
+    const isFocused = useIsFocused();
+
+    useEffect(async () => { 
+        await setIds(ID)
+       await  setPackageID(PackageID)
+        await getShopData(); 
+    
+    }, [isFocused]);
+
     const picker = [
         { label: 'Bank', value: 'bank', color: Colors.primary },
         { label: 'USDT', value: 'usdt', color: Colors.primary },
@@ -93,10 +105,11 @@ const Shop = ({ navigation }) => {
     const gettingDetails = async ({ text }) => {
         setLoading(true)
         let body = { package_id: packageID, payment_type: text };
+        console.log("Body =======",body)
         let response = await sendShopPayment(body);
         if (response !== "Error") {
             if (response.data.status === true) {
-                console.log("Shop Payment Type ======================", response)
+                console.log("Shop Payment Type ======================", response.data)
                 var res = response.data.payment_type;
                 if (text == "bank") {
                     setIban(res.bank.iban); setBankName(res.bank.bank_name);
@@ -104,7 +117,6 @@ const Shop = ({ navigation }) => {
                     setBranchName(res.bank.branch_name); setBranchCode(res.bank.branch_code);
                     setAccountName(res.bank.account_name); setAccountNumber(res.bank.account_number);
                     setInvoice(res.bank.invoice)
-
                     setLoading(false);
                 } else if (text == "usdt") {
                     setImageUri(res.usdt.image);
@@ -168,7 +180,7 @@ const Shop = ({ navigation }) => {
             body.append('package_id', ids.package_id,);
             body.append("proceed_with", selectedValue);
             body.append("user_details", detail);
-            body.append("purchasing_via",purchasingvia);
+            body.append("purchasing_via", purchasingvia);
             body.append("files", { uri: imageSourceData.uri, name: "photo.jpg", type: `image/jpg`, });
             setLoading(true)
             let response = await sendShopSubmit(body)
@@ -210,7 +222,7 @@ const Shop = ({ navigation }) => {
             body.append('package_id', ids.package_id,);
             body.append("proceed_with", selectedValue);
             body.append("user_details", detail);
-            body.append("purchasing_via",purchasingvia);
+            body.append("purchasing_via", purchasingvia);
             body.append("files", { uri: imageSourceData.uri, name: "photo.jpg", type: `image/jpg`, });
             let response = await sendShopSubmit(body)
             if (response !== "Error") {
@@ -253,63 +265,27 @@ const Shop = ({ navigation }) => {
             console.log(e.error)
         }
     }
-
-    const renderItem = ({ item, index }) => (
-        <View style={{ flex: 1 }}>
-            <TouchableOpacity onPress={() => { 
-                // onRefresh(); refRBSheet.current.open(); setIds(item); setPackageID(item.package_id) 
-                navigation.navigate("ShopDetail",{data:item,PackageID:item.package_id})
-                
-                }} style={{ flex: 1, marginHorizontal: 5 }}>
-                <LinearGradient colors={['#333232', '#a9a6a6']} style={{ paddingHorizontal: 15, borderRadius: 10, margin: 4, flex: 1 }}>
-                    <View style={{ padding: 10 }}>
-                        <Text style={{ fontWeight: "bold", color: Colors.white, fontSize: 18 }}>{item.package_name}</Text>
-                        <Text style={{ color: Colors.white, marginBottom: (item.subscription == 0 ? 80 : 0) }}>${item.package_price ? item.package_price : "0"}</Text>
-                        {item.subscription != 0 && <Text style={{ textAlign: "center", marginVertical: 40, padding: 7, borderRadius: 5, borderWidth: 1, borderColor: Colors.white, color: Colors.white, fontSize: 12 }}>Subscription ${item.subscription}</Text>}
-                        <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-                            <Text style={{ paddingVertical: 5, paddingHorizontal: 10, backgroundColor: Colors.primary, overflow: "hidden", borderRadius: 6, fontSize: 10, color: Colors.white }}>{item.extra_tokens ? item.extra_tokens : "0"}%</Text>
-                            <Text style={{ color: Colors.white, fontSize: 11 }}>  VREIT Bonus Point</Text>
-                        </View>
-                    </View>
-                </LinearGradient>
-            </TouchableOpacity>
-        </View>
-    )
+   
     const copyToClipboard = () => {
         Clipboard.setString(usdtAddress);
         Toast.show("Text Copied !", Toast.LONG);
     };
     const onRefresh = async () => {
         await getShopData();
+       
     }
+
     return (
+
         <SafeAreaView style={{ flex: 1 }}>
-            <Loader animating={isloading} />
-            <FlatList
-                ItemSeparatorComponent={Platform.OS !== 'android' && (({ highlighted }) => (<View style={[highlighted && { marginLeft: 0 }]} />))}
-                data={data}
-                renderItem={renderItem}
-                keyExtractor={(item) => item.id}
-                numColumns={2}
-                style={{ flex: 1 }}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={false}
-                        onRefresh={onRefresh} />
-                }
-            />
-            <RBSheet
-                ref={refRBSheet}
-                height={480}
-                closeOnDragDown={true}
-                closeOnPressMask={true}
-                closeOnPressBack={true}
-                dragFromTopOnly={true}
-                customStyles={{ wrapper: { width: "100%", backgroundColor: "rgba(0,0,0,0.47)" }, draggableIcon: { backgroundColor: "#000" }, container: { borderTopLeftRadius: 30, borderTopRightRadius: 30} }}
-            >
-                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 30 }}>
+            <View style={{marginHorizontal:25,marginTop:10}}>
+            <TouchableOpacity onPress={()=>{navigation.navigate("Shop")}}>
+                        <Ionicons name="arrow-back" size={30}/>
+                    </TouchableOpacity>
+            </View>
+        <View style={{ flexDirection: "column", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 30,paddingBottom:10 }}>
+                   
                     <Text style={{ fontWeight: "bold", fontSize: 20, color: Colors.primary }}>{ids.package_name}</Text>
-                    <AntDesign color={Colors.primary} size={20} name={"closecircle"} onPress={() => { refRBSheet.current.close() }} />
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', margin: 10, }}>
                     {buttons.map((item, indexs) => (
@@ -321,13 +297,13 @@ const Shop = ({ navigation }) => {
                 </View>
                 {index == 0 ?
                     <View style={{ justifyContent: "space-evenly" }}>
-                        <DoubleText text1={"Price"} text2={ids.package_price ? "$" + ids.package_price : "$0"} textstyle={{ textAlign: "center" }} containerstyle={{ marginLeft: 20, padding: 6 }} />
-                        <DoubleText text1={"Business Volume"} text2={ids.package_bv ? ids.package_bv + " BV" : "Not Available"} textstyle={{ textAlign: "center" }} containerstyle={{ marginLeft: 20, backgroundColor: "rgba(152,148,148,0.63)", padding: 6 ,borderRadius:5}} />
-                        <DoubleText text1={"Escrow Time"} text2={ids.escroll_time ? ids.escroll_time + " Days" : "Not Available"} textstyle={{ textAlign: "center" }} containerstyle={{ marginLeft: 20, padding: 6 }} />
-                        <DoubleText text1={"Direct Commission"} text2={ids.direct_commission ? ids.direct_commission + "%" : "Not Available"} textstyle={{ textAlign: "center" }} containerstyle={{ marginLeft: 20, backgroundColor: "rgba(152,148,148,0.63)", padding: 6,borderRadius:5 }} />
-                        <DoubleText text1={"Binary Commission"} text2={ids.binary_commission ? ids.binary_commission + "%" : "Not Available"} textstyle={{ textAlign: "center" }} containerstyle={{ marginLeft: 20, padding: 6 }} />
-                        <DoubleText text1={"Maxout Per Week"} text2={ids.package_maxout ? "$" + ids.package_maxout : "Not Available"} textstyle={{ textAlign: "center" }} containerstyle={{ marginLeft: 20, backgroundColor: "rgba(152,148,148,0.63)", padding: 6 ,borderRadius:5}} />
-                        <DoubleText text1={"Extra Tokens"} text2={ids.extra_tokens ? ids.extra_tokens + "%" : "Not Available"} textstyle={{ textAlign: "center" }} containerstyle={{ marginLeft: 20, padding: 6 }} />
+                        <DoubleText text1={"Price"} text2={ids.package_price ? "$" + ids.package_price : "$0"} textstyle={{ textAlign: "center" }} containerstyle={{ marginHorizontal: 20, padding: 6,backgroundColor: "rgba(152,148,148,0.63)", }} />
+                        <DoubleText text1={"Business Volume"} text2={ids.package_bv ? ids.package_bv + " BV" : "Not Available"} textstyle={{ textAlign: "center" }} containerstyle={{ marginHorizontal: 20,  padding: 6 ,borderRadius:5}} />
+                        <DoubleText text1={"Escrow Time"} text2={ids.escroll_time ? ids.escroll_time + " Days" : "Not Available"} textstyle={{ textAlign: "center" }} containerstyle={{ marginHorizontal: 20, padding: 6, backgroundColor: "rgba(152,148,148,0.63)" }} />
+                        <DoubleText text1={"Direct Commission"} text2={ids.direct_commission ? ids.direct_commission + "%" : "Not Available"} textstyle={{ textAlign: "center" }} containerstyle={{ marginHorizontal: 20, padding: 6,borderRadius:5 }} />
+                        <DoubleText text1={"Binary Commission"} text2={ids.binary_commission ? ids.binary_commission + "%" : "Not Available"} textstyle={{ textAlign: "center" }} containerstyle={{ marginHorizontal: 20, padding: 6, backgroundColor: "rgba(152,148,148,0.63)" }} />
+                        <DoubleText text1={"Maxout Per Week"} text2={ids.package_maxout ? "$" + ids.package_maxout : "Not Available"} textstyle={{ textAlign: "center" }} containerstyle={{ marginHorizontal: 20, padding: 6 ,borderRadius:5}} />
+                        <DoubleText text1={"Extra Tokens"} text2={ids.extra_tokens ? ids.extra_tokens + "%" : "0%"} textstyle={{ textAlign: "center" }} containerstyle={{ marginHorizontal: 20, padding: 6, backgroundColor: "rgba(152,148,148,0.63)" }} />
                     </View>
                     : msg === "Your request is pending" ?
                         <View style={{ justifyContent: "center", alignItems: "center", backgroundColor: "red", margin: 30, padding: 10, borderRadius: 8 }}>
@@ -463,8 +439,8 @@ const Shop = ({ navigation }) => {
                             </ScrollView>
                         </View>
                 }
-            </RBSheet>
+
         </SafeAreaView>
     )
 }
-export default Shop;
+export default ShopDetail;

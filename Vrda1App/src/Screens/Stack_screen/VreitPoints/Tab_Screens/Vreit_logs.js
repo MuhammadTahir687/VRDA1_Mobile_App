@@ -16,14 +16,14 @@ const Vreit_Logs = () => {
     const [ids,setIds]=useState(0);
     const [btn, setBtn] = useState(0);
     const [apiRes,setApiRes]=useState([]);
-    const Button = [{id: 1, title: "Shifted"}, {id: 2, title: "Swapped"}, {id: 3, title: "Wallet"}, {id: 4, title: "Purchased"}, {id: 5, title: "Transfer"}, {id: 6, title: "Recieved"}]
+    const Button = [{id: 1, title: "Shifted"}, {id: 2, title: "Swapped"}, {id: 3, title: "Wallet"}, {id: 4, title: "Purchased"}, {id: 5, title: "Transfer"}, {id: 6, title: "Recieved"},{id: 7, title: "Buy Vreits"}]
 
     useEffect(async () => { await getData(btn) }, []);
 
     const getData = async (type) => {
         var data;
         setLoading(true)
-        type==0 ? data="shifted" : type==1 ? data="swapped" : type==2 ? data="wallet" : type==3 ? data="purchased" : type==4 ? data="transfer" : type==5 ? data="received" : null;
+        type==0 ? data="shifted" : type==1 ? data="swapped" : type==2 ? data="wallet" : type==3 ? data="purchased" : type==4 ? data="transfer" : type==5 ? data="received" : type==6 ? data="buy_vreit" :null;
         let resp =await getVreitLogs(data)
         if (resp !== "Error") {
             if (type == 0){ setApiRes(resp.data.data.shifted);
@@ -32,6 +32,7 @@ const Vreit_Logs = () => {
             }else if (type == 3){ setApiRes(resp.data.data.purchased);
             }else if (type == 4){ setApiRes(resp.data.data.transfer);
             }else if (type == 5){ setApiRes(resp.data.data.received);
+            }else if (type == 6){ setApiRes(resp.data.data.buy_vreit);
             }else { return null;
             }
             setRefreshing(!refreshing)
@@ -98,6 +99,15 @@ const Vreit_Logs = () => {
             </View>
         </TouchableOpacity>
     )
+    const renderItemBuyVreit=({item})=>(
+        <TouchableOpacity onPress={()=>{setVisible(true),setIds(item),setValue(6)}} style={{flexDirection:"row",backgroundColor: Colors.secondary, borderColor: Colors.white, borderRadius: 10, borderBottomWidth: 2, padding: 10,marginHorizontal:5,marginVertical:2}}>
+            <Text style={{color:Colors.white,fontSize:14,paddingHorizontal:4}}>{item.sr}.</Text>
+            <View>
+                <Text style={{ fontSize: 14, color: Colors.white }}>Code ({item.code})</Text>
+                <Text style={{ fontSize: 13, color: Colors.lightgray, flex: 1, }}>Buy At: {item.buy_at}</Text>
+            </View>
+        </TouchableOpacity>
+    )
     return (
         <SafeAreaView style={{flex:1}}>
             <ScrollView style={{flexGrow:1}} horizontal={true}>
@@ -113,7 +123,7 @@ const Vreit_Logs = () => {
             </ScrollView>
                 <View style={{flex:100}}>
                     <Loader animating={isloading}/>
-                    <FlatList data={apiRes} renderItem={btn == 0?renderItemShifted:btn ==1?renderItemSwapped:btn ==2?renderItemWallet:btn ==3?renderItemPurchased:btn ==4?renderItemTransfer:btn ==5?renderItemReceived:null} refreshControl={
+                    <FlatList data={apiRes} renderItem={btn == 0?renderItemShifted:btn ==1?renderItemSwapped:btn ==2?renderItemWallet:btn ==3?renderItemPurchased:btn ==4?renderItemTransfer:btn ==5?renderItemReceived:btn==6?renderItemBuyVreit:null} refreshControl={
                         <RefreshControl refreshing={false} onRefresh={onRefresh} />
                     }/>
                 </View>
@@ -179,6 +189,19 @@ const Vreit_Logs = () => {
                                             <DoubleText text1={"Est Amount"} text2={ids.vreit_amount?"$"+parseFloat(ids.vreit_amount).toFixed(2):null}/>
                                             <DoubleText text1={"Received At"} text2={ids.received_at?ids.received_at.slice(0,10):null}/>
                                             <DoubleText text1={""} text2={ids.received_at?ids.received_at.slice(11,19):null}/>
+                                        </View>
+                                       : value == 6 ?
+                                        <View>
+                                            <DoubleText text1={"Type"} text2={ids.type?ids.type:null}/>
+                                            <DoubleText text1={"Code"} text2={ids.code?ids.code:null}/>
+                                            <DoubleText text1={"Points"} text2={ids.vreit_points?parseFloat(ids.vreit_points).toFixed(2):null}/>
+                                            <DoubleText text1={"Rate"} text2={ids.vreit_rate?"$"+parseFloat(ids.vreit_rate).toFixed(4):null}/>
+                                            <DoubleText text1={"Amount"} text2={ids.vreit_amount?"$"+parseFloat(ids.vreit_amount).toFixed(2):null}/>
+                                            <DoubleText text1={"Status"} text2={ids.status?ids.status:null} textstyle={{color:ids.status=="rejected"?"red":ids.status=="accepted"?"green":ds.status=="pending"?"Purple":"black",textTransform:"capitalize"}}/>
+                                            <DoubleText text1={"Detail"} text2={ids.description?ids.description:null}/>
+                                            <DoubleText text1={"Feedback"} text2={ids.admin_feed?ids.admin_feed:null}/>
+                                            <DoubleText text1={"Buy At"} text2={ids.buy_at?ids.buy_at.slice(0,10):null}/>
+                                            <DoubleText text1={""} text2={ids.buy_at?ids.buy_at.slice(11,19):null}/>
                                         </View>
                                         :null
                 }

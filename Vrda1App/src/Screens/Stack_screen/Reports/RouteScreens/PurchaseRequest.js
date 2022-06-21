@@ -66,8 +66,10 @@ const PurchaseRequest = () => {
     )
     const Cancel=async ()=>{
         let body = {request_id: ids.id};
+        console.log("Body======",body)
         setLoading(true)
         let response = await sendDeletePackageRequest(body)
+        console.log("response=======",response.data)
         if (response !== "Error") {
             if (response.data.status == true) {
                 await setLoading(false);

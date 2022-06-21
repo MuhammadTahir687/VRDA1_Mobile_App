@@ -8,8 +8,12 @@ import DoubleText from "../../../../utilis/DoubleText";
 import Dropdown from "../../../../utilis/Picker/Picker";
 import {FormInput} from "../../../../utilis/Text_input";
 import {processVreitTransferValidae} from "../../../../utilis/validation";
-import {Text, View, SafeAreaView, ScrollView, RefreshControl} from "react-native";
+import {Text, View, SafeAreaView, ScrollView, RefreshControl, TouchableOpacity} from "react-native";
 import {getVreitTransferC2C, sendVreitC2Csubmit} from "../../../../utilis/Api/Api_controller";
+import RNPickerDialog from 'rn-modal-picker';
+import styles from '../../../../Style_Sheet/style';
+import Ionicons from "react-native-vector-icons/Ionicons";
+
 
 const Vreit_Transfer = ({navigation}) => {
     const [child,setChild]=useState([]);
@@ -24,6 +28,8 @@ const Vreit_Transfer = ({navigation}) => {
     const [vreitTransfer,setVreitTransfer]=useState("");
     const [selectedValue, setSelectedValue] = useState();
     const [selectedValue1, setSelectedValue1] = useState("");
+    const [selectedText,setselectedText]=useState("");
+    const [placeHolderText,setplaceHolderText]=useState('Select User');
     const buttons = [{name: 'Transfer Point', id: 0}, {name: 'Process Transfer', id: 1},]
 
     useEffect(async ()=>{ await getData(); },[]);
@@ -116,13 +122,42 @@ const Vreit_Transfer = ({navigation}) => {
                                 onValueChange={(text)=>{setSelectedValue(text)}}
                                 PickerData={parent.map(obj => ({key: obj.id, label:obj.name, value: obj.id}))}/>
                         </View>
-                        <View style={{borderBottomWidth:1,borderColor:Colors.secondary}}>
+                        {/* <View style={{borderBottomWidth:1,borderColor:Colors.secondary}}>
                             <Text style={{fontSize:13,paddingHorizontal:10,top:5,fontWeight:"bold"}}>Select Child:</Text>
                             <Dropdown
                                 disable={!selectedValue?false:true}
                                 onValueChange={(text)=>{setSelectedValue1(text)}}
                                 PickerData={child.map(obj => ({key: obj.id, label:obj.name, value: obj.id}))}/>
-                        </View>
+                        </View> */}
+                        <View style={{borderBottomWidth:1,borderColor:Colors.secondary,flexDirection:"row",alignItems:"center"}}>
+                            <RNPickerDialog
+                                data={child}
+                                pickerTitle={'Select User'}
+                                // labelText={'Select User'}
+                                showSearchBar={true}
+                                showPickerTitle={true}
+                                listTextStyle={styles.listTextStyle}
+                                pickerStyle={styles.pickerStyle}
+                                selectedText={selectedText}
+                                placeHolderText={placeHolderText}
+                                searchBarPlaceHolder={'Search.....'}
+                                searchBarPlaceHolderColor={'#9d9d9d'}
+                                selectedTextStyle={styles.selectedTextStyle}
+                                placeHolderTextColor={'gray'}
+                                dropDownIconStyle={styles.dropDownIconStyle}
+                                searchBarStyle={styles.searchBarStyle}
+                                disablePicker={!selectedValue?false:true}
+                                //dropDownIcon={require('../assets/pin.png')}
+                                selectedValue={(index, item) => {setselectedText(item.name),setSelectedValue1(item.id)}}
+                            />
+                           {selectedValue1 !=="" && <TouchableOpacity onPress={()=>{setSelectedValue1(""),setselectedText("")}}>
+                                 <Ionicons name="close" size={20}/>
+                            </TouchableOpacity>}
+                            
+                            
+
+                        {/* <Dropdown onValueChange={(text)=>{setSelectedValue(text)}} PickerData={apiData.map(obj => ({key: obj.id, label: obj.name, value: obj.id, color: "rgba(77,38,22,1)",}))}/> */}
+                    </View>
                         <Text>{selectedValue === "parent"?"Select Proper Value":selectedValue === "child"?"Select Proper Value":null}</Text>
                         {errors === "Please Select Value" &&
                         <Text style={{ color: "red",fontSize:12 }}>{errors === "Please Select Value" ? "Please Select Value" : null}</Text>

@@ -22,6 +22,7 @@ import Profile from "../Screens/Stack_screen/Profile/Profile";
 import TransactionPassword from "../Screens/Stack_screen/TransactionPassword/TransactionPassword";
 import UpdateTransactionPassword from "../Screens/Stack_screen/TransactionPassword/UpdateTransactionPassword";
 import SetTransactionPassword from "../Screens/Stack_screen/TransactionPassword/SetTransactionPassword";
+import ShopDetail from "../Screens/Stack_screen/Shop/ShopDetail";
 
 const Drawer = createDrawerNavigator();
 
@@ -173,6 +174,7 @@ const Drawers = () => {
                 <Drawer.Screen name="TransactionPassword" component={TransactionPassword} options={{ title: "Transaction Password", drawerItemStyle: { height: 0 }}} />
                 <Drawer.Screen name="UpdateTransactionPassword" component={UpdateTransactionPassword} options={{ title: "Update Transaction Password", drawerItemStyle: { height: 0 }}} />
                 <Drawer.Screen name="SetTransactionPassword" component={SetTransactionPassword} options={{ title: "Set Transaction Password", drawerItemStyle: { height: 0 }}} />
+                <Drawer.Screen name="ShopDetail" component={ShopDetail} options={{ title: "Shop", drawerItemStyle: { height: 0 }}} />
 
             </Drawer.Navigator>
         </SafeAreaView>

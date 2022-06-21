@@ -18,6 +18,7 @@ const Dropdown = ({onValueChange,PickerData,onDonePress,onClose,disable,placehol
           color: 'rgba(157,153,153,0.98)',
           fontSize: 18,
           fontWeight: 'bold',
+
         },
           // viewContainer:{paddingTop:Platform.OS === 'ios' ? 25 : null,marginBottom:Platform.OS === 'ios' ? 5:null,paddingHorizontal:Platform.OS === 'ios' ? 15 : null,}
       }}
@@ -46,6 +47,7 @@ const Dropdown = ({onValueChange,PickerData,onDonePress,onClose,disable,placehol
               color: 'black',
               fontSize: 14,
               // lineHeight: 17,
+              paddingBottom:10,
               paddingTop:20,
               paddingLeft:5,
               alignItems: 'center' }, }}

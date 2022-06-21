@@ -10,6 +10,7 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import DoubleText from "../../../../utilis/DoubleText";
 import Dialogs from "../../../../utilis/Dialog";
 import Loader from "../../../../utilis/Loader";
+import { get_data } from "../../../../utilis/AsyncStorage/Controller";
 
 const Quarterly_vreits = ({ navigation }) => {
     const [items, setItems] = useState('');
@@ -27,8 +28,16 @@ const Quarterly_vreits = ({ navigation }) => {
     const [refreshing, setRefreshing] = useState(false);
     const [packages, setPackages] = useState("");
     const [cureentvreitprice, setCureentvreitprice] = useState("")
-    const [showview, setShowview] = useState(false)
-    useEffect(async () => { await getData() }, [])
+    const [showview, setShowview] = useState(false);
+    const [user,setUser]=useState("")
+    useEffect(async () => { 
+
+        await getData();
+        let User_DATA = await get_data("User")
+        console.log("USER Data=====",User_DATA.id)
+        setUser(User_DATA)
+    
+    }, [])
 
     const getData = async () => {
         setLoading(true)
@@ -36,10 +45,10 @@ const Quarterly_vreits = ({ navigation }) => {
         
         if (res !== "Error") {
             if (res.data.status == true && res.data.email_status == true) {
-                console.log("^^^^^^^^^", res.data.data.purchases)
+                console.log("^^^^^^^^^",res.data.data.current_vreit_price)
                 setShowview(true)
                 setApiData(res.data);
-                setCureentvreitprice(res.datacurrent_vreit_price)
+                setCureentvreitprice(res.data.data.current_vreit_price)
                 setPackages(res.data.data.package);
                 setAvamount(res.data.data.total_assigned_vreits.amount.toFixed(5));
                 setAvpoints(res.data.data.total_assigned_vreits.points.toFixed(5));
@@ -72,12 +81,14 @@ const Quarterly_vreits = ({ navigation }) => {
             package_id: items.package_id,
             quarterly_code: item.quarterly_code,
             vreit_points: item.quarter_vreits,
-            quarter_date: item.date,
+            // quarter_date: item.date,
             vreit_price: cureentvreitprice,
-            user_id: cureentvreitprice,
+            user_id: user.id,
         };
         setLoading(true)
         let response = await sendVreitShiftedBtn(body)
+        console.log("Body==========",body)
+        console.log("Response===========",response.data)
         if (response !== "Error") {
             if (response.data.status == true) {
                 setLoading(false);
@@ -153,7 +164,7 @@ const Quarterly_vreits = ({ navigation }) => {
             </View>
         )
     }
-    console.log("Purchases========",purchases)
+    // console.log("Purchases========",purchases)
     const onRefresh = async () => {
         await getData();
     }

@@ -16,7 +16,8 @@ const Vreit_withdrawal = () => {
     const [amount,setAmount]=useState("");
     const [userDetail, setUserDetail] = useState("");
     const [apiData,setApiData]=useState("");
-    const [refreshing,setRefreshing]=useState(false)
+    const [refreshing,setRefreshing]=useState(false);
+    const [transactiontype,setTransactiontype]=useState("");
 
     useEffect(async ()=>{ await getData(); },[]);
 
@@ -25,8 +26,8 @@ const Vreit_withdrawal = () => {
         let response = await getVreitWithdrawl();
         if (response !== "Error") {
             if (response.data.status === true) {
-                console.log("vret amount",response.data.data.vreit_amount)
-                setApiData(response.data.data);
+                console.log("vret amount",response.data.remain.vreit_withdrawal_amount)
+                setApiData(response.data.remain);
                 setUserDetail(response.data.data.user)
                 setRefreshing(!refreshing)
                 setLoading(false);
@@ -43,12 +44,34 @@ const Vreit_withdrawal = () => {
         await getData();
     }
     const Submit = async () => {
-        let validate = VreitWithdrawlValidation(amount,apiData.vreit_amount)
+        let validate = VreitWithdrawlValidation(amount,apiData.vreit_withdrawal_amount)
         if (validate.valid === false) {
             setErrors(validate.errors)
         } else {
             setErrors("")
-            let body = {user_id: userDetail.id,transfer_type:selectedValue,amount:amount,details:detail};
+
+            const withdrawal = apiData.withdrawal.amount;
+            const seeded = apiData.seeded.amount;
+            const merge = apiData.vreit_withdrawal_amount;
+
+
+            console.log("WITHDRAWL = ",withdrawal,"seeded=",seeded,"merge",merge)
+
+
+            if (parseFloat(withdrawal) > 0 && parseFloat(amount) > parseFloat(withdrawal)) {
+                setTransactiontype("merge")
+                console.log('merge');
+            } else if(parseFloat(amount) <= parseFloat(withdrawal)) {
+                setTransactiontype("withdrawal")
+                 console.log('withdrawal');
+            } else if(parseFloat(amount) <= parseFloat(seeded)) {
+                setTransactiontype("seeded")
+                console.log('seeded');
+            } else {
+                console.log('none');
+            }
+            let body = { amount: amount, details: detail, swapped_type:transactiontype,withdrawal:withdrawal,seeded:seeded,merge:merge };
+            console.log("Body=====",body)
             setLoading(true)
             var response = await sendVreitWithdrawl(body)
             if (response !== "Error") {
@@ -71,14 +94,14 @@ const Vreit_withdrawal = () => {
         <SafeAreaView style={{flex: 1}}>
             <Loader animating={isloading}/>
             <Text style={{textAlign:"center",fontSize:18,fontWeight:"bold",textDecorationLine:"underline",color:Colors.secondary,margin:10}}>VREIT Points Withdrawal</Text>
-            <View style={{flex: 1, paddingVertical: "10%"}}>
-                <ScrollView refreshControl={<RefreshControl refreshing={false} onRefresh={onRefresh}/>}>
+            <ScrollView style={{flex: 1, paddingVertical: 10}}>
+                <View refreshControl={<RefreshControl refreshing={false} onRefresh={onRefresh}/>}>
                     <View style={{margin: 15}}>
                         <View style={{flex: 1, backgroundColor: Colors.white, borderRadius: 10, elevation: 10, borderWidth: 1, paddingVertical: 5}}>
-                            <DoubleText text1={"Total Vreit Points:"} text2={apiData.vreit_points ? parseFloat(apiData.vreit_points).toFixed(2) : "0"}/>
-                            <DoubleText text1={"Total Vreit Amount:"} text2={apiData.vreit_amount ? "$" + parseFloat(apiData.vreit_amount).toFixed(2) : null}/>
+                            <DoubleText text1={"Total Vreit Points:"} text2={apiData.vreit_withdrawal_points ? parseFloat(apiData.vreit_withdrawal_points).toFixed(2) : "0"}/>
+                            <DoubleText text1={"Total Vreit Amount:"} text2={apiData.vreit_withdrawal_amount ? "$" + parseFloat(apiData.vreit_withdrawal_amount).toFixed(2) : '0'}/>
                         </View>
-                        { apiData.vreit_points === 0 ?
+                        { apiData.vreit_withdrawal_points === 0 ?
                             <View style={{flex:1,justifyContent:"center",alignItems:"center",backgroundColor:"red",marginTop:"50%",padding:10,borderRadius:8}}>
                                 <Text style={{color:Colors.white,textAlign:"center"}}>You must shift the VREIT points first in Vreit Wallet.</Text>
                             </View>
@@ -93,6 +116,7 @@ const Vreit_withdrawal = () => {
                                         containerStyle={{backgroundColor: "white", margin: 2, borderRadius: 5}}
                                         placeholder="Enter Ammount for Transfer"
                                         keyboardType={"numeric"}
+                                        value={amount}
                                         onChangeText={(text) => {setAmount(text), setErrors("")}}
                                     />
                                     <Text style={{color: "red", fontSize: 12, marginHorizontal: 5}}>{errors === "Please Enter Amount" ? "Please Enter Amount" : null || errors === "Amount Exceeded" ? "Amount Exceeded" : null}</Text>
@@ -101,6 +125,7 @@ const Vreit_withdrawal = () => {
                                         placeholder="Notes"
                                         multiline={true}
                                         numberOfLines={3}
+                                        valuw={detail}
                                         onChangeText={(text) => {setDetail(text), setErrors('')}}
                                     />
                                     <Text style={{color: "red", fontWeight: "bold", borderRadius: 5, padding: 8, margin: 2}}>2% swap charges will be applicable.</Text>
@@ -109,8 +134,8 @@ const Vreit_withdrawal = () => {
                             </View>
                         }
                     </View>
-                </ScrollView>
-            </View>
+                </View>
+            </ScrollView>
         </SafeAreaView>
     )
 }

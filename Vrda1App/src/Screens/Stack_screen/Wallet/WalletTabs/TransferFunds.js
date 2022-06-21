@@ -118,7 +118,7 @@ const TransferFunds = ({navigation}) => {
                     <View style={{borderBottomWidth:1,borderColor:Colors.secondary}}>
                             <RNPickerDialog
                                 data={apiData}
-                                pickerTitle={'Sort by'}
+                                pickerTitle={'Select User'}
                                 // labelText={'Select User'}
                                 showSearchBar={true}
                                 showPickerTitle={true}
