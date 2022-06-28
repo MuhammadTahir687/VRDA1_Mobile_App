@@ -23,6 +23,8 @@ import TransactionPassword from "../Screens/Stack_screen/TransactionPassword/Tra
 import UpdateTransactionPassword from "../Screens/Stack_screen/TransactionPassword/UpdateTransactionPassword";
 import SetTransactionPassword from "../Screens/Stack_screen/TransactionPassword/SetTransactionPassword";
 import ShopDetail from "../Screens/Stack_screen/Shop/ShopDetail";
+import ContinueShopDetail from "../Screens/Stack_screen/Shop/ContinueShopDetail";
+import ContinueShop from "../Screens/Stack_screen/Shop/ContinueShop";
 
 const Drawer = createDrawerNavigator();
 
@@ -32,7 +34,7 @@ const config = () => {
     }
 }
 const linking = () => {
-    prefixes: ['www.staging.vrda1.net']
+    prefixes: ['staging.vrda1.net']
     config
 }
 
@@ -41,16 +43,18 @@ const Drawers = () => {
     const [userDetail, setUserDetail] = useState("")
     const [picture,setPicture]=useState(null)
     const [linkedURL, setLinkedURL] = useState(null);
+
   
       useEffect(() => {
           const getUrlAsync = async () => {
               const initialUrl = await Linking.getInitialURL();
-              console.log("initial url ========",initialUrl)
               if(initialUrl !=null){
                 const routeName = initialUrl.split('?');
+                const token=initialUrl.split('/');
+                console.log("Token",token[4])
                 if(routeName[1] == "transaction")
                 {
-                    navigation.navigate('UpdateTransactionPassword')
+                    navigation.navigate('UpdateTransactionPassword',{data:token[4]})
                 }
               }
               else{
@@ -61,13 +65,15 @@ const Drawers = () => {
       }, []);
   
       useEffect(() => {
-          const callback = ({ url }) => { const routeName = url.split('?');setLinkedURL(decodeURI(url)), navigation.navigate('UpdateTransactionPassword'),console.log("url",url)};
+          const callback = ({ url }) => { const routeName = url.split('?');const token=initialUrl.split('/');;setLinkedURL(decodeURI(url)), navigation.navigate('UpdateTransactionPassword',{data:token[4]}),console.log("url",url)};
           Linking.addEventListener('url', callback);
-          
           return () => {
+
               Linking.removeAllListeners('url', callback);
           };
       }, []);
+      const resetURL = () => initialUrl=null;
+      console.log(resetURL)
 
 
 
@@ -86,7 +92,8 @@ const Drawers = () => {
     }
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <Drawer.Navigator linking={linking} initialRouteName="Dashboard" screenOptions={{
+            <Drawer.Navigator
+            linking={linking} initialRouteName="Dashboard" screenOptions={{
                 headerStyle: { backgroundColor: "transparent" }, headerRight: () => (
                     <TouchableOpacity style={{ marginRight: 20 }} onPress={() => navigation.navigate("Profile")}>
                         <Image source={require("../Assets/profile.png")} style={{ height: 20, width: 20 }} />
@@ -131,22 +138,22 @@ const Drawers = () => {
                     </View>
                 )
             }}>
-                <Drawer.Screen name="Dashboard" component={Dashboard} options={{
+                <Drawer.Screen name="Dashboard" component={Dashboard}  options={{ 
                     drawerLabel: "Dashboard", drawerActiveTintColor: Colors.primary, drawerType: "slide", drawerIcon: ({ tintColor }) => (
                         <Image source={require('../Assets/Dashboard.png')} style={{ height: 20, width: 20 }} />)
                 }} />
-                <Drawer.Screen name="Shop" component={Shop} options={{
+                <Drawer.Screen name="Shop" component={Shop} initialParams={{data:null}} options={{unmountOnBlur:{setParam:"null"},
                     drawerLabel: "Shop", drawerActiveTintColor: Colors.primary, drawerType: "slide", drawerIcon: ({ tintColor }) => (
                         <Image source={require('../Assets/shop.png')} style={{ height: 20, width: 20 }} />)
                 }} />
                 <Drawer.Screen name="Buy DaMeta1" component={BuyDaMeta1} options={{drawerLabel: "Buy DaMeta1", drawerActiveTintColor:Colors.primary,drawerType:"slide",drawerIcon: ({tintColor}) => (
-                    <Image source={require('../Assets/shop.png')} style={{height:20,width:20}}/>)}}/>
+                    <Image source={require('../Assets/dameta1.png')} style={{height:20,width:20}}/>)}}/>
                 <Drawer.Screen name="Activity_Feeds" component={Activity_Feeds} options={{
                     drawerLabel: "Activity Feed", drawerActiveTintColor: Colors.primary, drawerType: "slide", drawerIcon: ({ tintColor }) => (
                         <Image source={require('../Assets/ActivityFeed.png')} style={{ height: 20, width: 20 }} />)
                 }} />
                 <Drawer.Screen name="Vreit_Points" component={Vreit_Points} options={{
-                    drawerLabel: "Vreit Points", drawerActiveTintColor: Colors.primary, drawerType: "slide", drawerIcon: ({ tintColor }) => (
+                    drawerLabel: "Vreit Points", title:"Vreit Points",drawerActiveTintColor: Colors.primary, drawerType: "slide", drawerIcon: ({ tintColor }) => (
                         <Image source={require('../Assets/vreitpoints.png')} style={{ height: 20, width: 20 }} />)
                 }} />
                 <Drawer.Screen name="Commission_Logs" component={Commission_Logs} options={{
@@ -175,6 +182,8 @@ const Drawers = () => {
                 <Drawer.Screen name="UpdateTransactionPassword" component={UpdateTransactionPassword} options={{ title: "Update Transaction Password", drawerItemStyle: { height: 0 }}} />
                 <Drawer.Screen name="SetTransactionPassword" component={SetTransactionPassword} options={{ title: "Set Transaction Password", drawerItemStyle: { height: 0 }}} />
                 <Drawer.Screen name="ShopDetail" component={ShopDetail} options={{ title: "Shop", drawerItemStyle: { height: 0 }}} />
+                <Drawer.Screen name="ContinueShop" component={ContinueShop} options={{ title: "Shop", drawerItemStyle: { height: 0 }}} />
+                <Drawer.Screen name="ContinueShopDetail" component={ContinueShopDetail} options={{ title: "Shop", drawerItemStyle: { height: 0 }}} />
 
             </Drawer.Navigator>
         </SafeAreaView>

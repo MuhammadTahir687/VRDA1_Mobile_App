@@ -41,6 +41,9 @@ const SetTransactionPassword = ({ navigation, route }) => {
         else if (confirmpassword === '') {
           setConfirmpassworderror("Enter Confirm Password")
         }
+        else if (confirmpassword != newpassword) {
+            setConfirmpassworderror("Password not match")
+          }
         else{
 
         

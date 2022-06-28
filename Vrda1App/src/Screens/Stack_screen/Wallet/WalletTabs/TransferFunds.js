@@ -123,7 +123,7 @@ const TransferFunds = ({navigation}) => {
                                 showSearchBar={true}
                                 showPickerTitle={true}
                                 listTextStyle={styles.listTextStyle}
-                                pickerStyle={styles.pickerStyle}
+                                pickerStyle={styles.pickerStyle4}
                                 selectedText={selectedText}
                                 placeHolderText={placeHolderText}
                                 searchBarPlaceHolder={'Search.....'}

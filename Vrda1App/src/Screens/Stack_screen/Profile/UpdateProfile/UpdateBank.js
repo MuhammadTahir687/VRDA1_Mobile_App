@@ -1,5 +1,5 @@
-import React, {useState} from "react";
-import {Text, View, SafeAreaView, ScrollView, ImageBackground, Image} from "react-native";
+import React, {useState,useEffect} from "react";
+import {Text, View, SafeAreaView, ScrollView, ImageBackground, Image,RefreshControl} from "react-native";
 import Colors from "../../../../Style_Sheet/Colors";
 import {FormInput} from "../../../../utilis/Text_input";
 import ProfileView from "../../../../utilis/ProfileView";
@@ -7,9 +7,12 @@ import {Btn} from "../../../../utilis/Btn";
 import {launchImageLibrary} from "react-native-image-picker";
 import Toast from "react-native-simple-toast";
 import {UpdateBankValidation} from "../../../../utilis/validation";
-import {sendUpdateBank, sendUpdateBTC} from "../../../../utilis/Api/Api_controller";
+import {sendUpdateBank, sendUpdateBTC,getCountry,getVreitTransferC2C} from "../../../../utilis/Api/Api_controller";
 import Loader from "../../../../utilis/Loader";
-
+import styles from "../../../../Style_Sheet/style";
+import RNPickerDialog from 'rn-modal-picker';
+import CountryPicker from "react-native-country-picker-modal";
+import { useIsFocused } from '@react-navigation/native';
 const UpdateBank = ({navigation,route}) => {
     if(!route.params.title){
         var title="Not Available";
@@ -26,6 +29,7 @@ const UpdateBank = ({navigation,route}) => {
        
 
     }
+    const isFocused = useIsFocused();
     const [fullName,setFullName]=useState(!route.params.apiData?"":paramData.full_name);
     const [iban,setIban]=useState(!route.params.apiData?"":paramData.iban);
     const [bankname,setBankname]=useState(!route.params.apiData?"":paramData.bank_name);
@@ -40,35 +44,51 @@ const UpdateBank = ({navigation,route}) => {
     const [country,setCountry]=useState(!route.params.apiData?"":paramData.country);
     const [errors,setErrors]=useState("");
     const [isloading,setLoading]=useState(false);
-    // const [fileName,setFileName]=useState("");
-    // const [imageSourceData,setImageSourceData]=useState(false);
+    const [selectedValue, setSelectedValue] = useState("Please Select");
+    const [selectedid,setSelectedid]=useState("")
+    const [placeHolderText,setplaceHolderText]=useState('Select Country');
+    const [selectedText,setselectedText]=useState("");
+    const [child,setChild]=useState([])
+    const [countryCode, setCountryCode] = useState('')
+    const [withCountryNameButton, setWithCountryNameButton] = useState(true,)
+    const [withCountryNameText, setWithCountryNameText] = useState(true,)
+    const [withFlag, setWithFlag] = useState(false)
+    const [withEmoji, setWithEmoji] = useState(true)
+    const [withFilter, setWithFilter] = useState(true)
+    const [withAlphaFilter, setWithAlphaFilter] = useState(true)
+    const [withCallingCode, setWithCallingCode] = useState(true)
+    const [refreshing,setRefreshing]=useState(false)
+    
 
-    // const selectPhoto_gallery = () => {
-    //     const options = {
-    //         mediaType: 'photo',
-    //         quality: 0.2
-    //     };
-    //     launchImageLibrary(options, response => {
-    //         if (response.didCancel) {
-    //             //cancel
-    //         } else if (response.error) {
-    //             Toast.show("Something Went Wrong", Toast.LONG);
-    //         }
-    //         else {
-    //             if (response.assets[0].fileSize <= "200000") {
-    //                 setLoading(true);
-    //                 let source = { uri: response.assets[0].uri };
-    //                 var name = (response.assets[0].fileName).slice(25);
-    //                 setFileName(name);
-    //                 setImageSourceData(source);
-    //                 setLoading(false);
-    //                 Toast.show("Succeed", Toast.LONG);
-    //             } else {
-    //                 Toast.show("File size is exceeded from 8 MB", Toast.LONG);
-    //             }
-    //         }
-    //     });
-    // };
+   
+    const onSelect = (country: Country) => {setCountryCode(country.cca2),setCountry(country.name),console.log(country.name)}
+   
+   
+    useEffect(async ()=>{ await getData(); },[isFocused]);
+
+
+    const getData=async ()=>{
+        setLoading(true)
+        let response = await getCountry();
+       
+        if (response !== "Error") {
+            if (response.data.status === true) {
+               await setChild(response.data.countries)
+                console.log(response.data.countries)
+                setLoading(false);
+            }
+            else {
+                Toast.show("Something Went Wrong", Toast.LONG);
+                setLoading(false);
+            }
+        }else {
+            Toast.show("Network Error: There is something wrong!", Toast.LONG);
+            setLoading(false);
+        }
+    }
+
+    const onRefresh = async () => { await getData(); }
+
     const Submit=async () => {
         var validate = UpdateBankValidation(fullName,bankname,branchname,accountNumber,phonenumber,completeAdd,country)
         if (validate.valid === false) {
@@ -126,7 +146,7 @@ const UpdateBank = ({navigation,route}) => {
         <SafeAreaView style={{flex:1}}>
             <ImageBackground source={require("../../../../Assets/splash.png")} style={{flex:1}}>
                 <Loader animating={isloading}/>
-            <ScrollView contentContainerStyle={{flexGrow:1}}>
+            <ScrollView contentContainerStyle={{flexGrow:1}} refreshControl={<RefreshControl refreshing={false} onRefresh={onRefresh} />}>
             <ProfileView source={data.picture} screen_title={"Update Bank Detail"} username={title+" "} firstname={firstname+" "} lastname={lastname} onPress={()=>navigation.goBack()} >
                 <Text style={{fontSize:16,fontWeight:"bold", color:Colors.primary,paddingHorizontal:10}}>Update Bank Detail:</Text>
                 <View style={{marginHorizontal:10}}>
@@ -235,37 +255,62 @@ const UpdateBank = ({navigation,route}) => {
                         onChangeText={(text) => { setErrors(""), setBankaddress(text) }}
                     />
 
-                    <View style={{flexDirection:"row", justifyContent:"space-between"}}>
+                    <View >
                         <FormInput
                             placeholder={"City"}
                             placeholderTextColor={Colors.secondary}
                             // iconName_s="user" icon_color={Colors.secondary}
                             color={Colors.primary}
                             value={city}
-                            containerStyle={{ height:45,width:"45%",paddingTop:2 }}
+                            containerStyle={{ height:43,paddingTop:2 }}
                             onChangeText={(text) => { setErrors(""), setCity(text) }}
                         />
-                        <FormInput
-                            placeholder={"Country*"}
-                            placeholderTextColor={Colors.secondary}
-                            // iconName_s="user" icon_color={Colors.secondary}
-                            color={Colors.primary}
-                            value={country}
-                            containerStyle={{ height:45,width:"45%",paddingTop:2 }}
-                            onChangeText={(text) => { setErrors(""), setCountry(text) }}
-                            error={errors === "Country is Required" ? "Country is Required" : null }
-                        />
+    
+                      
+                    
                     </View>
-                    {/*<Image source={require("../../../../Assets/upload_image.png")} style={{height:80,width:80,alignSelf:"center",borderWidth:2,borderColor:Colors.primary,marginTop:15,borderRadius:15}}/>*/}
-                    {/*{errors ==="Please Add Image First"?*/}
-                    {/*    <Text style={{textAlign:"center",fontSize:11,fontWeight:"bold",color:"red"}}>Please Add Image First</Text>*/}
-                    {/*    :<Text style={{textAlign:"center",fontSize:11,fontWeight:"bold"}}>{fileName?fileName:null}</Text>*/}
-                    {/*}*/}
-                    {/*<Btn onPress={()=>selectPhoto_gallery()} containerStyle={{flex:1,backgroundColor:Colors.primary,padding:10,borderRadius:10,marginHorizontal:50}} text={"Upload QrCode Image"} text_style={{color:Colors.white}}/>*/}
                 </View>
+                        {/* <View style={{ borderBottomWidth: 1,marginHorizontal:10,marginTop:10,marginBottom:10,borderBottomColor:'#979494',paddingVertical:10 }}>
+                            <CountryPicker
+                                placeholder={<Text style={{color:"#979494"}}>Select Country</Text>}
+                                theme={{ fontSize: 13, primaryColor: 'red', primaryColorVariant: '#eee', backgroundColor: "white", onBackgroundTextColor: "black", placeholderTextColor: 'red', }}
+                                {...{
+                                    countryCode,
+                                    withFilter,
+                                    // withFlag,
+                                    withCountryNameButton,
+                                    withCountryNameText,
+                                    withAlphaFilter,
+                                    withCallingCode,
+                                    withEmoji,
+                                    onSelect,
+                                }} />
+                        </View> */}
+                        <View style={{ borderBottomWidth: 1,marginHorizontal:10,marginTop:0,marginBottom:10,borderBottomColor:'#979494',paddingVertical:0 }}>
+                        <RNPickerDialog
+                                data={child}
+                                pickerTitle={'Select country'}
+                                // labelText={'Select User'}
+                                showSearchBar={true}
+                                showPickerTitle={true}
+                                listTextStyle={styles.listTextStyle}
+                                pickerStyle={styles.pickerStyle}
+                                selectedText={selectedText}
+                                placeHolderText={placeHolderText}
+                                searchBarPlaceHolder={'Search.....'}
+                                searchBarPlaceHolderColor={'#9d9d9d'}
+                                selectedTextStyle={styles.selectedTextStyle}
+                                placeHolderTextColor={'gray'}
+                                dropDownIconStyle={styles.dropDownIconStyle}
+                                searchBarStyle={styles.searchBarStyle}
+                                //dropDownIcon={require('../assets/pin.png')}
+                                selectedValue={(index, item) => {setselectedText(item.name),setSelectedid(item.id),setCountry(item.name)}}
+                            />
+                        </View>
+                      
 
-                <Text></Text>
             </ProfileView>
+            
                 <Btn onPress={()=>Submit()} text_style={{color:Colors.white}} text={"Update Info"} containerStyle={{width:110,borderRadius:20,padding:10,backgroundColor:Colors.primary,alignSelf:"center",bottom:20,marginTop:25}}/>
             </ScrollView>
             </ImageBackground>

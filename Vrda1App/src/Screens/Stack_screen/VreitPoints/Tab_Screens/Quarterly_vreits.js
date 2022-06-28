@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Text, View, SafeAreaView, FlatList, TouchableOpacity, Image, RefreshControl } from "react-native";
+import { Text, View, SafeAreaView, FlatList, TouchableOpacity, Image, RefreshControl, Platform } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { List } from 'react-native-paper';
-import { getVreitQuaterly, sendVreitShiftedBtn } from "../../../../utilis/Api/Api_controller";
+import { getVreitQuaterly, sendVreitShiftedBtn,ExitPackagePost,ContinuePackagePost } from "../../../../utilis/Api/Api_controller";
 import Toast from "react-native-simple-toast";
 import Colors from "../../../../Style_Sheet/Colors";
 import EvilIcons from "react-native-vector-icons/EvilIcons";
@@ -11,6 +11,9 @@ import DoubleText from "../../../../utilis/DoubleText";
 import Dialogs from "../../../../utilis/Dialog";
 import Loader from "../../../../utilis/Loader";
 import { get_data } from "../../../../utilis/AsyncStorage/Controller";
+import { TextInput } from "react-native-gesture-handler";
+import { BackHandler } from "react-native";
+
 
 const Quarterly_vreits = ({ navigation }) => {
     const [items, setItems] = useState('');
@@ -24,12 +27,14 @@ const Quarterly_vreits = ({ navigation }) => {
     const [purchases, setPurchases] = useState([]);
     const [isloading, setLoading] = useState(false);
     const [visible, setVisible] = useState(false);
+    const [visible1, setVisible1] = useState(false);
     const [apiData, setApiData] = useState("")
     const [refreshing, setRefreshing] = useState(false);
     const [packages, setPackages] = useState("");
     const [cureentvreitprice, setCureentvreitprice] = useState("")
     const [showview, setShowview] = useState(false);
-    const [user,setUser]=useState("")
+    const [user,setUser]=useState("");
+    const [exitdetail,setExitdetail]=useState("")
     useEffect(async () => { 
 
         await getData();
@@ -39,13 +44,16 @@ const Quarterly_vreits = ({ navigation }) => {
     
     }, [])
 
+   
+
+
     const getData = async () => {
         setLoading(true)
         let res = await getVreitQuaterly()
         
         if (res !== "Error") {
             if (res.data.status == true && res.data.email_status == true) {
-                console.log("^^^^^^^^^",res.data.data.current_vreit_price)
+                console.log("^^^^^^^^^",res.data.data.user.id)
                 setShowview(true)
                 setApiData(res.data);
                 setCureentvreitprice(res.data.data.current_vreit_price)
@@ -83,26 +91,78 @@ const Quarterly_vreits = ({ navigation }) => {
             vreit_points: item.quarter_vreits,
             // quarter_date: item.date,
             vreit_price: cureentvreitprice,
-            user_id: user.id,
+            user_id: apiData.data.user.id,
         };
-        setLoading(true)
-        let response = await sendVreitShiftedBtn(body)
+        navigation.reset('TransactionPassword',{data:body,screen:"ShiftVreit"})
+
+        // setLoading(true)
+        // let response = await sendVreitShiftedBtn(body)
+        // console.log("Body==========",body)
+        // console.log("Response===========",response.data)
+        // if (response !== "Error") {
+        //     if (response.data.status == true) {
+        //         setLoading(false);
+        //         Toast.show(response.data.message, Toast.LONG);
+        //         await onRefresh();
+        //     } else {
+        //         Toast.show(response.data.message, Toast.LONG);
+        //         setLoading(false);
+        //     }
+        // } else {
+        //     Toast.show("Network Error: There is something wrong!", Toast.LONG);
+        //     setLoading(false);
+        // }
+    }
+
+    const ExitPackage=async()=>{
+
+    const body={purchase_pin: items.purchase_pin,quarter_id:items.quarter_id,user_id:apiData.data.user.id,package_type:items.purchase_type,details:exitdetail}
+    console.log("Body==========",body)
+    setLoading(true)
+    let response = await ExitPackagePost(body)
+    
+    console.log("Response===========",response.data)
+    if (response !== "Error") {
+        if (response.data.status == true) {
+            setLoading(false);
+            setExitdetail("")
+            Toast.show(response.data.message, Toast.LONG);
+            await onRefresh();
+        } else {
+            Toast.show(response.data.message, Toast.LONG);
+            setLoading(false);
+        }
+    } else {
+        Toast.show("Network Error: There is something wrong!", Toast.LONG);
+        setLoading(false);
+    }    
+    }
+    const ContinuePackage=async(res)=>{
+
+        const body={purchase_pin: res.purchase_pin,quarter_id:res.quarter_id,user_id:apiData.data.user.id,seeded_type:res.purchase_type}
         console.log("Body==========",body)
+        setLoading(true)
+        let response = await ContinuePackagePost(body)
         console.log("Response===========",response.data)
         if (response !== "Error") {
             if (response.data.status == true) {
                 setLoading(false);
+                // navigation.navigate("ContinueShop",{data:response.data.escrow})
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'ContinueShop',params:{data:response.data.escrow} }]     
+               })
                 Toast.show(response.data.message, Toast.LONG);
                 await onRefresh();
             } else {
-                Toast.show(response.data.message, Toast.LONG);
+                Toast.show(response.data.message,Toast.LONG);
                 setLoading(false);
             }
         } else {
             Toast.show("Network Error: There is something wrong!", Toast.LONG);
             setLoading(false);
+        }    
         }
-    }
 
     const DATA = [
         { title: "Package", value: packages.package_price, type: packages.package_name, color: Colors.white },
@@ -122,12 +182,32 @@ const Quarterly_vreits = ({ navigation }) => {
     )
     const renderItem2 = ({ item, index }) => {
         let res = item
-        console.log("dhfvhdjsvf",res.purchase_price)
+        console.log("dhfvhdjsvf",res.purchase_pin)
         return (
-            <View style={{ borderWidth: 1, borderColor: Colors.primary, borderRadius: 5,  overflow: 'hidden',marginHorizontal: 10, paddingHorizontal: 8, paddingTop: 5, marginBottom: 5,overflow:"hidden"}}>
+            <View style={{ borderWidth: 1, borderColor: res.purchase_status == "matured"? "gray": res.purchase_status == "expire"? "red": res.purchase_status == "active"?"gray":"white", borderRadius: 5,  overflow: 'hidden',marginHorizontal: 10, paddingHorizontal: 8, paddingTop: 5, marginBottom: 5,overflow:"hidden"}}>
+              
+                {res.purchase_status == "expire" ? <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10, backgroundColor: "red", paddingHorizontal: 10, paddingVertical: 10, borderRadius: 5 }}>
+                    <TouchableOpacity onPress={()=>{ContinuePackage(res)}} style={{ width: 100, }}  >
+                        <Text style={{ fontWeight: "bold", color: "red", overflow: "hidden", backgroundColor: "white", padding: 5, borderRadius: 5, textAlign: "center" }}>Continue</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={{ width: 100 }} onPress={() => { setVisible1(true), setItems(res), setIndex(index) }}>
+                        <Text style={{ fontWeight: "bold", color: "red", overflow: "hidden", backgroundColor: "white", padding: 5, borderRadius: 5, textAlign: "center" }}>Exit</Text>
+                    </TouchableOpacity>
+                </View>
+                    : res.purchase_status == "matured"?
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10, backgroundColor: "gray", paddingHorizontal: 10, paddingVertical: 10, borderRadius: 5 }}>
+                        <Text style={{ fontWeight: "bold", color: "white", padding: 5, borderRadius: 5, textAlign: "center" }}>Matured On:</Text>
+                        <Text style={{ fontWeight: "bold", color: "gray", overflow: "hidden", backgroundColor: "white", padding: 5, borderRadius: 5, textAlign: "center" }}><Text style={{ fontWeight: "bold" }}>Matured At:</Text>June 17, 2022</Text>
+                    </View>
+                    :<View></View>
+
+                }
+
+               
                 <View style={{ flexDirection: "row" }}>
                     <Text style={{ fontWeight: "bold" }}>{index + 1} : Invoice : </Text>
-                    <Text style={{ color: "#7f7878" }}>( ${parseFloat(res.purchase_price).toFixed(5)} )</Text>
+                    <Text style={{ color: "#7f7878" }}>( ${parseFloat(res.purchase_price).toFixed(2)} )</Text>
                 </View>
                 <TouchableOpacity style={{ flex: 1, overflow: 'hidden', flexDirection: "row", marginTop: 10, borderRadius:50 }} onPress={() => { setVisible(true), setItems(res), setIndex(index) }}>
                     <Ionicons name="newspaper-outline" color={Colors.white} size={18} style={{ backgroundColor: Colors.primary, borderTopLeftRadius: 50, overflow: 'hidden', borderBottomLeftRadius: 50, padding: 10, alignItems: 'center' }} />
@@ -201,12 +281,31 @@ const Quarterly_vreits = ({ navigation }) => {
                     <DoubleText text1={"Bonus Vreits"} text2={items.bonus_vreits ? items.bonus_vreits : "0"} />
                     <DoubleText text1={"Shifted Vreits"} text2={items.shifted_vreits ? items.shifted_vreits : "0"} />
                     <DoubleText text1={"Pin Number"} text2={items.purchase_code ? items.purchase_code : "Not Available"} />
-                    <DoubleText text1={"Start At"} text2={items.start_at ? items.start_at.slice(0, 10) : "Not Available"} />
+                    <DoubleText text1={"Start On"} text2={items.start_at ? items.start_at.slice(0, 10) : "Not Available"} />
                     <DoubleText text1={""} text2={items.start_at ? items.start_at.slice(11, 19) : null} />
-                    <DoubleText text1={"Expiry At"} text2={items.expiry_date ? items.expiry_date.slice(0, 10) : "Not Available"} />
+                    <DoubleText text1={"Expiry On"} text2={items.expiry_date ? items.expiry_date.slice(0, 10) : "Not Available"} />
                     <DoubleText text1={""} text2={items.expiry_date ? items.expiry_date.slice(11, 19) : null} />
                 </View>
             </Dialogs>
+
+                    <Dialogs visible={visible1} onPress={() => { setVisible1(false) }} title={"Package Exit Confirmation"}>
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginHorizontal: 12, alignItems: "center", marginTop: 10 }}>
+                        </View>
+                        <View>
+                            <View style={{ justifyContent: "center", alignItems: "center", backgroundColor: "red", marginHorizontal: 10, padding: 10, borderRadius: 8 }}>
+                                <Text style={{ color: Colors.white, textAlign: "justify" }}><Text style={{fontWeight:"bold"}}>Are you Sure!:</Text> By clicking EXIT, you are agreeing to withdraw from the position, compensation plan, V-“1 Club membership and all the other benefits.</Text>
+                            </View>
+                            <TextInput
+                            style={{borderWidth:1,borderRadius:5,margin:10,padding:Platform.OS =="android"?10:10}}
+                            placeholder="Add Details"
+                            value={exitdetail}
+                            onChangeText={(text)=>{setExitdetail(text)}}
+                            />
+                            <TouchableOpacity onPress={()=>{ExitPackage()}} style={{backgroundColor:"grey",alignSelf:"center",margin:10,borderRadius:5,padding:10}}>
+                                <Text style={{color:"white"}}>Exit Package</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </Dialogs>
             </View>
         :<View></View>}
         </SafeAreaView>

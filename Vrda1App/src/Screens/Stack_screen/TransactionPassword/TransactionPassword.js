@@ -7,7 +7,7 @@ import Notes from "../../../Zextra/Note";
 import TPNotes from "../../../Zextra/TPNote";
 import TNPNotes from "../../../Zextra/TNPNotes";
 import Loader from "../../../utilis/Loader";
-import { ForgotTransactionPassword,BuyDaMeta1Post,BuyVreitPost,LogTransaction,sendProcessWithdraw,sendProcessTransferBtn } from '../../../utilis/Api/Api_controller';
+import { ForgotTransactionPassword,BuyDaMeta1Post,sendVreitWithdrawl,sendVreitShiftedBtn,sendVreitC2Csubmit,BuyVreitPost,LogTransaction,sendProcessWithdraw,sendProcessTransferBtn } from '../../../utilis/Api/Api_controller';
 import { get_data } from "../../../utilis/AsyncStorage/Controller";
 import Toast from "react-native-simple-toast";
 
@@ -30,9 +30,11 @@ const TransactionPassword = ({ navigation, route }) => {
             console.log("initial url ========",initialUrl)
             if(initialUrl !=null){
               const routeName = initialUrl.split('?');
+              const token=initialUrl.split('/');
+                console.log("Token",token)
               if(routeName[1] == "transaction")
               {
-                  navigation.navigate('UpdateTransactionPassword')
+                  navigation.navigate('UpdateTransactionPassword',{data:token[4]})
               }
             }
             else{
@@ -43,13 +45,15 @@ const TransactionPassword = ({ navigation, route }) => {
     }, []);
 
     useEffect(() => {
-        const callback = ({ url }) => { const routeName = url.split('?');setLinkedURL(decodeURI(url)), navigation.navigate('UpdateTransactionPassword'),console.log("url",url)};
+        const callback = ({ url }) => { const routeName = url.split('?');const token=initialUrl.split('/');setLinkedURL(decodeURI(url)), navigation.navigate('UpdateTransactionPassword',{data:token[4]}),console.log("url",url)};
         Linking.addEventListener('url', callback);
         
         return () => {
             Linking.removeAllListeners('url', callback);
         };
     }, []);
+    const resetURL = () => initialUrl=null;
+      console.log(resetURL)
 
 
 
@@ -84,6 +88,15 @@ const TransactionPassword = ({ navigation, route }) => {
                     if(screen == "transfer_funds"){
                         var resp = await sendProcessTransferBtn(data)
                     }
+                    if(screen == "VreitWithdrawl"){
+                        var resp = await sendVreitWithdrawl(data)
+                    }
+                    if(screen == "VreitTransferc2c"){
+                        var resp = await sendVreitC2Csubmit(data)
+                    }
+                    if(screen == "ShiftVreit"){
+                        var resp = await sendVreitShiftedBtn(data)
+                    }
 
                     if (resp !== "Error") {
                         if (resp.data.status == true) {
@@ -95,7 +108,7 @@ const TransactionPassword = ({ navigation, route }) => {
                             await setLoading(false);
 
                         } else if (resp.data.status == false) {
-                            Toast.show("Request " + response.data, Toast.LONG);
+                            Toast.show(resp.data.message, Toast.LONG);
                             setLoading(false);
                         }
                         else {
@@ -110,7 +123,7 @@ const TransactionPassword = ({ navigation, route }) => {
                     // API Condition Handling end
 
                 } else if (response.data.status == false) {
-                    Toast.show("Request " + response.data.data, Toast.LONG);
+                    Toast.show("Request " + response.data.message, Toast.LONG);
                     setLoading(false);
                 }
                 else {

@@ -16,14 +16,14 @@ const Vreit_Logs = () => {
     const [ids,setIds]=useState(0);
     const [btn, setBtn] = useState(0);
     const [apiRes,setApiRes]=useState([]);
-    const Button = [{id: 1, title: "Shifted"}, {id: 2, title: "Swapped"}, {id: 3, title: "Wallet"}, {id: 4, title: "Purchased"}, {id: 5, title: "Transfer"}, {id: 6, title: "Recieved"},{id: 7, title: "Buy Vreits"}]
+    const Button = [{id: 1, title: "Shifted"}, {id: 2, title: "Swapped"}, {id: 3, title: "Wallet"}, {id: 4, title: "Purchased"}, {id: 5, title: "Transfer"}, {id: 6, title: "Recieved"},{id: 7, title: "Buy Vreits"},{id: 8, title: "Buy Dameta1"},{id: 9, title: "Escrow"}]
 
     useEffect(async () => { await getData(btn) }, []);
 
     const getData = async (type) => {
         var data;
         setLoading(true)
-        type==0 ? data="shifted" : type==1 ? data="swapped" : type==2 ? data="wallet" : type==3 ? data="purchased" : type==4 ? data="transfer" : type==5 ? data="received" : type==6 ? data="buy_vreit" :null;
+        type==0 ? data="shifted" : type==1 ? data="swapped" : type==2 ? data="wallet" : type==3 ? data="purchased" : type==4 ? data="transfer" : type==5 ? data="received" : type==6 ? data="buy_vreit" :type==7 ? data="buy_dameta1":type==8?data="escrow_continue":null;
         let resp =await getVreitLogs(data)
         if (resp !== "Error") {
             if (type == 0){ setApiRes(resp.data.data.shifted);
@@ -33,6 +33,8 @@ const Vreit_Logs = () => {
             }else if (type == 4){ setApiRes(resp.data.data.transfer);
             }else if (type == 5){ setApiRes(resp.data.data.received);
             }else if (type == 6){ setApiRes(resp.data.data.buy_vreit);
+            }else if (type == 7){ setApiRes(resp.data.data.buy_dameta1);
+            }else if (type == 8){ setApiRes(resp.data.data.escrow_continue);
             }else { return null;
             }
             setRefreshing(!refreshing)
@@ -108,6 +110,25 @@ const Vreit_Logs = () => {
             </View>
         </TouchableOpacity>
     )
+    const renderItemBuyDameta1=({item})=>(
+        <TouchableOpacity onPress={()=>{setVisible(true),setIds(item),setValue(7)}} style={{flexDirection:"row",backgroundColor: Colors.secondary, borderColor: Colors.white, borderRadius: 10, borderBottomWidth: 2, padding: 10,marginHorizontal:5,marginVertical:2}}>
+            <Text style={{color:Colors.white,fontSize:14,paddingHorizontal:4}}>{item.sr}.</Text>
+            <View>
+                <Text style={{ fontSize: 14, color: Colors.white }}>Code ({item.code})</Text>
+                <Text style={{ fontSize: 13, color: Colors.lightgray, flex: 1, }}>Buy At: {item.created_at}</Text>
+            </View>
+        </TouchableOpacity>
+    )
+    const renderItemEscrowContinue=({item})=>(
+        <TouchableOpacity onPress={()=>{setVisible(true),setIds(item),setValue(8)}} style={{flexDirection:"row",backgroundColor: Colors.secondary, borderColor: Colors.white, borderRadius: 10, borderBottomWidth: 2, padding: 10,marginHorizontal:5,marginVertical:2}}>
+            <Text style={{color:Colors.white,fontSize:14,paddingHorizontal:4}}>{item.sr}.</Text>
+            <View>
+                <Text style={{ fontSize: 14, color: Colors.white }}>Code ({item.escrow_code})</Text>
+                <Text style={{ fontSize: 13, color: Colors.lightgray, flex: 1, }}>Buy At: {item.escrow_at}</Text>
+            </View>
+        </TouchableOpacity>
+    )
+
     return (
         <SafeAreaView style={{flex:1}}>
             <ScrollView style={{flexGrow:1}} horizontal={true}>
@@ -115,7 +136,7 @@ const Vreit_Logs = () => {
                     {Button.map((item, index) => (
                         <TouchableOpacity
                             key={index} onPress={() => { setBtn(index); getData(index); }}
-                            style={{height: 30, borderWidth: 1, width: 80, alignItems: "center", justifyContent: "center", marginHorizontal: 5, borderRadius:5,backgroundColor:(index==btn)?"black":"white"}}>
+                            style={{height: 30, borderWidth: 1, width: 90, alignItems: "center", justifyContent: "center", marginHorizontal: 5, borderRadius:5,backgroundColor:(index==btn)?"black":"white"}}>
                             <Text style={{color:index === btn?"white":"black"}}>{item.title}</Text>
                         </TouchableOpacity>
                     ))}
@@ -123,7 +144,7 @@ const Vreit_Logs = () => {
             </ScrollView>
                 <View style={{flex:100}}>
                     <Loader animating={isloading}/>
-                    <FlatList data={apiRes} renderItem={btn == 0?renderItemShifted:btn ==1?renderItemSwapped:btn ==2?renderItemWallet:btn ==3?renderItemPurchased:btn ==4?renderItemTransfer:btn ==5?renderItemReceived:btn==6?renderItemBuyVreit:null} refreshControl={
+                    <FlatList data={apiRes} renderItem={btn == 0?renderItemShifted:btn ==1?renderItemSwapped:btn ==2?renderItemWallet:btn ==3?renderItemPurchased:btn ==4?renderItemTransfer:btn ==5?renderItemReceived:btn==6?renderItemBuyVreit:btn==7?renderItemBuyDameta1:btn==8?renderItemEscrowContinue:null} refreshControl={
                         <RefreshControl refreshing={false} onRefresh={onRefresh} />
                     }/>
                 </View>
@@ -197,12 +218,38 @@ const Vreit_Logs = () => {
                                             <DoubleText text1={"Points"} text2={ids.vreit_points?parseFloat(ids.vreit_points).toFixed(2):null}/>
                                             <DoubleText text1={"Rate"} text2={ids.vreit_rate?"$"+parseFloat(ids.vreit_rate).toFixed(4):null}/>
                                             <DoubleText text1={"Amount"} text2={ids.vreit_amount?"$"+parseFloat(ids.vreit_amount).toFixed(2):null}/>
-                                            <DoubleText text1={"Status"} text2={ids.status?ids.status:null} textstyle={{color:ids.status=="rejected"?"red":ids.status=="accepted"?"green":ds.status=="pending"?"Purple":"black",textTransform:"capitalize"}}/>
+                                            <DoubleText text1={"Status"} text2={ids.status?ids.status:null} textstyle={{color:ids.status=="rejected"?"red":ids.status=="accepted"?"green":ids.status=="pending"?"Purple":"black",textTransform:"capitalize"}}/>
                                             <DoubleText text1={"Detail"} text2={ids.description?ids.description:null}/>
                                             <DoubleText text1={"Feedback"} text2={ids.admin_feed?ids.admin_feed:null}/>
                                             <DoubleText text1={"Buy At"} text2={ids.buy_at?ids.buy_at.slice(0,10):null}/>
                                             <DoubleText text1={""} text2={ids.buy_at?ids.buy_at.slice(11,19):null}/>
                                         </View>
+                                          : value == 7 ?
+                                          <View>
+                                              <DoubleText text1={"Code"} text2={ids.code?ids.code:null}/>
+                                              <DoubleText text1={"Vreit Points"} text2={ids.vreit_points?parseFloat(ids.vreit_points).toFixed(2):null}/>
+                                              <DoubleText text1={"Vreit Rate"} text2={ids.vreit_rate?"$"+parseFloat(ids.vreit_rate).toFixed(4):null}/>
+                                              <DoubleText text1={"Vreit Amount"} text2={ids.vreit_amount?"$"+parseFloat(ids.vreit_amount).toFixed(2):null}/>
+                                              <DoubleText text1={"Coin Rate"} text2={ids.coin_rate?"$"+parseFloat(ids.coin_rate).toFixed(2):null}/>
+                                              <DoubleText text1={"Coins"} text2={ids.coins?"$"+parseFloat(ids.coins).toFixed(2):null}/>
+                                              <DoubleText text1={"Detail"} text2={ids.details?ids.details:null}/>
+                                              <DoubleText text1={"Feedback"} text2={ids.feedback?ids.feedback:null}/>
+                                              <DoubleText text1={"Buy At"} text2={ids.created_at?ids.created_at.slice(0,10):null}/>
+                                              <DoubleText text1={""} text2={ids.created_at?ids.created_at.slice(11,19):null}/>
+                                          </View>
+                                          : value == 8 ?
+                                          <View>
+                                              <DoubleText text1={"Purchase Code"} text2={ids.purchase_code?ids.purchase_code:null}/>
+                                              <DoubleText text1={"Escrow Code"} text2={ids.escrow_code?ids.escrow_code:null}/>
+                                              <DoubleText text1={"Points"} text2={ids.escrow_points?parseFloat(ids.escrow_points).toFixed(2):null}/>
+                                              <DoubleText text1={"Rate"} text2={ids.vreit_rate?"$"+parseFloat(ids.vreit_rate).toFixed(4):null}/>
+                                              <DoubleText text1={"Amount"} text2={ids.escrow_amount?"$"+parseFloat(ids.escrow_amount).toFixed(2):null}/>
+                                              <DoubleText text1={"Status"} text2={ids.status?ids.status:null} textstyle={{color:ids.status=="rejected"?"red":ids.status=="accepted"?"green":ids.status=="pending"?"purple":"black",textTransform:"capitalize"}}/>
+                                              <DoubleText text1={"Transaction Code"} text2={ids.transaction_code?ids.transaction_code:null}/>
+                                              <DoubleText text1={"Feedback"} text2={ids.admin_feed?ids.admin_feed:null}/>
+                                              <DoubleText text1={"Escrow At"} text2={ids.escrow_at?ids.escrow_at.slice(0,10):null}/>
+                                              <DoubleText text1={""} text2={ids.escrow_at?ids.escrow_at.slice(11,19):null}/>
+                                          </View>
                                         :null
                 }
                 </Dialogs>

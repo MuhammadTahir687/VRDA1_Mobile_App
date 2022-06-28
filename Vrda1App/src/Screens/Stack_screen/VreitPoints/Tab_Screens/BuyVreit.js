@@ -209,6 +209,12 @@ const BuyVreit = ({ navigation }) => {
                         <DoubleText text1={"Current Rate"} text2={apiData.vreit_rate ? "$" + parseFloat(apiData.vreit_rate).toFixed(2) : "$0"} textstyle={{ textAlign: "center" }} containerstyle={{ marginHorizontal: 15, padding: 6, backgroundColor: "rgba(152,148,148,0.63)" }} />
                     </View>
                     :
+                    apiData.message =="Your buying vreits request is Pending."?
+                    <View style={{ justifyContent: "center", alignItems: "center", backgroundColor: "red", margin: 30, padding: 10, borderRadius: 8 }}>
+                    <Text style={{ color: Colors.white, textAlign: "center" }}>Request is pending.</Text>
+                    </View>
+
+                    :
                     <View style={{ margin: 20 }}>
                         <View style={{ flex: 1, backgroundColor: "#d4d0d0", marginVertical: 10, borderRadius: 5,overflow: 'hidden', }}>
                             <Text style={{ backgroundColor: "black", color: "white", paddingLeft: 10, paddingVertical: 10, fontWeight: "bold", borderTopLeftRadius: 5, borderTopRightRadius: 5 }}>Buy Vreits</Text>

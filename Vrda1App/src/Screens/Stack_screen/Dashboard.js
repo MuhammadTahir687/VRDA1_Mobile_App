@@ -9,15 +9,22 @@ import React, {useEffect, useState} from 'react';
 import {getDashboard} from "../../utilis/Api/Api_controller";
 import Timeline from 'react-native-timeline-flatlist';
 import Hyperlink from 'react-native-hyperlink'
-import {SafeAreaView,ScrollView,Text,ImageBackground,View,FlatList,Dimensions,Platform,RefreshControl} from 'react-native';
+import {SafeAreaView,ScrollView,useWindowDimensions,Text,ImageBackground,View,FlatList,Dimensions,Platform,RefreshControl} from 'react-native';
 import Dialogs from "../../utilis/Dialog";
 import AsyncStorage from "@react-native-community/async-storage";
 import Bad_Email from "./BadEmail/BadEmail";
 import RNPickerDialog from 'rn-modal-picker';
+import RenderHtml from 'react-native-render-html';
+import { color } from "react-native-reanimated";
+import { List } from 'react-native-paper';
+import Ionicons from "react-native-vector-icons/Ionicons";
+
 const deviceWidth = Dimensions.get('screen').width;
 const deviceHeight = Dimensions.get('screen').height;
-const Dashboard = ({navigation}) => {
 
+
+const Dashboard = ({navigation}) => {
+    const { width } = useWindowDimensions();
     const [event,setEvent]=useState([]);
     const [items,setItems]=useState("");
     const [leftCF,setLeftCF]=useState(0);
@@ -42,7 +49,9 @@ const Dashboard = ({navigation}) => {
     const [currentRank,setCurrentRank]=useState("");
     const [nextRank,setNextRank]=useState("");
     const [refreshing,setRefreshing]=useState(false);
+    const [news,setNews]=useState("")
     const [view,setView]=useState(false)
+    
     // const date = () => { var a = new Date().getDate()-1; var b = new Date().getMonth()+1; var c = new Date().getFullYear(); setCurrentDate(c+'-'+b+'-'+a) }
     const Data = [
         {price: leftBV, name: 'LEFT BV'}, {price: rightBV, name: 'Right BV'}, {price: leftCF, name: 'Left CF'},
@@ -57,6 +66,7 @@ const Dashboard = ({navigation}) => {
         if (response !== "Error") {
             if (response.data.status == true && response.data.email_status==true) {
                 setView(true)
+                console.log("alert=====",response.data.data.alert_news)
                 var res=response.data.data;
                 var resL=response.data.data.next_achievement.next_left_rank;
                 var resR=response.data.data.next_achievement.next_right_rank;
@@ -66,7 +76,9 @@ const Dashboard = ({navigation}) => {
                 setAchievedRight(resR.achieved);setRemainingRight(resR.remaining_points);setRequiredRight(resR.required_points),
                 setEvent(res.events);setApiData(res);setCurrentRank(res.next_achievement.current_rank);setNextRank(res.next_achievement.next_rank)
                 setRefreshing(!refreshing)
+                setNews(response.data.data.alert_news)
                 setLoading(false);
+
             }
             else if(response.data.status == true && response.data.email_status==false){
                 setView(false)
@@ -90,11 +102,18 @@ const Dashboard = ({navigation}) => {
     const onRefresh = async () => {
         await getallData();
     }
+    
+    const source = {
+        html: news.message
+    }
+
+
+
     return (
         <SafeAreaView style={{flex: 1}}>
             <Loader animating={isloading}/>
         {view==true?  <View style={{backgroundColor: Colors.white, borderTopLeftRadius: 20, borderTopRightRadius: 20}}>
-                <ScrollView
+                <ScrollView nestedScrollEnabled={true}
                     refreshControl={
                         <RefreshControl
                             refreshing={false}
@@ -107,6 +126,9 @@ const Dashboard = ({navigation}) => {
                             horizontal={true}
                             renderItem={({item, index}) =>
                                 <ImageBackground borderRadius={12} style={{width: deviceWidth / 2.4, margin: 5, height: deviceHeight / 9}} source={require('../../Assets/Box.png')}>
+                                    {/* <View>
+                                        <Ionicons name="stats-chart" color={"white"} size={32}/>
+                                    </View> */}
                                     <View style={{margin: 15, alignSelf: 'flex-end'}}>
                                         <Text style={{color: Colors.white, fontWeight: 'bold', fontSize: 16}}>{item.name?item.name:null}</Text>
                                         <Text style={{color: Colors.white, fontWeight: 'bold',}}>{item.price?parseFloat(item.price).toFixed(2):"0"}</Text>
@@ -127,6 +149,31 @@ const Dashboard = ({navigation}) => {
                                 <Text style={{fontSize:12}}>{nextRank.rank_name}</Text>
                             </View>
                         </View>
+
+                        {news.message == undefined ?
+                            <View></View> :
+                            <View style={{ borderWidth: 1, overflow: "hidden", borderRadius: 5, marginTop: 15 }}>
+                              
+                                <List.Accordion
+                                    theme={{ colors: { background: 'yellow',color:"white" }, roundness: 10 }}
+                                    style={{ borderRadius: 10, paddingVertical: -10 }} title="News Alert"  left={props => <List.Icon {...props} color="black" icon="bell" />} titleStyle={{ fontWeight: "bold", color: 'black', backgroundColor: "transparent", }}>
+                                 <View style={{paddingHorizontal:10}}>
+                                        <RenderHtml
+                                            contentWidth={width}
+                                            source={source}
+                                        />
+
+                                </View>
+                                   
+                                </List.Accordion>
+                            </View>
+                        } 
+
+                      
+                         
+                    
+
+
                         <Text style={{color: Colors.primary, fontWeight: 'bold', marginVertical: 10, marginTop: 25}}>For the Rank Achievement</Text>
                         <PBar heading={"Achieved Left BV "} value={achievedLeft?parseFloat(achievedLeft).toFixed(0)/100:0} progressValue={achievedLeft?parseFloat(achievedLeft).toFixed(2):0} Remaining={remainingLeft?parseFloat(remainingLeft).toFixed(1):0} Require={requiredLeft?"Left Points "+parseFloat(requiredLeft).toFixed(1):0}/>
                         <PBar heading={"Achieved Right BV "} value={achievedRight?parseFloat(achievedRight).toFixed(0)/100:0} progressValue={achievedRight?parseFloat(achievedRight).toFixed(2):0} Remaining={remainingRight?parseFloat(remainingRight).toFixed(1):0} Require={requiredRight?"Right Points "+parseFloat(requiredRight).toFixed(1):0}/>

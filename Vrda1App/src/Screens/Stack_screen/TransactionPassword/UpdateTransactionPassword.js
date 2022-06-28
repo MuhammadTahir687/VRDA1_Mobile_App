@@ -7,15 +7,21 @@ import Notes from "../../../Zextra/Note";
 import TPNotes from "../../../Zextra/TPNote";
 import TNPNotes from "../../../Zextra/TNPNotes";
 import Loader from "../../../utilis/Loader";
-import { ForgotTransactionPassword } from '../../../utilis/Api/Api_controller';
+import { ForgotTransactionPassword,UpdaeTransactionPost } from '../../../utilis/Api/Api_controller';
 import { get_data } from "../../../utilis/AsyncStorage/Controller";
 import Toast from "react-native-simple-toast";
+import AsyncStorage from "@react-native-community/async-storage";
 
 const UpdateTransactionPassword = ({ navigation, route }) => {
+
+    const token=route.params.data;
     const [isloading, setLoading] = useState(false);
-    const [showbtn, setShowbtn] = useState(false);
-    const [linkedURL, setLinkedURL] = useState(null);
-    const [userDetail, setUserDetail] = useState("")
+    const [userDetail, setUserDetail] = useState("");
+    const [password,setPassword]=useState("");
+    const [confirmpassword,setConfirmpassword]=useState("");
+    const[newpassworderror,setNewpassworderror]=useState("");
+    const[confirmpassworderror,setConfirmpassworderror]=useState("");
+
    
 
     useEffect(async () => {
@@ -23,30 +29,51 @@ const UpdateTransactionPassword = ({ navigation, route }) => {
         setUserDetail(User_DATA)
     }, [])
 
-    const Submitt = async () => {
-        setLoading(true)
-        let response = await sendProcessWithdraw(body)
-        if (response !== "Error") {
-            if (response.data.status == true) {
-                Toast.show(response.data.message, Toast.LONG);
-                await setLoading(false);
-
-            } else if (response.data.status == false) {
-                Toast.show("Request " + response.data.data, Toast.LONG);
-                setLoading(false);
-            }
-            else {
-                Toast.show("Something Went Wrong ", Toast.LONG);
-                setLoading(false);
-            }
-        } else {
-            Toast.show("Network Error: There is something wrong!", Toast.LONG);
-            setLoading(false);
-        }
+    const logout = () => {
+        console.log("logout");
+        AsyncStorage.getAllKeys()
+            .then(keys => AsyncStorage.multiRemove(keys)).then(() => navigation.reset({ index: 0, routes: [{ name: "Login" }], }));
     }
 
-
-
+    const Submitt = async () => {
+        let regex=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+        if(password==""){
+            setNewpassworderror("Enter New Password")
+        }
+        else if(regex.test(password)===false){
+            setNewpassworderror("Password is not valid")
+        }
+        else if(confirmpassword==""){
+            setConfirmpassworderror("Enter Confirm Password")
+        }
+        else if(password != confirmpassword){
+            setConfirmpassworderror("Password Not match")
+        }
+        else{
+            setLoading(true)
+            let body={token:token,password:password,password_confirmation:confirmpassword}
+            let response = await UpdaeTransactionPost(body)
+            if (response !== "Error") {
+                if (response.data.status == true) {
+                    Toast.show(response.data.message, Toast.LONG);
+                    await setLoading(false);
+                    await logout()
+    
+                } else if (response.data.status == false) {
+                    Toast.show("Request " + response.data.message, Toast.LONG);
+                    setLoading(false);
+                }
+                else {
+                    Toast.show("Something Went Wrong ", Toast.LONG);
+                    setLoading(false);
+                }
+            } else {
+                Toast.show("Network Error: There is something wrong!", Toast.LONG);
+                setLoading(false);
+            }
+    
+        }
+           }
 
 return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -70,19 +97,23 @@ return (
                 <FormInput
                     containerStyle={{ backgroundColor: "white", marginHorizontal: 10, borderRadius: 5 }}
                     placeholder="Enter New Password"
-                    value=""
-                    onChangeText={(text) => { }}
+                    value={password}
+                    secureTextEntry={true}
+                    onChangeText={(text) => { setPassword(text)}}
                 />
+                {newpassworderror !="" && <Text style={{color:"red",marginHorizontal:10}}>{newpassworderror}</Text>}
                 <Text style={styles.inputlabel}>Confirm Password:</Text>
                 <FormInput
                     containerStyle={{ backgroundColor: "white", marginHorizontal: 10, borderRadius: 5 }}
                     placeholder="Enter Confirm Password"
-                    value=""
-                    onChangeText={(text) => { }}
+                    value={confirmpassword}
+                    secureTextEntry={true}
+                    onChangeText={(text) => {setConfirmpassword(text)}}
                 />
+                {confirmpassworderror !="" && <Text style={{color:"red",marginHorizontal:10}}>{confirmpassworderror}</Text>}
 
                 <View style={styles.TPbutton, { marginTop: 10 }}>
-                    <TouchableOpacity style={{ alignSelf: "flex-start", backgroundColor: "gray", padding: 10, borderRadius: 5, overflow: "hidden", marginHorizontal: 10 }}>
+                    <TouchableOpacity onPress={()=>{Submitt()}} style={{ alignSelf: "flex-start", backgroundColor: "gray", padding: 10, borderRadius: 5, overflow: "hidden", marginHorizontal: 10 }}>
                         <Text style={{ color: "white" }}>Update Password</Text>
                     </TouchableOpacity>
                 </View>

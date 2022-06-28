@@ -31,7 +31,12 @@ const Vreit_withdrawal = () => {
                 setUserDetail(response.data.data.user)
                 setRefreshing(!refreshing)
                 setLoading(false);
-            }else {
+            }
+           else if (response.data.status == true && response.data.transaction_password == false) {
+                navigation.navigate("SetTransactionPassword",{screen:"Withdrawal"})
+                setLoading(false)
+            }
+            else {
                 Toast.show("Something Went Wrong !", Toast.LONG);
                 setLoading(false);
             }
@@ -72,22 +77,23 @@ const Vreit_withdrawal = () => {
             }
             let body = { amount: amount, details: detail, swapped_type:transactiontype,withdrawal:withdrawal,seeded:seeded,merge:merge };
             console.log("Body=====",body)
-            setLoading(true)
-            var response = await sendVreitWithdrawl(body)
-            if (response !== "Error") {
-                if (response.data.status == true) {
-                    Toast.show(response.data.message, Toast.LONG);
-                    setLoading(false);
-                    await setAmount("");
-                    await setDetail("");
-                }else {
-                    Toast.show(response.data.message, Toast.LONG);
-                    setLoading(false);
-                }
-            }else {
-                Toast.show("Network Error: There is something wrong!", Toast.LONG);
-                setLoading(false);
-            }
+            navigation.navigate('TransactionPassword',{data:body,screen:"VreitWithdrawl"})
+            // setLoading(true)
+            // var response = await sendVreitWithdrawl(body)
+            // if (response !== "Error") {
+            //     if (response.data.status == true) {
+            //         Toast.show(response.data.message, Toast.LONG);
+            //         setLoading(false);
+            //         await setAmount("");
+            //         await setDetail("");
+            //     }else {
+            //         Toast.show(response.data.message, Toast.LONG);
+            //         setLoading(false);
+            //     }
+            // }else {
+            //     Toast.show("Network Error: There is something wrong!", Toast.LONG);
+            //     setLoading(false);
+            // }
         }
     }
     return (

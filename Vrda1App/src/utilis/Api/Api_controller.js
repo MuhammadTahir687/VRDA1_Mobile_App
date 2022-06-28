@@ -96,6 +96,10 @@ const getBuyVreit = async () => {
     const Test = await get_request("/api/buy-vreits");
     return Test
 }
+const getCountry = async () => {
+    const Test = await get_request("/api/country");
+    return Test
+}
 
 const sendUpdateBTC = async (body) => {
     const Test = await post_request({ target: "/api/btc-profile-update", body: body });
@@ -136,6 +140,10 @@ const getVreitQuaterly = async () => {
 
 const getBuyDaMeta1 = async () => {
     const Test = await get_request("/api/buy-da-meta1");
+    return Test
+}
+const getSeededWithdrawal= async () => {
+    const Test = await get_request("/api/seed-withdrawal-alert");
     return Test
 }
 
@@ -205,4 +213,17 @@ const LogTransaction = async (body) => {
     return Test
 }
 
-export {LoginApi,BuyDaMeta1Post,LogTransaction,SetNewTransactionPassword,ForgotTransactionPassword,getBuyDaMeta1,getBuyVreit,BuyVreitPost,ChangePasswordApi,getDashboard,getShop,sendShopPayment,sendShopSubmit,getcommissionlogs,getactivityfeed,getcommissiondirect,getcommissionbinary,getallcommission,getwithdrawfunds,gettransferfunds,sendProcessWithdraw,getMyPurchase,getOwnershipPurchase,getPurchaseRequest,getTransferHistory,getReceiveHistory,getWithdrawHistory,getPersonalDetail,getBankDetail,getBTCDetail,getUSDTDetail,sendUpdateBTC,sendUpdateBank,sendUpdateProfile,sendWithdrawFunds_Charges,getVreitTransferC2C,getVreitLogs,getVreitWithdrawl,sendVreitWithdrawl,getVreitQuaterly,sendVreitC2Csubmit,sendTeamSale,getVREITDetail,sendVreitUpdate,sendUsdtUpdate,sendVreitShiftedBtn,sendProcessTransferBtn,sendDeletePackageRequest,sendBad_NewEmail}
+const ExitPackagePost = async (body) => {
+    const Test = await post_request({ target: "/api/exit-quarter-package", body: body });
+    return Test
+}
+const ContinuePackagePost = async (body) => {
+    const Test = await post_request({ target: "/api/continue-quarter-package", body: body });
+    return Test
+}
+const UpdaeTransactionPost = async (body) => {
+    const Test = await post_request({ target: "/api/update-transaction-password", body: body });
+    return Test
+}
+
+export {LoginApi,getCountry,UpdaeTransactionPost,ExitPackagePost,ContinuePackagePost,BuyDaMeta1Post,LogTransaction,getSeededWithdrawal,SetNewTransactionPassword,ForgotTransactionPassword,getBuyDaMeta1,getBuyVreit,BuyVreitPost,ChangePasswordApi,getDashboard,getShop,sendShopPayment,sendShopSubmit,getcommissionlogs,getactivityfeed,getcommissiondirect,getcommissionbinary,getallcommission,getwithdrawfunds,gettransferfunds,sendProcessWithdraw,getMyPurchase,getOwnershipPurchase,getPurchaseRequest,getTransferHistory,getReceiveHistory,getWithdrawHistory,getPersonalDetail,getBankDetail,getBTCDetail,getUSDTDetail,sendUpdateBTC,sendUpdateBank,sendUpdateProfile,sendWithdrawFunds_Charges,getVreitTransferC2C,getVreitLogs,getVreitWithdrawl,sendVreitWithdrawl,getVreitQuaterly,sendVreitC2Csubmit,sendTeamSale,getVREITDetail,sendVreitUpdate,sendUsdtUpdate,sendVreitShiftedBtn,sendProcessTransferBtn,sendDeletePackageRequest,sendBad_NewEmail}

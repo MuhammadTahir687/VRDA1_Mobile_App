@@ -9,7 +9,7 @@ import Dropdown from "../../../../utilis/Picker/Picker";
 import {FormInput} from "../../../../utilis/Text_input";
 import {processVreitTransferValidae} from "../../../../utilis/validation";
 import {Text, View, SafeAreaView, ScrollView, RefreshControl, TouchableOpacity} from "react-native";
-import {getVreitTransferC2C, sendVreitC2Csubmit} from "../../../../utilis/Api/Api_controller";
+import {getVreitTransferC2C, sendVreitC2Csubmit,getCountry} from "../../../../utilis/Api/Api_controller";
 import RNPickerDialog from 'rn-modal-picker';
 import styles from '../../../../Style_Sheet/style';
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -21,6 +21,7 @@ const Vreit_Transfer = ({navigation}) => {
     const [detail,setDetail]=useState("");
     const [errors,setErrors]=useState("");
     const [amount,setAmount]=useState("");
+    const [remain,setRemain]=useState("");
     const [index, setIndex] = useState(0);
     const [checked,setChecked]=useState(false);
     const [isloading,setLoading]=useState(false);
@@ -30,6 +31,8 @@ const Vreit_Transfer = ({navigation}) => {
     const [selectedValue1, setSelectedValue1] = useState("");
     const [selectedText,setselectedText]=useState("");
     const [placeHolderText,setplaceHolderText]=useState('Select User');
+    const [transactiontype,setTransactiontype]=useState("");
+    const [country,setCountry]=useState([])
     const buttons = [{name: 'Transfer Point', id: 0}, {name: 'Process Transfer', id: 1},]
 
     useEffect(async ()=>{ await getData(); },[]);
@@ -37,14 +40,21 @@ const Vreit_Transfer = ({navigation}) => {
     const getData=async ()=>{
         setLoading(true)
         let response = await getVreitTransferC2C();
+        
         if (response !== "Error") {
-            if (response.data.status === true) {
+            if (response.data.status === true && response.data.transaction_password == true) {
                 setVreitTransfer(response.data.vreit_transfer);
+                setRemain(response.data.remain);
                 setChild(response.data.child_users);
                 setParent(response.data.parent_users);
                 setRefreshing(!refreshing)
                 setLoading(false);
-            }else {
+            }
+           else if (response.data.status == true && response.data.transaction_password == false) {
+                navigation.navigate("SetTransactionPassword",{screen:"Vreit_Transfer"})
+                setLoading(false)
+            }
+            else {
                 Toast.show("Something Went Wrong !", Toast.LONG);
                 setLoading(false);
             }
@@ -66,27 +76,57 @@ const Vreit_Transfer = ({navigation}) => {
             setErrors(validate.errors)
         } else {
             setErrors("")
-            let body = {details: detail,points:amount,receiver_id: selectedValue ? selectedValue : selectedValue1 ? selectedValue1 : ""};
-            setLoading(true)
-            var response = await sendVreitC2Csubmit(body)
-            if (response !== "Error") {
-                if (response.data.status == true) {
-                    Toast.show("Transfer Successful", Toast.LONG);
-                    setLoading(false);
-                    await setDetail("");
-                    await setAmount("");
-                    await onRefresh();
-                }else if (response.data.status == false) {
-                    Toast.show(response.data.message, Toast.LONG);
-                    setLoading(false);
-                }else {
-                    Toast.show(response.data, Toast.LONG);
-                    setLoading(false);
-                }
-            }else {
-                Toast.show("Network Error: There is something wrong!", Toast.LONG);
-                setLoading(false);
+
+            const withdrawal = remain.withdrawal;
+            const received = remain.received;
+            const seeded = remain.seeded;
+            const merge = remain.merge;
+    
+           console.log("WITHDRAWL = ",withdrawal,"recieved =",received,"seeded=",seeded,"merge",merge)
+
+            if (parseFloat(withdrawal) > 0 && parseFloat(amount) > parseFloat(withdrawal)) {
+                setTransactiontype('merge')
+                console.log('merge');
+            } else if (parseFloat(received) > 0 && parseFloat(amount) > parseFloat(received)) {
+                setTransactiontype('merge')
+                console.log('merge');
+            } else if (parseFloat(amount) <= parseFloat(withdrawal)) {
+                setTransactiontype('withdrawal')
+                console.log('withdrawal');
+            } else if (parseFloat(amount) <= parseFloat(received)) {
+                setTransactiontype('received')
+                console.log('received');
+            } else if (parseFloat(amount) <= parseFloat(seeded)) {
+                setTransactiontype('seeded')
+                console.log('seeded');
             }
+            else {
+                console.log('none');
+            }
+
+            let body = {details: detail,points:amount,receiver_id: selectedValue ? selectedValue : selectedValue1 ? selectedValue1 : "",transfer_type:transactiontype,withdrawal:remain.withdrawal,received:remain.received,seeded:remain.seeded,merge:remain.merge};
+            navigation.navigate('TransactionPassword',{data:body,screen:"VreitTransferc2c"})
+        //    console.log(body)
+        //     setLoading(true)
+        //     var response = await sendVreitC2Csubmit(body)
+        //     if (response !== "Error") {
+        //         if (response.data.status == true) {
+        //             Toast.show("Transfer Successful", Toast.LONG);
+        //             setLoading(false);
+        //             await setDetail("");
+        //             await setAmount("");
+        //             await onRefresh();
+        //         }else if (response.data.status == false) {
+        //             Toast.show(response.data.message, Toast.LONG);
+        //             setLoading(false);
+        //         }else {
+        //             Toast.show(response.data, Toast.LONG);
+        //             setLoading(false);
+        //         }
+        //     }else {
+        //         Toast.show("Network Error: There is something wrong!", Toast.LONG);
+        //         setLoading(false);
+        //     }
         }
     }
     return (
@@ -109,6 +149,9 @@ const Vreit_Transfer = ({navigation}) => {
                         <DoubleText text1={"Purchased (-)"} text2={vreitTransfer.purchased?parseFloat(vreitTransfer.purchased).toFixed(2):"0"} containerstyle={{marginHorizontal:15,padding:6}}/>
                         <DoubleText text1={"Transferred (-)"} text2={vreitTransfer.transfer?parseFloat(vreitTransfer.transfer).toFixed(2):"0"} containerstyle={{marginHorizontal:15,padding:6,backgroundColor:"rgba(152,148,148,0.63)",}}/>
                         <DoubleText text1={"Received (+)"} text2={vreitTransfer.receive?parseFloat(vreitTransfer.receive).toFixed(2):"0"} containerstyle={{marginHorizontal:15,padding:6}}/>
+                        <DoubleText text1={"Buy (+)"} text2={vreitTransfer.buy?parseFloat(vreitTransfer.buy).toFixed(2):"0"} containerstyle={{marginHorizontal:15,padding:6,backgroundColor:"rgba(152,148,148,0.63)"}}/>
+                        <DoubleText text1={"Dameta1 (-)"} text2={vreitTransfer.dameta1?parseFloat(vreitTransfer.dameta1).toFixed(2):"0"} containerstyle={{marginHorizontal:15,padding:6}}/>
+                        <DoubleText text1={"Seeded (+)"} text2={vreitTransfer.seeded?parseFloat(vreitTransfer.seeded).toFixed(2):"0"} containerstyle={{marginHorizontal:15,padding:6,backgroundColor:"rgba(152,148,148,0.63)"}}/>
                         <DoubleText text1={"Available (=)"} text2={vreitTransfer.available?parseFloat(vreitTransfer.available).toFixed(2):"$0"} textstyle={{color:Colors.white}} textstyle1={{color:Colors.white}} containerstyle={{marginHorizontal:15,padding:6,backgroundColor:"rgb(51,51,51)",}}/>
                     </View>
                     :

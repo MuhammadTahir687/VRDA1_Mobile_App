@@ -41,7 +41,7 @@ const BuyDaMeta1 = ({ navigation }) => {
         setLoading(true)
         let response = await getBuyDaMeta1();
         if (response !== "Error") {
-            if (response.data.status == true && response.data.email_status == true) {
+            if (response.data.status == true && response.data.email_status == true && response.data.transaction_password == true) {
                 setview(true)
                 setApiData(response.data);
                 setRefreshing(!refreshing)

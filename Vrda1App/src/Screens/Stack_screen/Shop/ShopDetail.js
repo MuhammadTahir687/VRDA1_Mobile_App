@@ -22,6 +22,7 @@ import styles from '../../../Style_Sheet/style';
 import RNFetchBlob from 'rn-fetch-blob';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useIsFocused } from '@react-navigation/native';
+import { get_request,post_request } from "../../../utilis/Api/Requests";
 
 const ShopDetail = ({ navigation,route }) => {
     const ID=route.params.data;
@@ -63,17 +64,25 @@ const ShopDetail = ({ navigation,route }) => {
 
     useEffect(async () => { 
         await setIds(ID)
-       await  setPackageID(PackageID)
+        await  setPackageID(PackageID)
         await getShopData(); 
     
     }, [isFocused]);
 
-    const picker = [
-        { label: 'Bank', value: 'bank', color: Colors.primary },
-        { label: 'USDT', value: 'usdt', color: Colors.primary },
-        { label: 'Wallet', value: 'wallet', color: Colors.primary },
-        { label: 'Vreit', value: 'vreit', color: Colors.primary },
-    ];
+    if(route.params.Escrow ==null){
+        var picker = [
+            { label: 'Bank', value: 'bank', color: Colors.primary },
+            { label: 'USDT', value: 'usdt', color: Colors.primary },
+            { label: 'Wallet', value: 'wallet', color: Colors.primary },
+            { label: 'Vreit', value: 'vreit', color: Colors.primary },
+        ];
+    }
+    else{
+        var picker = [
+            { label: 'Vreit', value: 'vreit', color: Colors.primary },
+        ];
+    }
+   
 
     const getShopData = async () => {
         setLoading(true)
@@ -106,7 +115,14 @@ const ShopDetail = ({ navigation,route }) => {
         setLoading(true)
         let body = { package_id: packageID, payment_type: text };
         console.log("Body =======",body)
-        let response = await sendShopPayment(body);
+
+        if(route.params.Escrow ==null){
+            var response = await sendShopPayment(body);
+        }
+        else{
+             var response=await post_request("/api/package-payment-form/"+route.params.Escrow.shop,body)
+        }
+       
         if (response !== "Error") {
             if (response.data.status === true) {
                 console.log("Shop Payment Type ======================", response.data)
@@ -230,7 +246,6 @@ const ShopDetail = ({ navigation,route }) => {
                     Toast.show(response.data.success, Toast.LONG);
                     await setLoading(false);
                     await setSelectedValue("");
-                    await refRBSheet.current.close();
                 } else {
                     Toast.show("Something Went Wrong !", Toast.LONG);
                     setLoading(false);

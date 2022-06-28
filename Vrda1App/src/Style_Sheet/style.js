@@ -97,7 +97,7 @@ export default StyleSheet.create({
           height: 0.5,
         },
         height: 40,
-        width:'92%',
+        width:300,
         borderBottomColor: '#303030',
         shadowColor: 'transparent',
         borderRadius: 5,
@@ -120,6 +120,36 @@ export default StyleSheet.create({
       tpcontainer:{flex:1},
       inputlabel:{marginHorizontal: 10, fontWeight: "bold", marginVertical: 10},
       TPbutton:{flexDirection:"row",justifyContent:"space-between",marginHorizontal:20},
-      transactioninput:{marginHorizontal:10,borderBottomWidth:1,borderTopLeftRadius:5,borderTopRightRadius:5}
+      transactioninput:{marginHorizontal:10,borderBottomWidth:1,borderTopLeftRadius:5,borderTopRightRadius:5},
+      pickerStyle3: {
+        shadowRadius: 0.5,
+        shadowOpacity: 0.5,
+        borderBottomWidth: 0,
+        shadowOffset: {
+          width: 0.5,
+          height: 0.5,
+        },
+        height: 42,
+        width:150,
+        borderBottomColor: '#303030',
+        shadowColor: 'transparent',
+        borderRadius: 5,
+        elevation: 0,
+      },
+      pickerStyle4: {
+        shadowRadius: 0.5,
+        shadowOpacity: 0.5,
+        borderBottomWidth: 0,
+        shadowOffset: {
+          width: 0.5,
+          height: 0.5,
+        },
+        height: 40,
+        width:340,
+        borderBottomColor: '#303030',
+        shadowColor: 'transparent',
+        borderRadius: 5,
+        elevation: 0,
+      },
 
 })
